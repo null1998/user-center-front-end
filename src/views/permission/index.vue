@@ -25,7 +25,6 @@
         />
       </el-select>
       <el-button
-        v-waves
         class="filter-item"
         type="primary"
         icon="el-icon-search"
@@ -63,7 +62,7 @@
           <el-tag :type="handleTagType(row.method)">{{ row.action }}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="资源名" width="200px" align="center">
+      <el-table-column label="资源名" width="200px" align="left">
         <template slot-scope="{ row }">
           <span>{{ row.name }}</span>
         </template>
