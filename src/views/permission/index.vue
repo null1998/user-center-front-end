@@ -259,7 +259,9 @@ export default {
       this.permissionListLoading = true;
       listPermission(this.permissionListQuery)
         .then((resp) => {
-          this.permissionList = resp.data;
+          if (resp && resp.body) {
+            this.permissionList = resp.body.data;
+          }
         })
         .finally(() => {
           this.permissionListLoading = false;

@@ -33,9 +33,11 @@ const actions = {
     const { username, password } = userInfo
     return new Promise((resolve, reject) => {
       login({ username: username.trim(), password: password }).then(response => {
-        if (response.accessToken) {
-          commit('SET_TOKEN', response.accessToken)
-          setToken(response.accessToken)
+        debugger
+        // 首次登录返回的token保存在本地
+        if (response.head.accessToken) {
+          commit('SET_TOKEN',response.head.accessToken)
+          setToken(response.head.accessToken)
         }
         resolve()
       }).catch(error => {
@@ -78,7 +80,13 @@ const actions = {
       })
     })
   },
-
+  refreshToken({ commit }, accessToken) {
+    return new Promise(resolve => {
+      commit('SET_TOKEN',accessToken)
+      setToken(accessToken)
+      resolve()
+    })
+  },
   // remove token
   resetToken({ commit }) {
     return new Promise(resolve => {

@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { MessageBox, Message } from 'element-ui'
 import store from '@/store'
-import { getToken } from '@/utils/auth'
+import { getToken,setToken } from '@/utils/auth'
 
 // create an axios instance
 const service = axios.create({
@@ -35,10 +35,27 @@ service.interceptors.response.use(
   response => {
     // 获取请求体中的数据
     const res = response.data
-    if (res.head.code != 0) {
-
+    if (res.head.code !== '0') {
+      if (res.head.code === '50008') {
+          MessageBox.confirm('You have been logged out, you can cancel to stay on this page, or log in again', 'Confirm logout', {
+          confirmButtonText: 'Re-Login',
+          cancelButtonText: 'Cancel',
+          type: 'warning'
+        }).then(() => {
+            store.dispatch('user/resetToken').then(() => {
+            location.reload()
+          })
+        })
+      }
     } else {
-      return res.body
+      // 如果发现http头中有新的token，更新本地token
+      var accessToken = response.headers['accesstoken']
+      if (accessToken) {
+        
+        store.dispatch('user/refreshToken', accessToken)
+      }
+      
+      return res
     }
   }
 )
@@ -68,15 +85,15 @@ service.interceptors.response.use(
     //   // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
     //   if (res.code === 50008 || res.code === 50012 || res.code === 50014) {
     //     // to re-login
-    //     MessageBox.confirm('You have been logged out, you can cancel to stay on this page, or log in again', 'Confirm logout', {
-    //       confirmButtonText: 'Re-Login',
-    //       cancelButtonText: 'Cancel',
-    //       type: 'warning'
-    //     }).then(() => {
-    //       store.dispatch('user/resetToken').then(() => {
-    //         location.reload()
-    //       })
-    //     })
+        // MessageBox.confirm('You have been logged out, you can cancel to stay on this page, or log in again', 'Confirm logout', {
+        //   confirmButtonText: 'Re-Login',
+        //   cancelButtonText: 'Cancel',
+        //   type: 'warning'
+        // }).then(() => {
+        //   store.dispatch('user/resetToken').then(() => {
+        //     location.reload()
+        //   })
+        // })
     //   }
     //   return Promise.reject(new Error(res.message || 'Error'))
     // } else {

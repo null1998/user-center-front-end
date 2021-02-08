@@ -305,7 +305,10 @@ export default {
       this.roleListLoading = true;
       listRole(this.roleListQuery)
         .then((resp) => {
-          this.roleList = resp.data;
+          if (resp && resp.body) {
+            this.roleList = resp.body.data;
+          }
+          
         })
         .finally(() => {
           this.roleListLoading = false;
@@ -372,7 +375,10 @@ export default {
         this.permissionListLoading = true;
         listPermission(this.permissionListQuery)
           .then((resp) => {
-            this.permissionList = resp.data;
+            if (resp && resp.body) {
+              this.permissionList = resp.body.data;
+            }
+            
           })
           .finally(() => {
             this.permissionListLoading = false;
@@ -411,7 +417,7 @@ export default {
           }).then(() => {
             save(this.roleData).then((resp) => {
               if (resp) {
-                this.roleData.id = resp;
+                this.roleData.id = resp.body;
                 if (this.roleData.type == "基础角色") {
                   var rolePermissionList = [];
                   for (let i = 0; i < this.permissionOrRoleList.length; i++) {
