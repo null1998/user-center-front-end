@@ -6,7 +6,9 @@ const getDefaultState = () => {
   return {
     token: getToken(),
     name: '',
-    avatar: ''
+    avatar: '',
+    roles: [],
+    id: ''
   }
 }
 
@@ -24,6 +26,12 @@ const mutations = {
   },
   SET_AVATAR: (state, avatar) => {
     state.avatar = avatar
+  },
+  SET_ROLES: (state, roles) => {
+    state.roles = roles
+  },
+  SET_ID: (state, id) => {
+    state.id = id
   }
 }
 
@@ -33,10 +41,10 @@ const actions = {
     const { username, password } = userInfo
     return new Promise((resolve, reject) => {
       login({ username: username.trim(), password: password }).then(response => {
-        debugger
         // 首次登录返回的token保存在本地
         if (response.head.accessToken) {
-          commit('SET_TOKEN',response.head.accessToken)
+          commit('SET_TOKEN', response.head.accessToken)
+          commit('SET_ID',response.body.id)
           setToken(response.head.accessToken)
         }
         resolve()
@@ -49,18 +57,18 @@ const actions = {
   // get user info
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
-      getInfo(state.token).then(response => {
-        const { data } = response
-
-        if (!data) {
+      getInfo(state.id).then(response => {
+        const { body } = response
+        
+        if (!body) {
           return reject('Verification failed, please Login again.')
         }
 
-        const { name, avatar } = data
-
-        commit('SET_NAME', name)
+        const { username, avatar, roleNameList } = body
+        commit('SET_ROLES', roleNameList)
+        commit('SET_NAME', username)
         commit('SET_AVATAR', avatar)
-        resolve(data)
+        resolve(body)
       }).catch(error => {
         reject(error)
       })

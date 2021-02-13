@@ -35,11 +35,18 @@ service.interceptors.response.use(
   response => {
     // 获取请求体中的数据
     const res = response.data
+    if (res.head.code !== '50008') {
+      // 如果发现http头中有新的token，更新本地token
+      var accessToken = response.headers['accesstoken']
+      if (accessToken) {
+        store.dispatch('user/refreshToken', accessToken)
+      }
+    }
     if (res.head.code !== '0') {
       if (res.head.code === '50008') {
-          MessageBox.confirm('You have been logged out, you can cancel to stay on this page, or log in again', 'Confirm logout', {
-          confirmButtonText: 'Re-Login',
-          cancelButtonText: 'Cancel',
+          MessageBox.confirm('认证失效，请重新登录', '重新登录', {
+          confirmButtonText: '重新登录',
+          cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
             store.dispatch('user/resetToken').then(() => {
@@ -48,12 +55,7 @@ service.interceptors.response.use(
         })
       }
     } else {
-      // 如果发现http头中有新的token，更新本地token
-      var accessToken = response.headers['accesstoken']
-      if (accessToken) {
-        
-        store.dispatch('user/refreshToken', accessToken)
-      }
+      
       
       return res
     }
