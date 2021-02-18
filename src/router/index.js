@@ -338,9 +338,9 @@ export const asyncRoutes = [
     path: '/role',
     component: Layout,
     meta: {
-          title: '权限管理',
+          title: '角色管理',
           icon: 'form',
-          roles: ['权限编辑者','用户中心超级管理员']
+          roles: ['角色编辑者','用户中心超级管理员']
         },
     children: [
       {
@@ -359,9 +359,9 @@ export const asyncRoutes = [
     path: '/user',
     component: Layout,
     meta: {
-          title: '权限管理',
+          title: '用户管理',
           icon: 'form',
-          roles: ['权限编辑者','用户中心超级管理员']
+          roles: ['用户编辑者','用户中心超级管理员']
         },
     children: [
       {
