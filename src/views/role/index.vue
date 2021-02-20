@@ -136,6 +136,39 @@
         </el-form-item>
       </el-form>
       <!-- 选择权限，创建基础角色 -->
+      <!-- 搜索栏-->
+    <div class="filter-container" v-if="roleData.type == '基础角色'">
+      <el-input
+        v-model="permissionListQuery.name"
+        placeholder="资源名"
+        style="width: 200px"
+        class="filter-item"
+        @keyup.enter.native="handlePermissionFilter"
+      />
+      <el-select
+        v-model="permissionListQuery.action"
+        placeholder="动作"
+        clearable
+        class="filter-item"
+        style="width: 130px"
+      >
+        <el-option
+          v-for="item in actions"
+          :key="item"
+          :label="item"
+          :value="item"
+        />
+      </el-select>
+      <el-button
+        class="filter-item"
+        type="primary"
+        icon="el-icon-search"
+        :loading="searchPermissionBtnLoading"
+        @click="handlePermissionFilter"
+      >
+        搜索
+      </el-button>
+    </div>
       <el-table
         v-if="roleData.type == '基础角色'"
         :key="permissionTableKey"
@@ -169,6 +202,17 @@
           </template>
         </el-table-column>
       </el-table>
+      <el-pagination
+      v-if="roleData.type == '基础角色'"
+      layout="total, sizes, prev, pager, next, jumper"
+      :current-page.sync="pageInfo.pageNum"
+      :page-sizes="[10, 30, 50]"
+      :page-size="pageInfo.pageSize"
+      :total="pageInfo.total"
+      style="margin-top: 10px; margin-bottom: 10px; margin-right: 20px"
+      @size-change="handlePageSizeChange"
+      @current-change="handleCurrentPageChange"
+    />
       <!-- 选择基础角色，创建高级角色 -->
       <el-table
         v-if="roleData.type === '高级角色'"
@@ -273,6 +317,8 @@ export default {
        * 权限列表搜素条件
        */
       permissionListQuery: {
+        pageNum:1,
+        pageSize:10,
         name: undefined,
         action: undefined,
       },
@@ -289,6 +335,24 @@ export default {
        */
       roleCreated: false,
       permissionOrRoleList: [],
+      
+      searchPermissionBtnLoading : false,
+      /**
+       * 查询条件是否改变
+       */
+      queryPermissionOptionsChanged: false,
+      /**
+       * 分页信息
+       */
+      pageInfo: {
+        pageSize: 1,
+        pageNum: 10,
+        total: 0,
+      },
+      /**
+       * 动作
+       */
+      actions: ["新增", "删除", "编辑", "查看", "审核"],
     };
   },
   created() {
@@ -372,17 +436,7 @@ export default {
      */
     handleSeletorChange(val) {
       if (val == "基础角色") {
-        this.permissionListLoading = true;
-        listPermission(this.permissionListQuery)
-          .then((resp) => {
-            if (resp && resp.body) {
-              this.permissionList = resp.body.data;
-            }
-            
-          })
-          .finally(() => {
-            this.permissionListLoading = false;
-          });
+        this.getPermissionList()
       } else if (val == "高级角色") {
         this.getRoleList();
       }
@@ -456,6 +510,57 @@ export default {
     },
     handleTableSelect(val) {
       this.permissionOrRoleList = val;
+    },
+    /**
+     * 查询权限
+     */
+    handlePermissionFilter() {
+      this.searchPermissionBtnLoading = true;
+      this.getPermissionList();
+      this.searchPermissionBtnLoading = false;
+    },
+    /**
+     * 查询权限列表
+     */
+    getPermissionList() {
+      this.permissionListLoading = true;
+      if (this.queryPermissionOptionsChanged) {
+        this.permissionListQuery.pageNum = 1;
+      }
+      listPermission(this.permissionListQuery)
+        .then((resp) => {
+          if (resp && resp.body) {
+            const { pageSize, pageNum, total } = resp.body;
+            // 设置分页信息
+            const totalInt = Number.parseInt(total);
+            // 计算最多多少页
+            const maxPages =
+              Number.parseInt(totalInt / pageSize) +
+              (totalInt % pageSize !== 0 ? 1 : 0);
+            // 实际页码，超出最大页数则为最大页数页码
+            const actualPageNum = pageNum <= maxPages ? pageNum : maxPages;
+
+            this.pageInfo.pageSize = pageSize;
+            this.pageInfo.pageNum = this.queryPermissionOptionsChanged
+              ? 1
+              : actualPageNum;
+            this.pageInfo.total = Number.parseInt(total);
+            this.permissionList = resp.body.data;
+          }
+        })
+        .finally(() => {
+          this.permissionListLoading = false;
+          this.queryPermissionOptionsChanged = false
+        });
+    },
+    handlePageSizeChange(currentPageSize) {
+      this.permissionListQuery.pageSize = currentPageSize;
+      this.queryPermissionOptionsChanged = true;
+      this.getPermissionList();
+    },
+    handleCurrentPageChange(currentPageNum) {
+      this.permissionListQuery.pageNum = currentPageNum;
+      this.getPermissionList();
     },
   },
 };
