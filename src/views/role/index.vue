@@ -417,7 +417,7 @@ export default {
           }).then(() => {
             save(this.roleData).then((resp) => {
               if (resp) {
-                this.roleData.id = resp.body;
+                this.roleData.id = resp.body.data;
                 if (this.roleData.type == "基础角色") {
                   var rolePermissionList = [];
                   for (let i = 0; i < this.permissionOrRoleList.length; i++) {

@@ -44,7 +44,6 @@ const actions = {
         // 首次登录返回的token保存在本地
         if (response.head.accessToken) {
           commit('SET_TOKEN', response.head.accessToken)
-          commit('SET_ID',response.body.id)
           setToken(response.head.accessToken)
         }
         resolve()
@@ -61,14 +60,13 @@ const actions = {
         const { body } = response
         
         if (!body) {
-          return reject('Verification failed, please Login again.')
+          return reject('获取用户信息失败，重新登录')
         }
-
-        const { username, avatar, roleNameList } = body
+        const { username, avatar, roleNameList } = body.data
         commit('SET_ROLES', roleNameList)
         commit('SET_NAME', username)
         commit('SET_AVATAR', avatar)
-        resolve(body)
+        resolve(body.data)
       }).catch(error => {
         reject(error)
       })

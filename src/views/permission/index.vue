@@ -111,6 +111,16 @@
         </template>
       </el-table-column>
     </el-table>
+    <el-pagination
+      layout="total, sizes, prev, pager, next, jumper"
+      :current-page.sync="pageInfo.pageNum"
+      :page-sizes="[10, 30, 50]"
+      :page-size="pageInfo.pageSize"
+      :total="pageInfo.total"
+      style="margin-top: 10px; margin-bottom: 10px; margin-right: 20px"
+      @size-change="handlePageSizeChange"
+      @current-change="handleCurrentPageChange"
+    />
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form
         ref="dataForm"
@@ -182,11 +192,23 @@ export default {
   name: "",
   data() {
     return {
+      /**
+       * 查询条件是否改变
+       */
+      queryOptionsChanged: false,
+      /**
+       * 分页信息
+       */
+      pageInfo: {
+        pageSize: 1,
+        pageNum: 10,
+        total: 0,
+      },
       tableKey: 0,
       /**
        * 动作
        */
-      actions: ["新增", "删除", "编辑", "查看","审核"],
+      actions: ["新增", "删除", "编辑", "查看", "审核"],
       /**
        * http方法
        */
@@ -195,6 +217,8 @@ export default {
        * 权限列表搜素条件
        */
       permissionListQuery: {
+        pageSize: 10,
+        pageNum: 1,
         name: undefined,
         action: undefined,
       },
@@ -236,7 +260,9 @@ export default {
        * 表单规则
        */
       rules: {
-        action: [{ required: true, message: "动作不能为空", trigger: "change" }],
+        action: [
+          { required: true, message: "动作不能为空", trigger: "change" },
+        ],
         method: [
           { required: true, message: "方法不能为空", trigger: "change" },
         ],
@@ -251,20 +277,62 @@ export default {
      */
     this.getPermissionList();
   },
+  watch: {
+    "permissionListQuery.name": {
+      handler() {
+        // 设置查询条件改变状态
+        this.queryOptionsChanged = true;
+      },
+    },
+    "permissionListQuery.action": {
+      handler() {
+        // 设置查询条件改变状态
+        this.queryOptionsChanged = true;
+      },
+    },
+  },
   methods: {
+    handlePageSizeChange(currentPageSize) {
+      this.permissionListQuery.pageSize = currentPageSize;
+      this.queryOptionsChanged = true;
+      this.getPermissionList();
+    },
+    handleCurrentPageChange(currentPageNum) {
+      this.permissionListQuery.pageNum = currentPageNum;
+      this.getPermissionList();
+    },
     /**
      * 查询权限列表
      */
     getPermissionList() {
       this.permissionListLoading = true;
+      if (this.queryOptionsChanged) {
+        this.permissionListQuery.pageNum = 1;
+      }
       listPermission(this.permissionListQuery)
         .then((resp) => {
           if (resp && resp.body) {
+            const { pageSize, pageNum, total } = resp.body;
+            // 设置分页信息
+            const totalInt = Number.parseInt(total);
+            // 计算最多多少页
+            const maxPages =
+              Number.parseInt(totalInt / pageSize) +
+              (totalInt % pageSize !== 0 ? 1 : 0);
+            // 实际页码，超出最大页数则为最大页数页码
+            const actualPageNum = pageNum <= maxPages ? pageNum : maxPages;
+
+            this.pageInfo.pageSize = pageSize;
+            this.pageInfo.pageNum = this.queryOptionsChanged
+              ? 1
+              : actualPageNum;
+            this.pageInfo.total = Number.parseInt(total);
             this.permissionList = resp.body.data;
           }
         })
         .finally(() => {
           this.permissionListLoading = false;
+          this.queryOptionsChanged = false
         });
     },
     /**

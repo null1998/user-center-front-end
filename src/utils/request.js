@@ -44,7 +44,7 @@ service.interceptors.response.use(
     }
     if (res.head.code !== '0') {
       if (res.head.code === '50008') {
-          MessageBox.confirm('认证失效，请重新登录', '重新登录', {
+          MessageBox.confirm('已过期，请重新登录', '重新登录', {
           confirmButtonText: '重新登录',
           cancelButtonText: '取消',
           type: 'warning'
