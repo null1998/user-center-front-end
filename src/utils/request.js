@@ -5,7 +5,7 @@ import { getToken,setToken } from '@/utils/auth'
 
 // create an axios instance
 const service = axios.create({
-  baseURL: 'http://127.0.0.1:8091/user/center',
+  baseURL: 'http://127.0.0.1:8091',
   //baseURL: 'http://127.0.0.1:8083/user/center',
  // baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
   // withCredentials: true, // send cookies when cross-domain requests

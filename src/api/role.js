@@ -4,7 +4,7 @@ import request from '@/utils/request'
  */
 export function listRole(query) {
   return request({
-    url: '/role/list',
+    url: '/user/center/role/list',
     method: 'get',
     params: query
   })
@@ -14,7 +14,7 @@ export function listRole(query) {
  */
 export function save(dto) {
   return request({
-    url: '/role',
+    url: '/user/center/role',
     method: 'post',
     data: dto
   })
@@ -24,7 +24,7 @@ export function save(dto) {
  */
 export function update(dto) {
   return request({
-    url: '/role',
+    url: '/user/center/role',
     method: 'put',
     data: dto
   })
@@ -34,7 +34,7 @@ export function update(dto) {
  */
 export function deleteById(id) {
   return request({
-    url: '/role/'+id,
+    url: '/user/center/role/'+id,
     method: 'delete'
   })
 }

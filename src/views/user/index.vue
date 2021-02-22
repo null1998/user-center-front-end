@@ -30,15 +30,15 @@
       </el-table-column>
       <el-table-column label="用户名" width="250px" align="center">
         <template slot-scope="{ row }">
-          <span>{{ row.name }}</span>
+          <span>{{ row.username }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="性别" width="100px" align="center">
+      <el-table-column label="性别" width="50px" align="center">
         <template slot-scope="{ row }">
-          <span>{{ row.sex }}</span>
+          <span>{{ row.sex == 0 ? "男" : row.sex == 1 ? "女" : "" }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="生日" width="150px" align="center">
+      <el-table-column label="生日" width="100px" align="center">
         <template slot-scope="{ row }">
           <span>{{ row.birthday }}</span>
         </template>
@@ -55,16 +55,24 @@
       </el-table-column>
       <el-table-column label="单位" width="250px" align="center">
         <template slot-scope="{ row }">
-          <span>{{ row.unitId }}</span>
+          <span>{{ row.unitName }}</span>
         </template>
       </el-table-column>
       <el-table-column
         label="操作"
         align="center"
-        width="110px"
+        width="210px"
         class-name="small-padding fixed-width"
       >
         <template slot-scope="{ row, $index }">
+          <el-button
+            type="primary"
+            size="mini"
+            :loading="editBtnLoading"
+            @click="handleUpdate(row)"
+          >
+            编辑
+          </el-button>
           <el-button
             size="mini"
             type="danger"
@@ -92,16 +100,39 @@
         style="width: 400px; margin-left: 50px"
       >
         <el-form-item label="用户名" prop="name">
-          <el-input v-model="userData.name" />
+          <el-input
+            v-model="userData.username"
+            :disabled="this.dialogStatus === 'update'"
+          />
         </el-form-item>
         <el-form-item label="密码" prop="password">
-          <el-input v-model="userData.password" />
+          <el-input v-model="userData.password" show-password />
+        </el-form-item>
+        <el-form-item label="确认密码" prop="confirmPassword">
+          <el-input v-model="userData.confirmPassword" show-password />
         </el-form-item>
         <el-form-item label="性别" prop="sex">
-          <el-input v-model="userData.sex" />
+          <el-select
+            v-model="userData.sex"
+            class="filter-item"
+            placeholder="请选择"
+          >
+            <el-option
+              v-for="item in sex"
+              :key="item.key"
+              :label="item.value"
+              :value="item.key"
+            />
+          </el-select>
         </el-form-item>
         <el-form-item label="生日" prop="birthday">
-          <el-input v-model="userData.birthday" />
+          <el-date-picker
+            v-model="userData.birthday"
+            type="date"
+            placeholder="选择日期"
+            :picker-options="pickerOptions"
+          >
+          </el-date-picker>
         </el-form-item>
         <el-form-item label="电话" prop="tel">
           <el-input v-model="userData.tel" />
@@ -110,19 +141,118 @@
           <el-input v-model="userData.email" />
         </el-form-item>
         <el-form-item label="单位" prop="unitId">
-          <el-input v-model="userData.unitId" />
+          <el-select
+            v-model="userData.unitId"
+            clearable
+            filterable
+            class="filter-item"
+            placeholder="请选择"
+          >
+            <el-option
+              v-for="item in unitList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="角色" prop="role">
+          <el-drag-select
+            v-model="value"
+            style="width: 500px"
+            multiple
+            placeholder="请选择"
+          >
+            <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-drag-select>
+          <div style="margin-top:30px;">
+      <el-tag v-for="item of value" :key="item" style="margin-right:15px;">
+        {{ item }}
+      </el-tag>
+    </div>
         </el-form-item>
       </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false"> 取消 </el-button>
+        <el-button
+          type="primary"
+          @click="dialogStatus === 'create' ? createUser() : updateUser()"
+          :loading="dialogBtnLoading"
+        >
+          确认
+        </el-button>
+      </div>
     </el-dialog>
   </div>
 </template>
 
 <script>
+import { listAll as listAllUnit } from "@/api/basedata/unit";
+import { listAll as listAllUser, save, removeById, update } from "@/api/user";
 export default {
-  name: '',
-  data () {
+  name: "",
+  data() {
+    const checkPhoneNumberValidator = (rule, value, callback) => {
+      // if (this.dialogStatus == "update" && (!value || value === "")) {
+      //   callback();
+      // }
+      if (value === null || value === undefined || value === "") {
+        callback(new Error("联系电话不能为空"));
+      } else if (!/^[1]([3-9])[0-9]{9}$/g.test(value)) {
+        callback(new Error("联系电话格式不正确"));
+      } else {
+        callback();
+      }
+    };
+    var validatePass = (rule, value, callback) => {
+      // if (this.dialogStatus == "update" && (!value || value === "")) {
+      //   callback();
+      // }
+      if (!value || value === "") {
+        callback(new Error("请输入密码"));
+      } else {
+        if (this.userData.confirmPassword !== "") {
+          this.$refs.dataForm.validateField("confirmPassword");
+        }
+        callback();
+      }
+    };
+    var validatePass2 = (rule, value, callback) => {
+      // if (this.dialogStatus == "update" && (!value || value === "")) {
+      //   callback();
+      // }
+      if (!value || value === "") {
+        callback(new Error("请再次输入密码"));
+      } else if (value !== this.userData.password) {
+        callback(new Error("两次输入密码不一致!"));
+      } else {
+        callback();
+      }
+    };
     return {
-      tableKey:0,
+      value: ['Apple', 'Banana', 'Orange'],
+      options: [{
+        value: 'Apple',
+        label: 'Apple'
+      }, {
+        value: 'Banana',
+        label: 'Banana'
+      }, {
+        value: 'Orange',
+        label: 'Orange'
+      }, {
+        value: 'Pear',
+        label: 'Pear'
+      }, {
+        value: 'Strawberry',
+        label: 'Strawberry'
+      }],
+      tableKey: 0,
       /**
        * 对话框可见性
        */
@@ -131,9 +261,18 @@ export default {
        * 对话框状态
        */
       dialogStatus: "",
-      userData:{},
-      rules:{
-
+      userData: {},
+      rules: {
+        email: [
+          {
+            type: "email",
+            message: "请输入正确的邮箱地址",
+            trigger: ["blur", "change"],
+          },
+        ],
+        tel: [{ validator: checkPhoneNumberValidator, trigger: "change" }],
+        password: [{ validator: validatePass, trigger: "blur" }],
+        confirmPassword: [{ validator: validatePass2, trigger: "blur" }],
       },
       /**
        * 对话框标题
@@ -143,35 +282,153 @@ export default {
         update: "编辑",
       },
       userListLoading: false,
-      userList:[],
-      deleteBtnLoading:false
-    }
+      userList: [],
+      deleteBtnLoading: false,
+      sex: [
+        {
+          key: "0",
+          value: "男",
+        },
+        {
+          key: "1",
+          value: "女",
+        },
+      ],
+      pickerOptions: {
+        disabledDate(time) {
+          return time.getTime() > Date.now();
+        },
+      },
+      unitList: [],
+      dialogBtnLoading: false,
+      editBtnLoading: false,
+    };
   },
-  methods:{
+  created() {
+    this.getList();
+  },
+  methods: {
+    getList() {
+      listAllUser().then((resp) => {
+        if (resp && resp.body) {
+          this.userList = resp.body.data;
+        }
+      });
+    },
     /**
      * 新增
      */
     handleCreate() {
       this.dialogStatus = "create";
       this.dialogFormVisible = true;
+      listAllUnit().then((resp) => {
+        if (resp && resp.body) {
+          this.unitList = resp.body.data;
+        }
+      });
       this.$nextTick(() => {
         this.$refs["dataForm"].clearValidate();
       });
     },
     handleClose() {
-      this.getUserList();
+      this.getList();
       this.userData = {};
       this.dialogFormVisible = false;
     },
-    getUserList(){
-
+    handleDelete(row) {
+      this.$confirm("此操作将永久删除该用户, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
+          this.deleteBtnLoading = true;
+          removeById(row.id).then((resp) => {
+            if (resp) {
+              this.$notify({
+                title: "Success",
+                message: "删除成功",
+                type: "success",
+                duration: 2000,
+              });
+              this.getList();
+            }
+          });
+        })
+        .catch((e) => {
+          console.log(e);
+          this.$message({
+            type: "info",
+            message: "已取消删除",
+          });
+        })
+        .finally(() => {
+          this.deleteBtnLoading = false;
+        });
     },
-    handleDelete(){
-
-    }
-  }
-}
-
+    handleUpdate(row) {
+      this.editBtnLoading = true;
+      this.$nextTick(() => {
+        this.$refs["dataForm"].clearValidate();
+      });
+      listAllUnit().then((resp) => {
+        if (resp && resp.body) {
+          this.unitList = resp.body.data;
+        }
+      });
+      this.userData = row;
+      this.dialogStatus = "update";
+      this.dialogFormVisible = true;
+      this.editBtnLoading = false;
+    },
+    createUser() {
+      this.$refs["dataForm"].validate((valid) => {
+        if (valid) {
+          this.dialogBtnLoading = true;
+          save(this.userData)
+            .then((resp) => {
+              if (resp) {
+                this.$notify({
+                  title: "Success",
+                  message: "新增成功",
+                  type: "success",
+                  duration: 2000,
+                });
+                this.getList();
+                this.dialogFormVisible = false;
+              }
+            })
+            .finally(() => {
+              this.dialogBtnLoading = false;
+            });
+        }
+      });
+    },
+    updateUser() {
+      this.$refs["dataForm"].validate((valid) => {
+        if (valid) {
+          this.dialogBtnLoading = true;
+          update(this.userData)
+            .then((resp) => {
+              if (resp) {
+                this.$notify({
+                  title: "Success",
+                  message: "编辑成功",
+                  type: "success",
+                  duration: 2000,
+                });
+                this.getList();
+                this.dialogFormVisible = false;
+              }
+            })
+            .finally(() => {
+              this.dialogBtnLoading = false;
+            });
+        }
+      });
+    },
+  },
+};
 </script>
 <style>
 </style>

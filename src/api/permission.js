@@ -4,7 +4,7 @@ import request from '@/utils/request'
  */
 export function listPermission(query) {
   return request({
-    url: '/permission/list',
+    url: '/user/center/permission/list',
     method: 'get',
     params: query
   })
@@ -14,7 +14,7 @@ export function listPermission(query) {
  */
 export function save(dto) {
   return request({
-    url: '/permission',
+    url: '/user/center/permission',
     method: 'post',
     data: dto
   })
@@ -24,7 +24,7 @@ export function save(dto) {
  */
 export function update(dto) {
   return request({
-    url: '/permission',
+    url: '/user/center/permission',
     method: 'put',
     data: dto
   })
@@ -34,7 +34,7 @@ export function update(dto) {
  */
 export function deleteById(id) {
   return request({
-    url: '/permission/'+id,
+    url: '/user/center/permission/'+id,
     method: 'delete'
   })
 }

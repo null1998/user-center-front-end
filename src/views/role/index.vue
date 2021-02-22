@@ -405,8 +405,7 @@ export default {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
-      })
-        .then(() => {
+      }).then(() => {
           this.deleteBtnLoading = true;
           deleteById(row.id)
             .then((resp) => {

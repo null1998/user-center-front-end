@@ -178,6 +178,7 @@
         <el-button
           type="primary"
           @click="dialogStatus === 'create' ? createData() : updateData()"
+          :loading="dialogBtnLoading"
         >
           确认
         </el-button>
@@ -191,6 +192,7 @@ import { listPermission, save, update, deleteById } from "@/api/permission";
 export default {
   name: "",
   data() {
+  
     return {
       /**
        * 查询条件是否改变
@@ -237,6 +239,7 @@ export default {
       deleteBtnLoading: false,
       editBtnLoading: false,
       dialogBtnLoading: false,
+      addPermissionBtnLoading:false,
       /**
        * 对话框可见性
        */
