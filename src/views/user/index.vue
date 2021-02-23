@@ -156,25 +156,21 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="角色" prop="role">
-          <el-drag-select
-            v-model="value"
-            style="width: 500px"
+        <el-form-item label="角色" prop="role" v-if="dialogStatus === 'create'">
+          <el-select
+            v-model="value1"
             multiple
             placeholder="请选择"
+            v-if="dialogStatus === 'create'"
           >
             <el-option
-              v-for="item in options"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            />
-          </el-drag-select>
-          <div style="margin-top:30px;">
-      <el-tag v-for="item of value" :key="item" style="margin-right:15px;">
-        {{ item }}
-      </el-tag>
-    </div>
+              v-for="item in roleList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            >
+            </el-option>
+          </el-select>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -194,6 +190,7 @@
 <script>
 import { listAll as listAllUnit } from "@/api/basedata/unit";
 import { listAll as listAllUser, save, removeById, update } from "@/api/user";
+import { listRole } from "@/api/role";
 export default {
   name: "",
   data() {
@@ -235,23 +232,6 @@ export default {
       }
     };
     return {
-      value: ['Apple', 'Banana', 'Orange'],
-      options: [{
-        value: 'Apple',
-        label: 'Apple'
-      }, {
-        value: 'Banana',
-        label: 'Banana'
-      }, {
-        value: 'Orange',
-        label: 'Orange'
-      }, {
-        value: 'Pear',
-        label: 'Pear'
-      }, {
-        value: 'Strawberry',
-        label: 'Strawberry'
-      }],
       tableKey: 0,
       /**
        * 对话框可见性
@@ -302,6 +282,8 @@ export default {
       unitList: [],
       dialogBtnLoading: false,
       editBtnLoading: false,
+      roleList: [],
+      value1: [],
     };
   },
   created() {
@@ -324,6 +306,11 @@ export default {
       listAllUnit().then((resp) => {
         if (resp && resp.body) {
           this.unitList = resp.body.data;
+        }
+      });
+      listRole().then((resp) => {
+        if (resp && resp.body) {
+          this.roleList = resp.body.data;
         }
       });
       this.$nextTick(() => {
@@ -385,6 +372,7 @@ export default {
       this.$refs["dataForm"].validate((valid) => {
         if (valid) {
           this.dialogBtnLoading = true;
+          this.userData.roleIdList = this.value1
           save(this.userData)
             .then((resp) => {
               if (resp) {
