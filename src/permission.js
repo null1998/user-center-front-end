@@ -36,12 +36,8 @@ router.beforeEach(async (to, from, next) => {
           // generate accessible routes map based on roles
           const accessRoutes = await store.dispatch('permission/generateRoutes', roleNameList)
           // dynamically add accessible routes
-          console.log(accessRoutes)
-          console.log(router.options.routes)
           router.options.routes = accessRoutes
-          console.log(router.options.routes)
           router.addRoutes(accessRoutes)
-          console.log(router.options.routes)
           // hack method to ensure that addRoutes is complete
           // set the replace: true, so the navigation will not leave a history record
           next({ ...to, replace: true })

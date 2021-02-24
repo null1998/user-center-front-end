@@ -28,12 +28,12 @@
           <span>{{ scope.$index + 1 }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="用户名" width="250px" align="center">
+      <el-table-column label="用户名" width="200px" align="center">
         <template slot-scope="{ row }">
           <span>{{ row.username }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="性别" width="50px" align="center">
+      <el-table-column label="性别" width="100px" align="center">
         <template slot-scope="{ row }">
           <span>{{ row.sex == 0 ? "男" : row.sex == 1 ? "女" : "" }}</span>
         </template>
@@ -43,17 +43,17 @@
           <span>{{ row.birthday }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="电话" width="250px" align="center">
+      <el-table-column label="电话" width="200px" align="center">
         <template slot-scope="{ row }">
           <span>{{ row.tel }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="邮箱" width="250px" align="center">
+      <el-table-column label="邮箱" width="200px" align="center">
         <template slot-scope="{ row }">
           <span>{{ row.email }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="单位" width="250px" align="center">
+      <el-table-column label="单位" width="200px" align="center">
         <template slot-scope="{ row }">
           <span>{{ row.unitName }}</span>
         </template>
@@ -61,7 +61,7 @@
       <el-table-column
         label="操作"
         align="center"
-        width="210px"
+        width="200px"
         class-name="small-padding fixed-width"
       >
         <template slot-scope="{ row, $index }">

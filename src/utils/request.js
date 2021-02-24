@@ -33,16 +33,16 @@ service.interceptors.request.use(
 
 service.interceptors.response.use(
   response => {
-    // 获取请求体中的数据
-    const res = response.data
-    if (res.head.code !== '50008') {
-      // 如果发现http头中有新的token，更新本地token
-      var accessToken = response.headers['accesstoken']
-      if (accessToken) {
-        store.dispatch('user/refreshToken', accessToken)
+    if (response && response.data && response.data.head && response.data.body) {
+      // 获取请求体中的数据
+      const res = response.data
+      if (res.head.code !== '50008') {
+        // 如果发现http头中有新的token，更新本地token
+        var accessToken = response.headers['accesstoken']
+        if (accessToken) {
+          store.dispatch('user/refreshToken', accessToken)
+        }
       }
-    }
-    if (res.head.code !== '0') {
       if (res.head.code === '50008') {
           MessageBox.confirm('已过期，请重新登录', '重新登录', {
           confirmButtonText: '重新登录',
@@ -54,11 +54,11 @@ service.interceptors.response.use(
           })
         })
       }
+      return res  
     } else {
-      
-      
-      return res
+      this.$message.error("服务器出错")
     }
+      
   }
 )
 // response interceptor

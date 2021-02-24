@@ -46,7 +46,7 @@ const actions = {
           commit('SET_TOKEN', response.head.accessToken)
           setToken(response.head.accessToken)
         }
-        resolve()
+        resolve(response)
       }).catch(error => {
         reject(error)
       })
@@ -63,6 +63,10 @@ const actions = {
           return reject('获取用户信息失败，重新登录')
         }
         const { username, avatar, roleNameList } = body.data
+      
+        if (roleNameList.length === 0) {
+          roleNameList.push('tourist')
+        }
         commit('SET_ROLES', roleNameList)
         commit('SET_NAME', username)
         commit('SET_AVATAR', avatar)
