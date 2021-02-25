@@ -339,7 +339,31 @@ export const asyncRoutes = [
       }
     ]
   },
-
+  {
+    path: '/nontax/printing/plan',
+    component: Layout,
+    meta: { title: '印制计划管理', icon: 'form', roles: ['印制计划时间限制制定者','印制计划时间限制查看者','印制计划编辑者','印制计划审核员'] },
+    children: [
+      {
+        path: 'limit-date',
+        name: 'limit-date',
+        component: () => import('@/views/nontax/printing-plan/limit-date/index'),
+        meta: { title: '上报时间管理', icon: 'form', roles: ['印制计划时间限制制定者'] }
+      },
+      {
+        path: 'printing-plan',
+        name: 'printing-plan',
+        component: () => import('@/views/nontax/printing-plan/index'),
+        meta: { title: '本年度印制计划', icon: 'form', roles: ['印制计划时间限制查看者','印制计划编辑者','印制计划审核员'] }
+      },
+      {
+        path: 'history',
+        name: 'history',
+        component: () => import('@/views/nontax/printing-plan/history/index'),
+        meta: { title: '往年印制计划', icon: 'form', roles: ['印制计划时间限制查看者','印制计划编辑者','印制计划审核员'] }
+      }
+    ]
+  },
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }
 ]
