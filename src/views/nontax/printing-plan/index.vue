@@ -1,15 +1,18 @@
 <!-- 印制计划 -->
 <template>
-  <hyd-table
-    :tableKey="tableKey"
-    :tableData="printingPlanList"
-    :tableColumns="printingPlanTableColumons"
-    :loading="loading"
-    :handleRowClassName="handleRowClassName"
-    @handleSelectionChange="handleSelectionChange"
-    @handleEdit="handleEdit"
-    @handleDelete="handleDelete"
-  ></hyd-table>
+  <div>
+    <hyd-form :editCfg="editCfg" :editData="editData" inline size="medium"></hyd-form>
+    <hyd-table
+      :tableKey="tableKey"
+      :tableData="printingPlanList"
+      :tableColumns="printingPlanTableColumons"
+      :loading="loading"
+      :handleRowClassName="handleRowClassName"
+      @handleSelectionChange="handleSelectionChange"
+      @handleEdit="handleEdit"
+      @handleDelete="handleDelete"
+    ></hyd-table>
+  </div>
 </template>
 
 <script>
@@ -65,6 +68,28 @@ export default {
           label: "邮箱",
         },
       ],
+      editCfg: [
+        {
+          prop: "name",
+          label: "用户名",
+          type: "input",
+        },
+        {
+          prop: "status",
+          label: "状态",
+          type: "select",
+        },
+        {
+          prop: "zone",
+          label: "地区",
+          type: "select",
+        },
+      ],
+      editData: {
+        name: "",
+        status: "",
+        zone: "",
+      },
     };
   },
   methods: {
@@ -77,7 +102,7 @@ export default {
     handleDelete(index, row) {
       console.log(row);
     },
-    handleRowClassName({index, row}) {
+    handleRowClassName({ index, row }) {
       if (row.method === "GET") {
         return "success-row";
       }

@@ -3,6 +3,7 @@
   <div class="app-container">
     <!-- 搜索栏和新增按钮 -->
     <div class="filter-container">
+      <hyd-form :editCfg="editCfg" :editData="permissionListQuery" inline size="medium"></hyd-form>
       <el-input
         v-model="permissionListQuery.name"
         placeholder="资源名"
@@ -18,7 +19,7 @@
         style="width: 130px"
       >
         <el-option
-          v-for="item in actions"
+          v-for="item in permissionListQuery.actions"
           :key="item"
           :label="item"
           :value="item"
@@ -78,7 +79,7 @@
             placeholder="请选择"
           >
             <el-option
-              v-for="item in actions"
+              v-for="item in permissionListQuery.actions"
               :key="item"
               :label="item"
               :value="item"
@@ -134,6 +135,42 @@ export default {
   name: "",
   data() {
     return {
+      editCfg: [
+        {
+          prop: "name",
+          label: "资源名",
+          type: "input",
+          width:"200"
+        },
+        {
+          prop: "action",
+          label: "动作",
+          type: "select",
+          width:"130",
+          options: [
+            {
+              label:"新增",
+              value:"新增"
+            },
+            {
+              label:"删除",
+              value:"删除"
+            },
+            {
+              label:"编辑",
+              value:"编辑"
+            },
+            {
+              label:"查询",
+              value:"查询"
+            },
+            {
+              label:"审核",
+              value:"审核"
+            },
+          ]
+        }
+      ],
       permissionTableColumons: [
         {
           prop: "action",
@@ -170,10 +207,6 @@ export default {
       },
       tableKey: 0,
       /**
-       * 动作
-       */
-      actions: ["新增", "删除", "编辑", "查看", "审核"],
-      /**
        * http方法
        */
       httpMethod: ["POST", "DELETE", "PUT", "GET"],
@@ -185,6 +218,9 @@ export default {
         pageNum: 1,
         name: undefined,
         action: undefined,
+        
+        
+        
       },
       /**
        * 权限列表数据
@@ -282,6 +318,7 @@ export default {
      * 查询权限列表
      */
     getPermissionList() {
+      
       this.permissionListLoading = true;
       if (this.queryOptionsChanged) {
         this.permissionListQuery.pageNum = 1;
@@ -310,6 +347,7 @@ export default {
         .finally(() => {
           this.permissionListLoading = false;
           this.queryOptionsChanged = false;
+          
         });
     },
     /**
