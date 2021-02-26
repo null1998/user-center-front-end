@@ -43,74 +43,15 @@
         新增
       </el-button>
     </div>
-    <el-table
-      :key="tableKey"
-      v-loading="permissionListLoading"
-      :data="permissionList"
-      border
-      fit
-      highlight-current-row
-      style="width: 100%"
-    >
-      <el-table-column label="ID" prop="id" align="center" width="80">
-        <template slot-scope="scope">
-          <span>{{ scope.$index + 1 }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="动作" width="110px" align="center">
-        <template slot-scope="{ row }">
-          <el-tag :type="handleTagType(row.method)">{{ row.action }}</el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column label="资源名" width="200px" align="left">
-        <template slot-scope="{ row }">
-          <span>{{ row.name }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="方法" width="110px" align="center">
-        <template slot-scope="{ row }">
-          <el-tag :type="handleTagType(row.method)">{{ row.method }}</el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column label="路径" min-width="150px">
-        <template slot-scope="{ row }">
-          <span class="link-type" @click="handleUpdate(row)">{{
-            row.url
-          }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="备注" min-width="150px">
-        <template slot-scope="{ row }">
-          <span>{{ row.remark }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column
-        label="操作"
-        align="center"
-        width="230"
-        class-name="small-padding fixed-width"
-      >
-        <template slot-scope="{ row, $index }">
-          <el-button
-            type="primary"
-            size="mini"
-            :loading="editBtnLoading"
-            @click="handleUpdate(row)"
-          >
-            编辑
-          </el-button>
-          <el-button
-            size="mini"
-            type="danger"
-            :loading="deleteBtnLoading"
-            @click="handleDelete(row, $index)"
-          >
-            删除
-          </el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+    <hyd-table
+      :tableKey="tableKey"
+      :tableData="permissionList"
+      :tableColumns="permissionTableColumons"
+      :loading="permissionListLoading"
+      :handleRowClassName="handleRowClassName"
+      @handleEdit="handleUpdate"
+      @handleDelete="handleDelete"
+    ></hyd-table>
     <el-pagination
       layout="total, sizes, prev, pager, next, jumper"
       :current-page.sync="pageInfo.pageNum"
@@ -192,8 +133,29 @@ import { listPermission, save, update, deleteById } from "@/api/permission";
 export default {
   name: "",
   data() {
-  
     return {
+      permissionTableColumons: [
+        {
+          prop: "action",
+          label: "动作",
+        },
+        {
+          prop: "name",
+          label: "资源名",
+        },
+        {
+          prop: "method",
+          label: "method",
+        },
+        {
+          prop: "url",
+          label: "url",
+        },
+        {
+          prop: "remark",
+          label: "备注",
+        },
+      ],
       /**
        * 查询条件是否改变
        */
@@ -236,10 +198,8 @@ export default {
        * 按钮加载状态
        */
       searchBtnLoading: false,
-      deleteBtnLoading: false,
-      editBtnLoading: false,
       dialogBtnLoading: false,
-      addPermissionBtnLoading:false,
+      addPermissionBtnLoading: false,
       /**
        * 对话框可见性
        */
@@ -295,6 +255,20 @@ export default {
     },
   },
   methods: {
+    handleRowClassName({ index, row }) {
+      switch (row.method) {
+        case "POST":
+          return "success-row";
+        case "DELETE":
+          return "danger-row";
+        case "PUT":
+          return "warning-row";
+        case "GET":
+          return "info-row";
+        default:
+          return "info-row"
+      }
+    },
     handlePageSizeChange(currentPageSize) {
       this.permissionListQuery.pageSize = currentPageSize;
       this.queryOptionsChanged = true;
@@ -335,7 +309,7 @@ export default {
         })
         .finally(() => {
           this.permissionListLoading = false;
-          this.queryOptionsChanged = false
+          this.queryOptionsChanged = false;
         });
     },
     /**
@@ -359,27 +333,24 @@ export default {
     /**
      * 更新
      */
-    handleUpdate(row) {
-      this.editBtnLoading = true;
+    handleUpdate(index,row) {
       this.$nextTick(() => {
         this.$refs["dataForm"].clearValidate();
       });
       this.permissionData = row;
       this.dialogStatus = "update";
       this.dialogFormVisible = true;
-      this.editBtnLoading = false;
     },
     /**
      * 删除
      */
-    handleDelete(row) {
+    handleDelete(index,row) {
       this.$confirm("此操作将永久删除该权限, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
       })
         .then(() => {
-          this.deleteBtnLoading = true;
           deleteById(row.id)
             .then((resp) => {
               if (resp) {
@@ -392,9 +363,6 @@ export default {
                 this.getPermissionList();
               }
             })
-            .finally(() => {
-              this.deleteBtnLoading = false;
-            });
         })
         .catch(() => {
           this.$message({

@@ -5,6 +5,7 @@
     :tableData="printingPlanList"
     :tableColumns="printingPlanTableColumons"
     :loading="loading"
+    :handleRowClassName="handleRowClassName"
     @handleSelectionChange="handleSelectionChange"
     @handleEdit="handleEdit"
     @handleDelete="handleDelete"
@@ -49,7 +50,7 @@ export default {
         {
           prop: "unitName",
           label: "单位",
-          sortable: "true"
+          sortable: "true",
         },
         {
           prop: "person",
@@ -66,18 +67,30 @@ export default {
       ],
     };
   },
-  methods:{
-    handleSelectionChange(rows){
-      console.log(rows)
+  methods: {
+    handleSelectionChange(rows) {
+      console.log(rows);
     },
-    handleEdit(index,row){
-      console.log(row)
+    handleEdit(index, row) {
+      console.log(row);
     },
-    handleDelete(index,row){
-      console.log(row)
-    }
-  }
+    handleDelete(index, row) {
+      console.log(row);
+    },
+    handleRowClassName({index, row}) {
+      if (row.method === "GET") {
+        return "success-row";
+      }
+    },
+  },
 };
 </script>
 <style>
+.el-table .warning-row {
+  background: oldlace;
+}
+
+.el-table .success-row {
+  background: #f0f9eb;
+}
 </style>
