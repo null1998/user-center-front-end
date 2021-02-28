@@ -3,87 +3,22 @@
   <div class="app-container">
     <!-- 新增按钮 -->
     <div class="filter-container">
-      <el-button
-        class="filter-item"
-        style="margin-left: 10px"
-        type="primary"
-        icon="el-icon-edit"
-        @click="handleCreate"
-      >
-        新增
-      </el-button>
+      <hyd-form
+        @handleCreate='handleCreate'
+        :editCfg="editCfg"
+        inline
+        size="medium"
+      ></hyd-form>
     </div>
     <!-- 用户列表 -->
-    <el-table
-      :key="tableKey"
-      v-loading="userListLoading"
-      :data="userList"
-      border
-      fit
-      highlight-current-row
-      style="width: 100%"
-    >
-      <el-table-column label="ID" prop="id" align="center" width="80">
-        <template slot-scope="scope">
-          <span>{{ scope.$index + 1 }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="用户名" width="200px" align="center">
-        <template slot-scope="{ row }">
-          <span>{{ row.username }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="性别" width="100px" align="center">
-        <template slot-scope="{ row }">
-          <span>{{ row.sex == 0 ? "男" : row.sex == 1 ? "女" : "" }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="生日" width="100px" align="center">
-        <template slot-scope="{ row }">
-          <span>{{ row.birthday }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="电话" width="200px" align="center">
-        <template slot-scope="{ row }">
-          <span>{{ row.tel }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="邮箱" width="200px" align="center">
-        <template slot-scope="{ row }">
-          <span>{{ row.email }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="单位" width="200px" align="center">
-        <template slot-scope="{ row }">
-          <span>{{ row.unitName }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column
-        label="操作"
-        align="center"
-        width="200px"
-        class-name="small-padding fixed-width"
-      >
-        <template slot-scope="{ row, $index }">
-          <el-button
-            type="primary"
-            size="mini"
-            :loading="editBtnLoading"
-            @click="handleUpdate(row)"
-          >
-            编辑
-          </el-button>
-          <el-button
-            size="mini"
-            type="danger"
-            :loading="deleteBtnLoading"
-            @click="handleDelete(row, $index)"
-          >
-            删除
-          </el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+    <hyd-table
+      :tableKey="tableKey"
+      :tableData="userList"
+      :tableColumns="userTableColumons"
+      :loading="userListLoading"
+      @handleEdit="handleUpdate"
+      @handleDelete="handleDelete"
+    ></hyd-table>
     <!-- 对话框，用于新增，编辑角色 -->
     <el-dialog
       :title="textMap[dialogStatus]"
@@ -232,6 +167,40 @@ export default {
       }
     };
     return {
+      editCfg:[
+        {
+          type:'button',
+          name: '新增',
+          icon: 'el-icon-plus',
+          handleName: 'handleCreate'
+        }
+      ],
+      userTableColumons: [
+        {
+          prop: "username",
+          label: "用户名",
+        },
+        {
+          prop: "sex",
+          label: "性别",
+        },
+        {
+          prop: "email",
+          label: "邮箱",
+        },
+        {
+          prop: "tel",
+          label: "电话",
+        },
+        {
+          prop: "unitName",
+          label: "单位",
+        },
+        {
+          prop: "",
+          label: "",
+        },
+      ],
       tableKey: 0,
       /**
        * 对话框可见性
@@ -372,7 +341,7 @@ export default {
       this.$refs["dataForm"].validate((valid) => {
         if (valid) {
           this.dialogBtnLoading = true;
-          this.userData.roleIdList = this.value1
+          this.userData.roleIdList = this.value1;
           save(this.userData)
             .then((resp) => {
               if (resp) {

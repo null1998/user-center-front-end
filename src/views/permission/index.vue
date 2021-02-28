@@ -12,6 +12,7 @@
         size="medium"
       ></hyd-form>
     </div>
+    <!-- 主表单显示权限列表 -->
     <hyd-table
       :tableKey="tableKey"
       :tableData="permissionList"
@@ -21,6 +22,7 @@
       @handleEdit="handleUpdate"
       @handleDelete="handleDelete"
     ></hyd-table>
+    <!-- 分页 -->
     <el-pagination
       layout="total, sizes, prev, pager, next, jumper"
       :current-page.sync="pageInfo.pageNum"
@@ -32,6 +34,14 @@
       @current-change="handleCurrentPageChange"
     />
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
+      <!-- <hyd-form
+        ref="dataForm"
+        formRef="dataForm"
+        :editCfg="dialogEditCfg"
+        :editData="permissionData"
+        :editRules="rules"
+        size="medium"
+      ></hyd-form> -->
       <el-form
         ref="dataForm"
         :rules="rules"
@@ -103,6 +113,80 @@ export default {
   name: "",
   data() {
     return {
+      dialogEditCfg:[
+        {
+          prop: "action",
+          label: "动作",
+          type: "select",
+          placeholder: "",
+          width:"200px",
+          options: [
+            {
+              label: "新增",
+              value: "新增",
+            },
+            {
+              label: "删除",
+              value: "删除",
+            },
+            {
+              label: "编辑",
+              value: "编辑",
+            },
+            {
+              label: "查询",
+              value: "查询",
+            },
+            {
+              label: "审核",
+              value: "审核",
+            },
+          ],
+        },
+        {
+          prop: "name",
+          label: "资源名",
+          type: "input",
+          width:"200px"
+        },
+        {
+          prop: "method",
+          label: "方法",
+          type: "select",
+          placeholder: "",
+          width:"200px",
+          options: [
+            {
+              label: "POST",
+              value: "POST",
+            },
+            {
+              label: "DELETE",
+              value: "DELETE",
+            },
+            {
+              label: "PUT",
+              value: "PUT",
+            },
+            {
+              label: "GET",
+              value: "GET",
+            },
+          ]
+        },
+        {
+          prop: "url",
+          label: "路径",
+          type: "input",
+          width:"200px"
+        },
+        {
+          prop: "remark",
+          label: "备注",
+          type: "textarea",
+          width:"200px"
+        },
+      ],
       editCfg: [
         {
           prop: "name",

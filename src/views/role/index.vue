@@ -3,94 +3,22 @@
   <div class="app-container">
     <!-- 搜索栏和新增按钮 -->
     <div class="filter-container">
-      <el-input
-        v-model="roleListQuery.name"
-        placeholder="角色名"
-        style="width: 200px"
-        class="filter-item"
-        @keyup.enter.native="handleFilter"
-      />
-      <el-select
-        v-model="roleListQuery.type"
-        placeholder="角色类型"
-        clearable
-        class="filter-item"
-        style="width: 130px"
-      >
-        <el-option
-          v-for="item in roleTypes"
-          :key="item"
-          :label="item"
-          :value="item"
-        />
-      </el-select>
-      <el-button
-        class="filter-item"
-        type="primary"
-        icon="el-icon-search"
-        :loading="searchBtnLoading"
-        @click="handleFilter"
-      >
-        搜索
-      </el-button>
-      <el-button
-        class="filter-item"
-        style="margin-left: 10px"
-        type="primary"
-        icon="el-icon-edit"
-        @click="handleCreate"
-      >
-        新增
-      </el-button>
+      <hyd-form
+        @handleFilter='handleFilter'
+        @handleCreate='handleCreate'
+        :editCfg="editCfg"
+        :editData="roleListQuery"
+        inline
+        size="medium"
+      ></hyd-form>
     </div>
-    <!-- 角色列表 -->
-    <el-table
-      :key="tableKey"
-      v-loading="roleListLoading"
-      :data="roleList"
-      border
-      fit
-      highlight-current-row
-      style="width: 100%"
-    >
-      <el-table-column label="ID" prop="id" align="center" width="80">
-        <template slot-scope="scope">
-          <span>{{ scope.$index + 1 }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="角色名" width="250px" align="center">
-        <template slot-scope="{ row }">
-          <span>{{ row.name }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="角色类型" width="150px" align="center">
-        <template slot-scope="{ row }">
-          <span>{{ row.type }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="备注" min-width="150px" align="center">
-        <template slot-scope="{ row }">
-          <span>{{ row.remark }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column
-        label="操作"
-        align="center"
-        width="230"
-        class-name="small-padding fixed-width"
-      >
-        <template slot-scope="{ row, $index }">
-          <el-button
-            size="mini"
-            type="danger"
-            :loading="deleteBtnLoading"
-            @click="handleDelete(row, $index)"
-          >
-            删除
-          </el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+    <hyd-table
+      :tableKey="tableKey"
+      :tableData="roleList"
+      :tableColumns="roleTableColumons"
+      :loading="roleListLoading"
+      @handleDelete="handleDelete"
+    ></hyd-table>
     <!-- 对话框，用于新增，编辑角色 -->
     <el-dialog
       :title="textMap[dialogStatus]"
@@ -169,39 +97,15 @@
         搜索
       </el-button>
     </div>
-      <el-table
-        v-if="roleData.type == '基础角色'"
-        :key="permissionTableKey"
-        v-loading="permissionListLoading"
-        :data="permissionList"
-        border
-        fit
-        highlight-current-row
-        @selection-change="handleTableSelect"
-        style="width: 100%"
-      >
-        <el-table-column type="selection" width="55"> </el-table-column>
-        <el-table-column label="ID" prop="id" align="center" width="80">
-          <template slot-scope="scope">
-            <span>{{ scope.$index + 1 }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="动作" width="110px" align="center">
-          <template slot-scope="{ row }">
-            <el-tag :type="handleTagType(row.method)">{{ row.action }}</el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column label="资源名" width="200px" align="left">
-          <template slot-scope="{ row }">
-            <span>{{ row.name }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="备注" min-width="150px">
-          <template slot-scope="{ row }">
-            <span>{{ row.remark }}</span>
-          </template>
-        </el-table-column>
-      </el-table>
+    <!-- 创建基础角色 -->
+      <hyd-table
+      :show="roleData.type == '基础角色'"
+      :loading="permissionListLoading"
+      :tableKey="permissionTableKey"
+      :tableData="permissionList"
+      :tableColumns="permissionTableColumons"
+      @handleSelectionChange="handleTableSelect"
+    ></hyd-table>
       <el-pagination
       v-if="roleData.type == '基础角色'"
       layout="total, sizes, prev, pager, next, jumper"
@@ -214,39 +118,14 @@
       @current-change="handleCurrentPageChange"
     />
       <!-- 选择基础角色，创建高级角色 -->
-      <el-table
-        v-if="roleData.type === '高级角色'"
-        :key="tableKey"
-        v-loading="roleListLoading"
-        :data="roleList"
-        border
-        fit
-        highlight-current-row
-        style="width: 100%"
-        @selection-change="handleTableSelect"
-      >
-        <el-table-column type="selection" width="55"> </el-table-column>
-        <el-table-column label="ID" prop="id" align="center" width="80">
-          <template slot-scope="scope">
-            <span>{{ scope.$index + 1 }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="角色名" width="200px" align="center">
-          <template slot-scope="{ row }">
-            <span>{{ row.name }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="角色类型" width="110px" align="center">
-          <template slot-scope="{ row }">
-            <span>{{ row.type }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="备注" min-width="150px">
-          <template slot-scope="{ row }">
-            <span>{{ row.remark }}</span>
-          </template>
-        </el-table-column>
-      </el-table>
+      <hyd-table
+      :show="roleData.type == '高级角色'"
+      :loading="roleListLoading"
+      :tableKey="tableKey"
+      :tableData="roleList"
+      :tableColumns="permissionTableColumons"
+      @handleSelectionChange="handleTableSelect"
+    ></hyd-table>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="handleEdit"> 确认 </el-button>
       </div>
@@ -263,6 +142,73 @@ export default {
   name: "",
   data() {
     return {
+      editCfg: [
+        {
+          prop: "name",
+          label: "角色名",
+          type: "input",
+          width: "200px",
+        },
+        {
+          prop: "type",
+          label: "角色类型",
+          type: "select",
+          width: "130px",
+          placeholder: "",
+          options: [
+            {
+              label: "基础角色",
+              value: "基础角色",
+            },
+            {
+              label: "高级角色",
+              value: "高级角色",
+            },
+          ],
+        },
+        {
+          type:'button',
+          name: '搜索',
+          icon: 'el-icon-search',
+          handleName: 'handleFilter'
+        },
+        {
+          type:'button',
+          name: '新增',
+          icon: 'el-icon-plus',
+          handleName: 'handleCreate'
+        }],
+      permissionTableColumons:[
+        {
+          prop: "name",
+          label: "资源名",
+          sortable: true,
+        },
+        {
+          prop: "action",
+          label: "动作",
+        },
+        {
+          prop: "remark",
+          label: "备注",
+        },
+      ],
+      roleTableColumons:[
+        {
+          prop:"name",
+          label:"角色名",
+          sortable:true
+        },
+        {
+          prop:"type",
+          label:"角色类型",
+          sortable:true
+        },
+        {
+          prop:"remark",
+          label:"备注"
+        }
+      ],
       tableKey: 0,
       permissionTableKey: 0,
       roleTypes: ["基础角色", "高级角色"],
@@ -561,6 +507,9 @@ export default {
       this.permissionListQuery.pageNum = currentPageNum;
       this.getPermissionList();
     },
+    handleRowClassName(){
+
+    }
   },
 };
 </script>

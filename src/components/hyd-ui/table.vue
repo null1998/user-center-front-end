@@ -1,6 +1,7 @@
 <!-- 通用table，动态创建列 -->
 <template>
   <el-table
+    v-if="show"
     :key="tableKey"
     :data="tableData"
     v-loading="loading"
@@ -61,6 +62,7 @@ export default {
       },
     },
     loading: { type: Boolean, required: true, default: false },
+    show: { type: Boolean, required: false, default: true },
     // 自定义列名
     tableColumns: {
       type: Array,
@@ -69,7 +71,14 @@ export default {
         return [];
       },
     },
-    handleRowClassName: {type: Function}
+    handleRowClassName: {type: Function,default:function({row, rowIndex}) {
+      if (rowIndex%2 === 1) {
+          return 'white-row';
+        } else if (rowIndex%2 === 0) {
+          return 'gray-row';
+        }
+        return '';
+    }}
   },
   data() {
     return {
@@ -134,7 +143,12 @@ export default {
 .el-table .danger-row {
   background: rgb(252, 238, 236);
 }
-
+.el-table .white-row {
+  background: rgb(248, 245, 245);
+}
+.el-table .gray-row {
+  background: rgb(236, 236, 235);
+}
 .el-table .success-row {
   background: #e8f3f7fa;
 }
