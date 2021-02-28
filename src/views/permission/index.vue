@@ -3,46 +3,14 @@
   <div class="app-container">
     <!-- 搜索栏和新增按钮 -->
     <div class="filter-container">
-      <hyd-form :editCfg="editCfg" :editData="permissionListQuery" inline size="medium"></hyd-form>
-      <el-input
-        v-model="permissionListQuery.name"
-        placeholder="资源名"
-        style="width: 200px"
-        class="filter-item"
-        @keyup.enter.native="handleFilter"
-      />
-      <el-select
-        v-model="permissionListQuery.action"
-        placeholder="动作"
-        clearable
-        class="filter-item"
-        style="width: 130px"
-      >
-        <el-option
-          v-for="item in permissionListQuery.actions"
-          :key="item"
-          :label="item"
-          :value="item"
-        />
-      </el-select>
-      <el-button
-        class="filter-item"
-        type="primary"
-        icon="el-icon-search"
-        :loading="searchBtnLoading"
-        @click="handleFilter"
-      >
-        搜索
-      </el-button>
-      <el-button
-        class="filter-item"
-        style="margin-left: 10px"
-        type="primary"
-        icon="el-icon-edit"
-        @click="handleCreate"
-      >
-        新增
-      </el-button>
+      <hyd-form
+        @handleFilter='handleFilter'
+        @handleCreate='handleCreate'
+        :editCfg="editCfg"
+        :editData="permissionListQuery"
+        inline
+        size="medium"
+      ></hyd-form>
     </div>
     <hyd-table
       :tableKey="tableKey"
@@ -140,45 +108,63 @@ export default {
           prop: "name",
           label: "资源名",
           type: "input",
-          width:"200"
+          width: "200px",
         },
         {
           prop: "action",
           label: "动作",
           type: "select",
-          width:"130",
+          width: "130px",
+          placeholder: "",
           options: [
             {
-              label:"新增",
-              value:"新增"
+              label: "新增",
+              value: "新增",
             },
             {
-              label:"删除",
-              value:"删除"
+              label: "删除",
+              value: "删除",
             },
             {
-              label:"编辑",
-              value:"编辑"
+              label: "编辑",
+              value: "编辑",
             },
             {
-              label:"查询",
-              value:"查询"
+              label: "查询",
+              value: "查询",
             },
             {
-              label:"审核",
-              value:"审核"
+              label: "审核",
+              value: "审核",
             },
-          ]
+          ],
+        },
+        {
+          type:'button',
+          name: '搜索',
+          icon: 'el-icon-search',
+          handleName: 'handleFilter'
+        },
+        {
+          type:'button',
+          name: '新增',
+          icon: 'el-icon-plus',
+          handleName: 'handleCreate'
         }
       ],
       permissionTableColumons: [
+        {
+          prop: "name",
+          label: "资源名",
+          sortable: true,
+        },
         {
           prop: "action",
           label: "动作",
         },
         {
-          prop: "name",
-          label: "资源名",
+          prop: "remark",
+          label: "备注",
         },
         {
           prop: "method",
@@ -187,10 +173,7 @@ export default {
         {
           prop: "url",
           label: "url",
-        },
-        {
-          prop: "remark",
-          label: "备注",
+          sortable: false,
         },
       ],
       /**
@@ -218,9 +201,6 @@ export default {
         pageNum: 1,
         name: undefined,
         action: undefined,
-        
-        
-        
       },
       /**
        * 权限列表数据
@@ -302,7 +282,7 @@ export default {
         case "GET":
           return "info-row";
         default:
-          return "info-row"
+          return "info-row";
       }
     },
     handlePageSizeChange(currentPageSize) {
@@ -318,7 +298,6 @@ export default {
      * 查询权限列表
      */
     getPermissionList() {
-      
       this.permissionListLoading = true;
       if (this.queryOptionsChanged) {
         this.permissionListQuery.pageNum = 1;
@@ -347,13 +326,13 @@ export default {
         .finally(() => {
           this.permissionListLoading = false;
           this.queryOptionsChanged = false;
-          
         });
     },
     /**
      * 查询
      */
     handleFilter() {
+      debugger
       this.searchBtnLoading = true;
       this.getPermissionList();
       this.searchBtnLoading = false;
@@ -371,7 +350,7 @@ export default {
     /**
      * 更新
      */
-    handleUpdate(index,row) {
+    handleUpdate(index, row) {
       this.$nextTick(() => {
         this.$refs["dataForm"].clearValidate();
       });
@@ -382,25 +361,24 @@ export default {
     /**
      * 删除
      */
-    handleDelete(index,row) {
+    handleDelete(index, row) {
       this.$confirm("此操作将永久删除该权限, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
       })
         .then(() => {
-          deleteById(row.id)
-            .then((resp) => {
-              if (resp) {
-                this.$notify({
-                  title: "Success",
-                  message: "删除成功",
-                  type: "success",
-                  duration: 2000,
-                });
-                this.getPermissionList();
-              }
-            })
+          deleteById(row.id).then((resp) => {
+            if (resp) {
+              this.$notify({
+                title: "Success",
+                message: "删除成功",
+                type: "success",
+                duration: 2000,
+              });
+              this.getPermissionList();
+            }
+          });
         })
         .catch(() => {
           this.$message({
@@ -474,4 +452,18 @@ export default {
 };
 </script>
 <style>
+/*设置xx条/页的框的颜色*/
+.el-select .el-input.is-focus .el-input__inner,
+.el-select .el-input__inner:focus,
+.el-pagination__sizes .el-input .el-input__inner:hover,
+.el-input .is-focus .el-input__inner,
+.el-input .el-input__inner:focus {
+  border-color: #18ab8f;
+}
+/*设置当前页码的样式，及鼠标移上其他页码时的样式,以及左右箭头鼠标移上的样式*/
+.el-pager li.active,
+.el-pager li:hover,
+.el-pagination button:hover {
+  color: #18ab8f;
+}
 </style>

@@ -1,7 +1,7 @@
 <!-- 通用表单 -->
 <template>
   <el-form
-    ref="editForm"
+    ref="formRef"
     :inline="inline"
     :size="size"
     :label-width="labelWidth"
@@ -35,7 +35,9 @@
       <el-select
         v-if="item.type === 'select'"
         v-model="editData[item.prop]"
-        :placeholder="item.label"
+        filterable
+        clearable
+        :placeholder="item.placeholder"
         @change="item.change && item.change(editData[item.prop])"
         :disabled="item.disabled && item.disabled(editData)"
       >
@@ -117,6 +119,14 @@
         @change="item.change && item.change(editData[item.prop])"
         :disabled="item.disabled && item.disabled(editData)"
       ></el-switch>
+      <el-button
+        v-if="item.type === 'button'"
+        :size="item.size"
+        :icon="item.icon"
+        :type="item.buttonType"
+        @click="handleButton(item.handleName)"
+        >{{ item.name }}</el-button
+      >
     </el-form-item>
   </el-form>
 </template>
@@ -125,7 +135,8 @@
 export default {
   name: "",
   props: {
-    inline:{type:Boolean,default:false},
+    formRef:{type: String},
+    inline: { type: Boolean, default: false },
     labelWidth: {
       type: String,
       default: "100px",
@@ -149,6 +160,11 @@ export default {
   },
   data() {
     return {};
+  },
+  methods: {
+    handleButton(handleName) {
+      this.$emit(handleName);
+    },
   },
 };
 </script>

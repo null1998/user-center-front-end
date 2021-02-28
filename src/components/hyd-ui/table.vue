@@ -21,7 +21,7 @@
       :key="index"
       :prop="item.prop"
       :label="item.label"
-      :sortable="item.sortable ? item.sortable : false"
+      :sortable="item.sortable"
     ></af-table-column>
 
     <el-table-column label="操作" fixed="right" width="200" v-if="edit || del">
@@ -137,5 +137,9 @@ export default {
 
 .el-table .success-row {
   background: #e8f3f7fa;
+}
+.el-button:hover,
+.el-button:focus{
+  border-color: #18ab8f;
 }
 </style>

@@ -53,7 +53,7 @@ export default {
         {
           prop: "unitName",
           label: "单位",
-          sortable: "true",
+          sortable: "false",
         },
         {
           prop: "person",
