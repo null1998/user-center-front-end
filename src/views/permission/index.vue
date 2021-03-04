@@ -57,7 +57,7 @@
             placeholder="请选择"
           >
             <el-option
-              v-for="item in permissionListQuery.actions"
+              v-for="item in actions"
               :key="item"
               :label="item"
               :value="item"
@@ -277,6 +277,7 @@ export default {
        * http方法
        */
       httpMethod: ["POST", "DELETE", "PUT", "GET"],
+      actions:["新增","删除","编辑","查询","审核"],
       /**
        * 权限列表搜素条件
        */
@@ -416,7 +417,6 @@ export default {
      * 查询
      */
     handleFilter() {
-      debugger
       this.searchBtnLoading = true;
       this.getPermissionList();
       this.searchBtnLoading = false;

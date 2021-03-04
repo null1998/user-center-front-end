@@ -34,7 +34,7 @@
         label-width="70px"
         style="width: 400px; margin-left: 50px"
       >
-        <el-form-item label="用户名" prop="name">
+        <el-form-item label="用户名" prop="username">
           <el-input
             v-model="userData.username"
             :disabled="this.dialogStatus === 'update'"
@@ -212,6 +212,7 @@ export default {
       dialogStatus: "",
       userData: {},
       rules: {
+        username:[{required:true,message:'用户名不能为空',trigger: "blur"}],
         email: [
           {
             type: "email",
@@ -291,7 +292,7 @@ export default {
       this.userData = {};
       this.dialogFormVisible = false;
     },
-    handleDelete(row) {
+    handleDelete(index,row) {
       this.$confirm("此操作将永久删除该用户, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",

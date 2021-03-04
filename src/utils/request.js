@@ -43,8 +43,8 @@ service.interceptors.response.use(
           store.dispatch('user/refreshToken', accessToken)
         }
       }
-      if (res.head.code === '50008') {
-          MessageBox.confirm('已过期，请重新登录', '重新登录', {
+      if (res.head.code === '50008' || res.head.code === '50009') {
+          MessageBox.confirm('认证失效', '重新登录', {
           confirmButtonText: '重新登录',
           cancelButtonText: '取消',
           type: 'warning'
@@ -53,10 +53,14 @@ service.interceptors.response.use(
             location.reload()
           })
         })
+      } else if (res.head.code === '50000') {
+        alert('没有权限')
+        return null
       }
       return res  
     } else {
       this.$message.error("服务器出错")
+      return null
     }
       
   }
