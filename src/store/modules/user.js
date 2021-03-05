@@ -8,7 +8,8 @@ const getDefaultState = () => {
     name: '',
     avatar: '',
     roles: [],
-    id: ''
+    id: '',
+    unitId: ''
   }
 }
 
@@ -32,6 +33,9 @@ const mutations = {
   },
   SET_ID: (state, id) => {
     state.id = id
+  },
+  SET_UNIT_ID: (state, unitId) => {
+    state.unitId = unitId
   }
 }
 
@@ -62,7 +66,7 @@ const actions = {
         if (!body) {
           return reject('获取用户信息失败，重新登录')
         }
-        const { username, avatar, roleNameList } = body.data
+        const { username, avatar, roleNameList,unitId } = body.data
       
         if (roleNameList.length === 0) {
           roleNameList.push('tourist')
@@ -70,6 +74,7 @@ const actions = {
         commit('SET_ROLES', roleNameList)
         commit('SET_NAME', username)
         commit('SET_AVATAR', avatar)
+        commit('SET_UNIT_ID',unitId)
         resolve(body.data)
       }).catch(error => {
         reject(error)

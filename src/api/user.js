@@ -17,7 +17,7 @@ export function getInfo() {
 
 export function logout(token) {
   return request({
-    url: '/user/center/user/logout',
+    url: '/user/op/logout',
     method: 'delete',
     params: { token }
   })

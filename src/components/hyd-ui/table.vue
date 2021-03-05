@@ -133,24 +133,27 @@ export default {
 .el-table th {
   display: table-cell !important;
 }
+.el-table {
+  border-radius: 4px
+}
 .el-table .warning-row {
-  background: oldlace;
+  background: #e6a23c44;
 }
 
 .el-table .info-row {
-  background: #f0f9eb;
+  background: #90939946;
 }
 .el-table .danger-row {
-  background: rgb(252, 238, 236);
+  background: #f56c6c42;
 }
 .el-table .white-row {
-  background: rgb(248, 245, 245);
+  background: #FFFFFF;
 }
 .el-table .gray-row {
   background: rgb(236, 236, 235);
 }
 .el-table .success-row {
-  background: #e8f3f7fa;
+  background: #67c23a7c;
 }
 .el-button:hover,
 .el-button:focus{

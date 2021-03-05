@@ -1,17 +1,7 @@
-<!-- 印制计划 -->
+<!-- 本级印制计划维护 -->
 <template>
   <div>
-    <hyd-form :editCfg="editCfg" :editData="editData" inline size="medium"></hyd-form>
-    <hyd-table
-      :tableKey="tableKey"
-      :tableData="printingPlanList"
-      :tableColumns="printingPlanTableColumons"
-      :loading="loading"
-      :handleRowClassName="handleRowClassName"
-      @handleSelectionChange="handleSelectionChange"
-      @handleEdit="handleEdit"
-      @handleDelete="handleDelete"
-    ></hyd-table>
+    <hyd-billboard sign="未到上报时间"></hyd-billboard>
   </div>
 </template>
 
@@ -20,25 +10,9 @@ export default {
   name: "",
   data() {
     return {
+      isProvinceUnit: true,
+      limitDate: undefined,
       tableKey: 0,
-      printingPlanList: [
-        {
-          orderNumber: "10000000000",
-          year: "1",
-          unitName: "1",
-          person: "1",
-          tel: "1",
-          email: "100000000",
-        },
-        {
-          orderNumber: "1",
-          year: "1000000000",
-          unitName: "1",
-          person: "1",
-          tel: "100000000",
-          email: "1",
-        },
-      ],
       loading: false,
       printingPlanTableColumons: [
         {
@@ -68,31 +42,11 @@ export default {
           label: "邮箱",
         },
       ],
-      editCfg: [
-        {
-          prop: "name",
-          label: "用户名",
-          type: "input",
-        },
-        {
-          prop: "status",
-          label: "状态",
-          type: "select",
-        },
-        {
-          prop: "zone",
-          label: "地区",
-          type: "select",
-        },
-      ],
-      editData: {
-        name: "",
-        status: "",
-        zone: "",
-      },
     };
   },
+  created() {},
   methods: {
+    setLimitDate() {},
     handleSelectionChange(rows) {
       console.log(rows);
     },
@@ -111,11 +65,5 @@ export default {
 };
 </script>
 <style>
-.el-table .warning-row {
-  background: oldlace;
-}
 
-.el-table .success-row {
-  background: #f0f9eb;
-}
 </style>

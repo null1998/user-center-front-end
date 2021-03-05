@@ -342,25 +342,25 @@ export const asyncRoutes = [
   {
     path: '/nontax/printing/plan',
     component: Layout,
-    meta: { title: '印制计划管理', icon: 'form', roles: ['印制计划时间限制制定者','印制计划时间限制查看者','印制计划编辑者','印制计划审核员'] },
+    meta: { title: '印制计划', icon: 'el-icon-s-promotion',roles: ['财政票据系统路由角色']},
     children: [
       {
         path: 'limit-date',
         name: 'limit-date',
         component: () => import('@/views/nontax/printing-plan/limit-date/index'),
-        meta: { title: '上报时间管理', icon: 'form', roles: ['印制计划时间限制制定者'] }
+        meta: { title: '印制计划上报设置', icon: 'el-icon-s-promotion', roles: ['印制计划时间限制-查询与编辑'] }
       },
       {
         path: 'printing-plan',
         name: 'printing-plan',
         component: () => import('@/views/nontax/printing-plan/index'),
-        meta: { title: '本年度印制计划', icon: 'form', roles: ['印制计划时间限制查看者','印制计划编辑者','印制计划审核员'] }
+        meta: { title: '本级印制计划维护', icon: 'el-icon-s-promotion', roles: ['财政票据系统路由角色'] }
       },
       {
-        path: 'history',
-        name: 'history',
-        component: () => import('@/views/nontax/printing-plan/history/index'),
-        meta: { title: '往年印制计划', icon: 'form', roles: ['印制计划时间限制查看者','印制计划编辑者','印制计划审核员'] }
+        path: 'subordinate-review',
+        name: 'subordinate-review',
+        component: () => import('@/views/nontax/printing-plan/subordinate-review/index'),
+        meta: { title: '下级印制计划审核', icon: 'el-icon-s-promotion', roles: ['财政票据系统路由角色'] }
       }
     ]
   },
