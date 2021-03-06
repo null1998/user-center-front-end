@@ -72,12 +72,13 @@ export default {
       },
     },
     handleRowClassName: {type: Function,default:function({row, rowIndex}) {
-      if (rowIndex%2 === 1) {
-          return 'white-row';
-        } else if (rowIndex%2 === 0) {
-          return 'gray-row';
-        }
-        return '';
+      return 'white-row'
+      // if (rowIndex%2 === 1) {
+      //     return 'white-row';
+      //   } else if (rowIndex%2 === 0) {
+      //     return 'gray-row';
+      //   }
+      //   return '';
     }}
   },
   data() {
@@ -150,7 +151,7 @@ export default {
   background: #FFFFFF;
 }
 .el-table .gray-row {
-  background: rgb(236, 236, 235);
+  background: rgb(240, 240, 238);
 }
 .el-table .success-row {
   background: #67c23a7c;

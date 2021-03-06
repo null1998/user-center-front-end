@@ -49,7 +49,7 @@
 </template>
 
 <script>
-import {save} from '@/api/nontax/printing-plan/limit-date'
+import { save, update } from "@/api/nontax/printing-plan/limit-date";
 export default {
   name: "",
   props: {
@@ -57,14 +57,14 @@ export default {
     close: { type: Function, required: true },
     title: { type: String, default: "" },
     type: { type: String },
-    dataId:{type:String}
+    dataId: { type: String },
   },
   data() {
     return {
       data: {
-        year:undefined,
-        dateRange:[],
-        unitId: undefined
+        year: undefined,
+        dateRange: [],
+        unitId: undefined,
       },
       rules: {
         year: [{ required: true, message: "请选择年度", trigger: "change" }],
@@ -73,35 +73,56 @@ export default {
         ],
       },
       currentYear: undefined,
-      
     };
   },
   created() {
     this.currentYear = new Date().getFullYear();
-    this.data.unitId = this.$store.getters.unitId
-
+    this.data.unitId = this.$store.getters.unitId;
   },
   methods: {
     handle() {
       this.$refs["myform"].validate((valid) => {
         if (valid) {
-          var dto = {}
-          dto.year = this.data.year
-          dto.startDate = this.data.dateRange[0]
-          dto.endDate = this.data.dateRange[1]
-          dto.unitId = this.data.unitId
+          var dto = {};
+          dto.year = this.data.year;
+          dto.startDate = this.data.dateRange[0];
+          dto.endDate = this.data.dateRange[1];
+          dto.unitId = this.data.unitId;
           if (this.type === "create") {
-            save(dto).then(res=>{
-              if (res) {
-                debugger
+            save(dto).then((res) => {
+              if (this.notify(res)) {
+                this.close();
               }
-            })
+            });
           } else if (this.type === "update") {
-            dto.id = this.dataId
+            dto.id = this.dataId;
+            update(dto).then((res) => {
+              if (this.notify(res)) {
+                this.close();
+              }
+            });
           }
-          this.close();
         }
       });
+    },
+    notify(res) {
+      if (res && res.body && res.body.data) {
+        this.$notify({
+          title: "success",
+          message: "操作成功",
+          type: "success",
+          duration: 2000,
+        });
+        return true;
+      } else {
+        this.$notify({
+          title: "error",
+          message: "操作失败",
+          type: "error",
+          duration: 2000,
+        });
+        return false;
+      }
     },
   },
 };

@@ -1,54 +1,52 @@
 <!-- 本级印制计划维护 -->
 <template>
-  <div>
+  <div class="app-container">
+    <div class="filter-container">
+      <!-- 新增按钮 -->
+      <hyd-form
+        @handleCreate="handleCreate"
+        :editCfg="editCfg"
+        inline
+        size="medium"
+      />
+    </div>
+    <printing-plan-dialog
+      :visible="dialogVisible"
+      :close="dialogClose"
+      :title="dialogTitle"
+    ></printing-plan-dialog>
     <hyd-billboard sign="未到上报时间"></hyd-billboard>
   </div>
 </template>
 
 <script>
+import printingPlanDialog from './printing-plan-dialog.vue';
 export default {
+  components: { printingPlanDialog },
   name: "",
   data() {
     return {
-      isProvinceUnit: true,
-      limitDate: undefined,
       tableKey: 0,
       loading: false,
-      printingPlanTableColumons: [
+      editCfg: [
         {
-          prop: "orderNumber",
-          label: "单号",
-        },
-        {
-          prop: "year",
-          label: "年度",
-          sortable: "true",
-        },
-        {
-          prop: "unitName",
-          label: "单位",
-          sortable: "false",
-        },
-        {
-          prop: "person",
-          label: "联系人",
-        },
-        {
-          prop: "tel",
-          label: "联系电话",
-        },
-        {
-          prop: "email",
-          label: "邮箱",
+          type: "button",
+          name: "新增",
+          icon: "el-icon-plus",
+          handleName: "handleCreate",
         },
       ],
+      dialogVisible: false,
+      dialogTitle: "",
     };
   },
   created() {},
   methods: {
-    setLimitDate() {},
-    handleSelectionChange(rows) {
-      console.log(rows);
+    dialogClose() {
+      this.dialogVisible = false
+    },
+    handleCreate() {
+      this.dialogVisible = true;
     },
     handleEdit(index, row) {
       console.log(row);
@@ -56,14 +54,8 @@ export default {
     handleDelete(index, row) {
       console.log(row);
     },
-    handleRowClassName({ index, row }) {
-      if (row.method === "GET") {
-        return "success-row";
-      }
-    },
   },
 };
 </script>
 <style>
-
 </style>

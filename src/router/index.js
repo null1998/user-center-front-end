@@ -351,16 +351,16 @@ export const asyncRoutes = [
         meta: { title: '印制计划上报设置', icon: 'el-icon-s-promotion', roles: ['印制计划时间限制-查询与编辑'] }
       },
       {
-        path: 'printing-plan',
-        name: 'printing-plan',
-        component: () => import('@/views/nontax/printing-plan/index'),
-        meta: { title: '本级印制计划维护', icon: 'el-icon-s-promotion', roles: ['财政票据系统路由角色'] }
-      },
-      {
         path: 'subordinate-review',
         name: 'subordinate-review',
         component: () => import('@/views/nontax/printing-plan/subordinate-review/index'),
         meta: { title: '下级印制计划审核', icon: 'el-icon-s-promotion', roles: ['财政票据系统路由角色'] }
+      },
+      {
+        path: 'printing-plan',
+        name: 'printing-plan',
+        component: () => import('@/views/nontax/printing-plan/index'),
+        meta: { title: '本级印制计划维护', icon: 'el-icon-s-promotion', roles: ['财政票据系统路由角色'] }
       }
     ]
   },
