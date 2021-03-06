@@ -139,9 +139,12 @@ export default {
       delBtnLoading: false,
       editingRowIndex: -1,
       originRow: undefined,
+      sumRow:0
     };
   },
-  created() {},
+  created() {
+    this.sumRow = this.tableData.length
+  },
   methods: {
     /**
      * 选择器
@@ -156,7 +159,6 @@ export default {
     handleEdit(index, row) {
       this.editingRowIndex = index;
       this.originRow = {...row}
-      console.log("原数据" + this.originRow);
     },
     /**
      * 删除按钮
@@ -165,6 +167,7 @@ export default {
       this.delBtnLoading = true;
       this.$emit("handleDelete", index, row);
       this.delBtnLoading = false;
+      this.sumRow = this.tableData.length
     },
     /**
      * 保存按钮
@@ -174,6 +177,7 @@ export default {
       this.$emit("handleSave", index, row);
       this.editBtnLoading = false;
       this.editingRowIndex = -1;
+      this.sumRow = this.tableData.length
     },
     /**
      * 取消按钮
@@ -181,12 +185,14 @@ export default {
     handleCancel(index, row) {
       this.editingRowIndex = -1;
       this.tableData[index] = this.originRow;
-      console.log(this.tableData[index]);
     },
     /**
      * 添加按钮
      */
     handleAdd() {
+      if (this.tableData.length > this.sumRow) {
+        return
+      }
       if (this.editingRowIndex !== -1) {
         this.$confirm("有尚未保存的数据, 是否保存?", "提示", {
           confirmButtonText: "确定",

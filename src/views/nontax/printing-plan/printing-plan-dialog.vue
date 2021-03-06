@@ -45,17 +45,17 @@ export default {
           type:"input"
         },
         {
-          prop:"theFirstSeason",
+          prop:"theSecondSeason",
           label:"第二季度",
           type:"input"
         },
         {
-          prop:"theFirstSeason",
+          prop:"theThirdSeason",
           label:"第三季度",
           type:"input"
         },
         {
-          prop:"theFirstSeason",
+          prop:"theFourthSeason",
           label:"第四季度",
           type:"input"
         }
@@ -64,8 +64,14 @@ export default {
     };
   },
   methods: {
-    handleSave() {},
-    handleDelete() {},
+    handleSave(index,row) {
+      console.log(index+row)
+      console.log(this.tableData)
+    },
+    handleDelete(index,row) {
+      console.log(index+row)
+      console.log()
+    },
   },
 };
 </script>
