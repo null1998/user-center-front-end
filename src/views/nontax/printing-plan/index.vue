@@ -11,9 +11,11 @@
       />
     </div>
     <printing-plan-dialog
+      :data="dialogData"
       :visible="dialogVisible"
       :close="dialogClose"
       :title="dialogTitle"
+      :type="dialogType"
     ></printing-plan-dialog>
     <hyd-billboard sign="未到上报时间"></hyd-billboard>
   </div>
@@ -26,8 +28,6 @@ export default {
   name: "",
   data() {
     return {
-      tableKey: 0,
-      loading: false,
       editCfg: [
         {
           type: "button",
@@ -36,8 +36,10 @@ export default {
           handleName: "handleCreate",
         },
       ],
+      dialogData:{},
       dialogVisible: false,
       dialogTitle: "",
+      dialogType:""
     };
   },
   created() {},
@@ -47,9 +49,14 @@ export default {
     },
     handleCreate() {
       this.dialogVisible = true;
+      this.dialogTitle = "印制计划-新增"
+      this.dialogType = "create"
     },
     handleEdit(index, row) {
-      console.log(row);
+      //this.dialogData = 
+      this.dialogVisible = true;
+      this.dialogTitle = "印制计划-编辑"
+      this.dialogType = "update"
     },
     handleDelete(index, row) {
       console.log(row);

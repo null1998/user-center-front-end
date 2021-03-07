@@ -165,6 +165,7 @@ export default {
      */
     handleDelete(index, row) {
       this.delBtnLoading = true;
+      this.tableData.splice(index,1)
       this.$emit("handleDelete", index, row);
       this.delBtnLoading = false;
       this.sumRow = this.tableData.length
@@ -185,6 +186,7 @@ export default {
     handleCancel(index, row) {
       this.editingRowIndex = -1;
       this.tableData[index] = this.originRow;
+
     },
     /**
      * 添加按钮

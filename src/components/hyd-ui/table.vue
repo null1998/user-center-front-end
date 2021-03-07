@@ -73,12 +73,6 @@ export default {
     },
     handleRowClassName: {type: Function,default:function({row, rowIndex}) {
       return 'white-row'
-      // if (rowIndex%2 === 1) {
-      //     return 'white-row';
-      //   } else if (rowIndex%2 === 0) {
-      //     return 'gray-row';
-      //   }
-      //   return '';
     }}
   },
   data() {
