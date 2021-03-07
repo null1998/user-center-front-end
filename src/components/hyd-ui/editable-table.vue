@@ -51,7 +51,11 @@
               ></el-option>
             </el-select>
           </span>
-          <span v-else>{{ scope.row[item.prop] }}</span>
+          <span v-else>{{
+            item.type === "select"
+              ? showSelectorValue(index, scope.row[item.prop])
+              : scope.row[item.prop]
+          }}</span>
         </template>
       </af-table-column>
 
@@ -139,11 +143,11 @@ export default {
       delBtnLoading: false,
       editingRowIndex: -1,
       originRow: undefined,
-      sumRow:0
+      sumRow: 0,
     };
   },
   created() {
-    this.sumRow = this.tableData.length
+    this.sumRow = this.tableData.length;
   },
   methods: {
     /**
@@ -158,17 +162,17 @@ export default {
      */
     handleEdit(index, row) {
       this.editingRowIndex = index;
-      this.originRow = {...row}
+      this.originRow = { ...row };
     },
     /**
      * 删除按钮
      */
     handleDelete(index, row) {
       this.delBtnLoading = true;
-      this.tableData.splice(index,1)
+      this.tableData.splice(index, 1);
       this.$emit("handleDelete", index, row);
       this.delBtnLoading = false;
-      this.sumRow = this.tableData.length
+      this.sumRow = this.tableData.length;
     },
     /**
      * 保存按钮
@@ -178,7 +182,7 @@ export default {
       this.$emit("handleSave", index, row);
       this.editBtnLoading = false;
       this.editingRowIndex = -1;
-      this.sumRow = this.tableData.length
+      this.sumRow = this.tableData.length;
     },
     /**
      * 取消按钮
@@ -186,14 +190,13 @@ export default {
     handleCancel(index, row) {
       this.editingRowIndex = -1;
       this.tableData[index] = this.originRow;
-
     },
     /**
      * 添加按钮
      */
     handleAdd() {
       if (this.tableData.length > this.sumRow) {
-        return
+        return;
       }
       if (this.editingRowIndex !== -1) {
         this.$confirm("有尚未保存的数据, 是否保存?", "提示", {
@@ -207,9 +210,20 @@ export default {
           );
           this.tableData.push({});
         });
-      }  else {
+      } else {
         this.tableData.push({});
       }
+    },
+    showSelectorValue(index, key) {
+      if (key) {
+        for (let i = 0; i < this.tableColumns[index].options.length; i++) {
+          const element = this.tableColumns[index].options[i];
+          if (element['value'] === key) {
+            return element['label'];
+          }
+        }
+      }
+      return "";
     },
   },
 };

@@ -8,8 +8,7 @@
       width="60%"
     >
       <div slot="title" class="header-title">
-        <i class="el-icon-s-data"></i>  
-        {{title}}          
+        <i class="el-icon-s-data"></i>   {{ title }}          
       </div>
       <el-form v-model="data">
         <el-form-item label="年度">
@@ -63,6 +62,7 @@
 </template>
 
 <script>
+import { listAll } from "@/api/basedata/ticket";
 export default {
   name: "",
   props: {
@@ -81,12 +81,7 @@ export default {
           prop: "ticketId",
           label: "票据名称",
           type: "select",
-          options: [
-            {
-              label: "票据11111111111",
-              value: "123",
-            },
-          ],
+          options: [],
           placeholder: "请选择票据",
         },
         {
@@ -118,19 +113,33 @@ export default {
       subordinateTableKey: 0,
       subordinateTableData: [],
       subordinateTableLoading: false,
+      ticketList: [],
     };
   },
   created() {
     this.currentYear = new Date().getFullYear();
     this.data.year = this.currentYear;
+    listAll().then((res) => {
+      if (res && res.body && res.body.data) {
+        this.ticketList = res.body.data;
+        for (let i = 0; i < this.ticketList.length; i++) {
+          const ticket = this.ticketList[i];
+          const option = {};
+          option.label = ticket.name;
+          option.value = ticket.id;
+          this.tableColumons[0].options.push({ ...option });
+        }
+        console.log(this.tableColumons[0].options)
+      }
+    });
   },
   methods: {
     handleSave(index, row) {
-      if (type === "update") {
+      if (this.type === "update") {
       }
     },
     handleDelete(index, row) {
-      if (type === "update") {
+      if (this.type === "update") {
       }
     },
     handleTab(tab, event) {},

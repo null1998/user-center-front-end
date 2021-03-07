@@ -39,3 +39,13 @@ export function listByUnitId(unitId) {
     method: 'get'
   })
 }
+/**
+ * 查询是否在上报时间内
+ * @param {单位ID} unitId 
+ */
+export function inRangeOfLimitDate(unitId) {
+  return request({
+    url: '/nontax/financial/printing/plan/limit/date/in/range/'+unitId,
+    method: 'get'
+  })
+}
