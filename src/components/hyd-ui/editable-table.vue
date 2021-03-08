@@ -161,8 +161,25 @@ export default {
      * 编辑按钮
      */
     handleEdit(index, row) {
-      this.editingRowIndex = index;
-      this.originRow = { ...row };
+      if (this.editingRowIndex !== -1) {
+        this.$confirm("有尚未保存的数据, 是否保存?", "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning",
+        }).then(() => {
+          this.handleSave(
+            this.editingRowIndex,
+            this.tableData[this.editingRowIndex]
+          ).then(()=>{
+            this.editingRowIndex = index;
+            this.originRow = { ...row };
+          })   
+        });
+        
+      } else {
+        this.editingRowIndex = index;
+        this.originRow = { ...row };
+      }
     },
     /**
      * 删除按钮
@@ -207,8 +224,9 @@ export default {
           this.handleSave(
             this.editingRowIndex,
             this.tableData[this.editingRowIndex]
-          );
-          this.tableData.push({});
+          ).then(()=>{
+            this.tableData.push({});
+          })
         });
       } else {
         this.tableData.push({});

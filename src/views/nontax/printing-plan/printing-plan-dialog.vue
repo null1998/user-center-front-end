@@ -5,7 +5,7 @@
       :visible.sync="visible"
       :before-close="close"
       :title="title"
-      width="60%"
+      width="75%"
     >
       <div slot="title" class="header-title">
         <i class="el-icon-s-data"></i>   {{ title }}          
@@ -79,29 +79,29 @@ export default {
       tableColumons: [
         {
           prop: "ticketId",
-          label: "票据名称",
+          label: "财政票据名称",
           type: "select",
           options: [],
           placeholder: "请选择票据",
         },
         {
           prop: "theFirstSeason",
-          label: "第一季度",
+          label: "一季度",
           type: "input",
         },
         {
           prop: "theSecondSeason",
-          label: "第二季度",
+          label: "二季度",
           type: "input",
         },
         {
           prop: "theThirdSeason",
-          label: "第三季度",
+          label: "三季度",
           type: "input",
         },
         {
           prop: "theFourthSeason",
-          label: "第四季度",
+          label: "四季度",
           type: "input",
         },
       ],

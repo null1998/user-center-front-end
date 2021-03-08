@@ -2,7 +2,7 @@
 <template>
   <div class="app-container">
     <!-- 编辑印制计划 -->
-    <div v-if="inRangeOfLimitDate">
+    <div v-if="showTable">
       <div class="filter-container">
         <!-- 新增按钮 -->
         <hyd-form
@@ -29,7 +29,7 @@
       ></printing-plan-dialog>
     </div>
     <!-- 不在上报日期内，显示告示牌 -->
-    <div v-else>
+    <div v-if="showBillboard">
       <hyd-billboard sign="未到上报时间"></hyd-billboard>
     </div>
   </div>
@@ -44,7 +44,8 @@ export default {
   name: "",
   data() {
     return {
-      inRangeOfLimitDate: false,
+      showTable:false,
+      showBillboard:false,
       editCfg: [
         {
           type: "button",
@@ -79,8 +80,9 @@ export default {
   },
   created() {
     inRangeOfLimitDate(this.$store.getters.unitId).then((res) => {
-      if (res && res.body && res.body.data) {
-        this.inRangeOfLimitDate = res.body.data;
+      if (res && res.body) {
+        this.showTable = res.body.data;
+        this.showBillboard = !res.body.data;
       }
     });
     this.getTableData();
