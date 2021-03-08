@@ -22,6 +22,7 @@
       />
       <printing-plan-dialog
         :data="dialogData"
+        :tableData="dialogTableData"
         :visible="dialogVisible"
         :close="dialogClose"
         :title="dialogTitle"
@@ -38,14 +39,15 @@
 <script>
 import printingPlanDialog from "./printing-plan-dialog.vue";
 import { inRangeOfLimitDate } from "@/api/nontax/printing-plan/limit-date";
-import { listByUnitId } from "@/api/nontax/printing-plan/printing-plan";
+import { save, deleteById,listByUnitId,getById } from "@/api/nontax/printing-plan/printing-plan-index";
+import { listByPrintingPlanId } from "@/api/nontax/printing-plan/printing-plan-ticket";
 export default {
   components: { printingPlanDialog },
   name: "",
   data() {
     return {
-      showTable:false,
-      showBillboard:false,
+      showTable: false,
+      showBillboard: false,
       editCfg: [
         {
           type: "button",
@@ -73,12 +75,14 @@ export default {
       ],
       tableLoading: false,
       dialogData: {},
+      dialogTableData:[],
       dialogVisible: false,
       dialogTitle: "",
       dialogType: "",
     };
   },
   created() {
+    this.dialogData.unitId = this.$store.getters.unitId
     inRangeOfLimitDate(this.$store.getters.unitId).then((res) => {
       if (res && res.body) {
         this.showTable = res.body.data;
@@ -97,22 +101,55 @@ export default {
     },
     dialogClose() {
       this.dialogVisible = false;
+      this.dialogData = {}
+      this.dialogTableData = []
       this.getTableData();
     },
     handleCreate() {
-      this.dialogVisible = true;
-      this.dialogTitle = "印制计划-新增";
-      this.dialogType = "create";
+      save(this.dialogData).then((res) => {
+        if (res && res.body && res.body.data) {
+          this.$notify({
+            title: "success",
+            message: "操作成功",
+            type: "success",
+            duration: 2000,
+          });
+          this.dialogData.id = res.body.data
+          this.dialogVisible = true;
+          this.dialogTitle = "印制计划-新增";
+          this.dialogType = "create";  
+        }
+      });
     },
     handleEdit(index, row) {
-      //this.dialogData =
-      this.dialogVisible = true;
-      this.dialogTitle = "印制计划-编辑";
-      this.dialogType = "update";
+      getById(row.id).then(res=>{
+        if (res&&res.body&&res.body.data) {
+          this.dialogData = res.body.data
+        }
+      })
+      listByPrintingPlanId(row.id).then(res=>{
+        if (res&&res.body) {
+          this.dialogTableData = res.body.data
+          this.dialogVisible = true;
+        this.dialogTitle = "印制计划-编辑";
+        this.dialogType = "update";
+        }
+      })
+      
     },
     handleDelete(index, row) {
-      console.log(row);
-      this.getTableData();
+      deleteById(row.id).then(res=>{
+        if (res&&res.body&&res.body.data) {
+          this.$notify({
+            title: "success",
+            message: "操作成功",
+            type: "success",
+            duration: 2000,
+          });
+          this.getTableData();
+        }
+      })
+      
     },
   },
 };

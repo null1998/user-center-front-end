@@ -12,7 +12,7 @@
       </div>
       <el-form v-model="data">
         <el-form-item label="年度">
-          <el-select v-model="data.year" style="width: 100px">
+          <el-select v-model="year" style="width: 100px">
             <el-option
               :label="currentYear"
               :value="currentYear"
@@ -34,7 +34,7 @@
         @handleSave="handleSave"
         @handleDelete="handleDelete"
       />
-      <el-tabs v-model="activeName" type="border-card" @tab-click="handleTab">
+      <el-tabs v-model="activeName" type="border-card">
         <el-tab-pane label="上年用票数" name="lastYear">
           <hyd-table
             :tableKey="lastYearTableKey"
@@ -63,6 +63,13 @@
 
 <script>
 import { listAll } from "@/api/basedata/ticket";
+import { update } from "@/api/nontax/printing-plan/printing-plan-index";
+import {
+  update as updatePrintingPlanTicket,
+  listByPrintingPlanId,
+  save as savePrintingPlanTicket,
+  deleteById as deletePrintingPlanTicket
+} from "@/api/nontax/printing-plan/printing-plan-ticket";
 export default {
   name: "",
   props: {
@@ -71,11 +78,11 @@ export default {
     title: { type: String, default: "" },
     type: { type: String },
     data: { type: Object, required: true },
+    tableData: { type: Array },
   },
   data() {
     return {
       tableKey: 0,
-      tableData: [],
       tableColumons: [
         {
           prop: "ticketId",
@@ -114,10 +121,11 @@ export default {
       subordinateTableData: [],
       subordinateTableLoading: false,
       ticketList: [],
+      currentYear: new Date().getFullYear(),
+      year: new Date().getFullYear(),
     };
   },
   created() {
-    this.currentYear = new Date().getFullYear();
     this.data.year = this.currentYear;
     listAll().then((res) => {
       if (res && res.body && res.body.data) {
@@ -129,21 +137,49 @@ export default {
           option.value = ticket.id;
           this.tableColumons[0].options.push({ ...option });
         }
-        console.log(this.tableColumons[0].options)
+        console.log(this.tableColumons[0].options);
       }
     });
   },
   methods: {
     handleSave(index, row) {
-      if (this.type === "update") {
+      if (row.id) {
+        updatePrintingPlanTicket(row).then((res) => {
+          if (res && res.body) {
+            this.listPrintingPlanTicket(this.data.id);
+          }
+        });
+      } else {
+        row.printingPlanId = this.data.id
+        savePrintingPlanTicket(row).then((res) => {
+          if (res && res.body) {
+            this.listPrintingPlanTicket(this.data.id);
+          }
+        });
       }
     },
     handleDelete(index, row) {
-      if (this.type === "update") {
-      }
+      deletePrintingPlanTicket(row.id).then(res=>{
+        if (res&&res.body) {
+          this.listPrintingPlanTicket(this.data.id);
+        }
+      })
     },
-    handleTab(tab, event) {},
-    handleSaveDialog() {},
+    handleSaveDialog() {
+      this.data.year = this.year;
+      update(this.data).then((res) => {
+        if (res && res.body && res.body.data) {
+          this.close();
+        }
+      });
+    },
+    listPrintingPlanTicket(printingPlanId) {
+      listByPrintingPlanId(printingPlanId).then((res) => {
+        if (res && res.body) {
+          this.tableData = res.body.data;
+        }
+      });
+    },
   },
 };
 </script>
