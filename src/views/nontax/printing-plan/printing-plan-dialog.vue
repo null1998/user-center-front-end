@@ -8,7 +8,11 @@
       width="75%"
     >
       <div slot="title" class="header-title">
-        <i class="el-icon-s-data"></i>   {{ title }}          
+        <i class="el-icon-s-data">{{ title }}</i>
+        <!-- <el-button type="primary" size="medium" style="float:right" @click="handleSaveDialog"
+          >保存</el-button
+        > -->
+                 
       </div>
       <el-form v-model="data">
         <el-form-item label="年度">
@@ -28,7 +32,7 @@
       </el-form>
       <hyd-editable-table
         :tableKey="tableKey"
-        :tableData="tableData"
+        :tableData="myTableData"
         :tableColumns="tableColumons"
         :loading="tableLoading"
         @handleSave="handleSave"
@@ -52,11 +56,7 @@
           />
         </el-tab-pane>
       </el-tabs>
-      <span slot="footer" class="dialog-footer">
-        <el-button type="primary" size="medium" @click="handleSaveDialog"
-          >保存</el-button
-        >
-      </span>
+      <span slot="footer" class="dialog-footer"> </span>
     </el-dialog>
   </div>
 </template>
@@ -68,7 +68,7 @@ import {
   update as updatePrintingPlanTicket,
   listByPrintingPlanId,
   save as savePrintingPlanTicket,
-  deleteById as deletePrintingPlanTicket
+  deleteById as deletePrintingPlanTicket,
 } from "@/api/nontax/printing-plan/printing-plan-ticket";
 export default {
   name: "",
@@ -123,10 +123,15 @@ export default {
       ticketList: [],
       currentYear: new Date().getFullYear(),
       year: new Date().getFullYear(),
+      myTableData:this.tableData
     };
   },
+  watch:{
+    tableData(val){
+      this.myTableData = val
+    }
+  },
   created() {
-    this.data.year = this.currentYear;
     listAll().then((res) => {
       if (res && res.body && res.body.data) {
         this.ticketList = res.body.data;
@@ -150,7 +155,7 @@ export default {
           }
         });
       } else {
-        row.printingPlanId = this.data.id
+        row.printingPlanId = this.data.id;
         savePrintingPlanTicket(row).then((res) => {
           if (res && res.body) {
             this.listPrintingPlanTicket(this.data.id);
@@ -159,11 +164,11 @@ export default {
       }
     },
     handleDelete(index, row) {
-      deletePrintingPlanTicket(row.id).then(res=>{
-        if (res&&res.body) {
+      deletePrintingPlanTicket(row.id).then((res) => {
+        if (res && res.body) {
           this.listPrintingPlanTicket(this.data.id);
         }
-      })
+      });
     },
     handleSaveDialog() {
       this.data.year = this.year;
@@ -176,7 +181,7 @@ export default {
     listPrintingPlanTicket(printingPlanId) {
       listByPrintingPlanId(printingPlanId).then((res) => {
         if (res && res.body) {
-          this.tableData = res.body.data;
+          this.myTableData = res.body.data;
         }
       });
     },

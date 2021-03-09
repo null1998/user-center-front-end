@@ -19,6 +19,7 @@
         :loading="tableLoading"
         @handleEdit="handleEdit"
         @handleDelete="handleDelete"
+        @handleSubmit="handleSubmit"
       />
       <printing-plan-dialog
         :data="dialogData"
@@ -39,7 +40,7 @@
 <script>
 import printingPlanDialog from "./printing-plan-dialog.vue";
 import { inRangeOfLimitDate } from "@/api/nontax/printing-plan/limit-date";
-import { save, deleteById,listByUnitId,getById } from "@/api/nontax/printing-plan/printing-plan-index";
+import { save, deleteById,update,listByUnitId,getById } from "@/api/nontax/printing-plan/printing-plan-index";
 import { listByPrintingPlanId } from "@/api/nontax/printing-plan/printing-plan-ticket";
 export default {
   components: { printingPlanDialog },
@@ -82,7 +83,6 @@ export default {
     };
   },
   created() {
-    this.dialogData.unitId = this.$store.getters.unitId
     inRangeOfLimitDate(this.$store.getters.unitId).then((res) => {
       if (res && res.body) {
         this.showTable = res.body.data;
@@ -96,6 +96,22 @@ export default {
       listByUnitId(this.$store.getters.unitId).then((res) => {
         if (res && res.body && res.body.data) {
           this.tableData = res.body.data;
+          for (let i = 0; i < this.tableData.length; i++) {
+            const element = this.tableData[i];
+            switch (element.status) {
+              case 0:
+                this.tableData[i].status='待上报'
+                break;
+              case 1:
+                this.tableData[i].status='待审核'
+                break;
+              case 2:
+                this.tableData[i].status='已审核'
+                break;
+              default:
+                break;
+            }
+          }
         }
       });
     },
@@ -106,6 +122,8 @@ export default {
       this.getTableData();
     },
     handleCreate() {
+      this.dialogData.unitId = this.$store.getters.unitId
+      this.dialogData.year = new Date().getFullYear()
       save(this.dialogData).then((res) => {
         if (res && res.body && res.body.data) {
           this.$notify({
@@ -149,8 +167,21 @@ export default {
           this.getTableData();
         }
       })
-      
     },
+    handleSubmit(index,row) {
+      row.status = 1
+      update(row).then(res=>{
+        if (res&&res.body&&res.body.data) {
+          this.$notify({
+            title: "success",
+            message: "操作成功",
+            type: "success",
+            duration: 2000,
+          });
+          this.getTableData();
+        }
+      })
+    }
   },
 };
 </script>

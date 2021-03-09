@@ -4,7 +4,7 @@
     <el-table
       v-if="show"
       :key="tableKey"
-      :data="tableData"
+      :data="myTableData"
       v-loading="loading"
       style="width: 100%"
       @selection-change="handleSelectionChange"
@@ -136,6 +136,7 @@ export default {
   },
   data() {
     return {
+      myTableData:this.tableData,
       selector: false,
       edit: false,
       del: false,
@@ -146,8 +147,13 @@ export default {
       sumRow: 0,
     };
   },
+  watch: {
+      tableData (val) {
+        this.myTableData = val
+      }
+    },
   created() {
-    this.sumRow = this.tableData.length;
+    this.sumRow = this.myTableData.length;
   },
   methods: {
     /**
@@ -169,7 +175,7 @@ export default {
         }).then(() => {
           this.handleSave(
             this.editingRowIndex,
-            this.tableData[this.editingRowIndex]
+            this.myTableData[this.editingRowIndex]
           ).then(()=>{
             this.editingRowIndex = index;
             this.originRow = { ...row };
@@ -186,10 +192,10 @@ export default {
      */
     handleDelete(index, row) {
       this.delBtnLoading = true;
-      this.tableData.splice(index, 1);
+      this.myTableData.splice(index, 1);
       this.$emit("handleDelete", index, row);
       this.delBtnLoading = false;
-      this.sumRow = this.tableData.length;
+      this.sumRow = this.myTableData.length;
     },
     /**
      * 保存按钮
@@ -199,20 +205,20 @@ export default {
       this.$emit("handleSave", index, row);
       this.editBtnLoading = false;
       this.editingRowIndex = -1;
-      this.sumRow = this.tableData.length;
+      this.sumRow = this.myTableData.length;
     },
     /**
      * 取消按钮
      */
     handleCancel(index, row) {
       this.editingRowIndex = -1;
-      this.tableData[index] = this.originRow;
+      this.myTableData[index] = this.originRow;
     },
     /**
      * 添加按钮
      */
     handleAdd() {
-      if (this.tableData.length > this.sumRow) {
+      if (this.myTableData.length > this.sumRow) {
         return;
       }
       if (this.editingRowIndex !== -1) {
@@ -223,13 +229,13 @@ export default {
         }).then(() => {
           this.handleSave(
             this.editingRowIndex,
-            this.tableData[this.editingRowIndex]
+            this.myTableData[this.editingRowIndex]
           ).then(()=>{
-            this.tableData.push({});
+            this.myTableData.push({});
           })
         });
       } else {
-        this.tableData.push({});
+        this.myTableData.push({});
       }
     },
     showSelectorValue(index, key) {
