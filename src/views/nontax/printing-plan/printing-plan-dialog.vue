@@ -3,20 +3,18 @@
   <div>
     <el-dialog
       :visible.sync="visible"
-      :before-close="close"
       :title="title"
       width="75%"
+      :show-close="false"
     >
       <div slot="title" class="header-title">
         <i class="el-icon-s-data">{{ title }}</i>
-        <!-- <el-button type="primary" size="medium" style="float:right" @click="handleSaveDialog"
-          >保存</el-button
-        > -->
-                 
+        <el-button style="float:right" size="mini" icon="el-icon-close" @click="close">退出</el-button>
+        <el-button style="float:right" size="mini" icon="el-icon-success" @click="handleSaveDialog">保存</el-button>         
       </div>
       <el-form v-model="data">
         <el-form-item label="年度">
-          <el-select v-model="year" style="width: 100px">
+          <el-select v-model="year" style="width: 100px" size="mini">
             <el-option
               :label="currentYear"
               :value="currentYear"
@@ -164,11 +162,14 @@ export default {
       }
     },
     handleDelete(index, row) {
-      deletePrintingPlanTicket(row.id).then((res) => {
+      if (row.id) {
+        deletePrintingPlanTicket(row.id).then((res) => {
         if (res && res.body) {
           this.listPrintingPlanTicket(this.data.id);
         }
       });
+      }
+      
     },
     handleSaveDialog() {
       this.data.year = this.year;

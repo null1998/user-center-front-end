@@ -80,7 +80,7 @@
           >
           <el-button
             size="mini"
-            icon="el-icon-edit"
+            icon="el-icon-success"
             round
             v-if="editingRowIndex === scope.$index"
             @click="handleSave(scope.$index, scope.row)"
@@ -88,7 +88,7 @@
           >
           <el-button
             size="mini"
-            icon="el-icon-delete"
+            icon="el-icon-close"
             round
             v-if="editingRowIndex === scope.$index"
             @click="handleCancel(scope.$index, scope.row)"
@@ -98,7 +98,7 @@
       </el-table-column>
     </el-table>
 
-    <div class="el-table-add-row" style="width: 99.2%" @click="handleAdd()">
+    <div class="el-table-add-row" style="width: 100%" @click="handleAdd()">
       <span>+ 添加</span>
     </div>
   </div>

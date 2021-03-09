@@ -3,15 +3,6 @@
   <div class="app-container">
     <!-- 编辑印制计划 -->
     <div v-if="showTable">
-      <div class="filter-container">
-        <!-- 新增按钮 -->
-        <hyd-form
-          @handleCreate="handleCreate"
-          :editCfg="editCfg"
-          inline
-          size="medium"
-        />
-      </div>
       <hyd-table
         :tableKey="tableKey"
         :tableData="tableData"
@@ -19,8 +10,9 @@
         :loading="tableLoading"
         @handleEdit="handleEdit"
         @handleDelete="handleDelete"
-        @handleSubmit="handleSubmit"
+        @handleCreate="handleCreate"
       />
+      
       <printing-plan-dialog
         :data="dialogData"
         :tableData="dialogTableData"
@@ -40,7 +32,13 @@
 <script>
 import printingPlanDialog from "./printing-plan-dialog.vue";
 import { inRangeOfLimitDate } from "@/api/nontax/printing-plan/limit-date";
-import { save, deleteById,update,listByUnitId,getById } from "@/api/nontax/printing-plan/printing-plan-index";
+import {
+  save,
+  deleteById,
+  update,
+  listByUnitId,
+  getById,
+} from "@/api/nontax/printing-plan/printing-plan-index";
 import { listByPrintingPlanId } from "@/api/nontax/printing-plan/printing-plan-ticket";
 export default {
   components: { printingPlanDialog },
@@ -49,14 +47,6 @@ export default {
     return {
       showTable: false,
       showBillboard: false,
-      editCfg: [
-        {
-          type: "button",
-          name: "新增",
-          icon: "el-icon-plus",
-          handleName: "handleCreate",
-        },
-      ],
       tableKey: 0,
       tableData: [],
       tableColumons: [
@@ -76,7 +66,7 @@ export default {
       ],
       tableLoading: false,
       dialogData: {},
-      dialogTableData:[],
+      dialogTableData: [],
       dialogVisible: false,
       dialogTitle: "",
       dialogType: "",
@@ -100,13 +90,13 @@ export default {
             const element = this.tableData[i];
             switch (element.status) {
               case 0:
-                this.tableData[i].status='待上报'
+                this.tableData[i].status = "待上报";
                 break;
               case 1:
-                this.tableData[i].status='待审核'
+                this.tableData[i].status = "待审核";
                 break;
               case 2:
-                this.tableData[i].status='已审核'
+                this.tableData[i].status = "已审核";
                 break;
               default:
                 break;
@@ -117,13 +107,13 @@ export default {
     },
     dialogClose() {
       this.dialogVisible = false;
-      this.dialogData = {}
-      this.dialogTableData = []
+      this.dialogData = {};
+      this.dialogTableData = [];
       this.getTableData();
     },
     handleCreate() {
-      this.dialogData.unitId = this.$store.getters.unitId
-      this.dialogData.year = new Date().getFullYear()
+      this.dialogData.unitId = this.$store.getters.unitId;
+      this.dialogData.year = new Date().getFullYear();
       save(this.dialogData).then((res) => {
         if (res && res.body && res.body.data) {
           this.$notify({
@@ -132,32 +122,31 @@ export default {
             type: "success",
             duration: 2000,
           });
-          this.dialogData.id = res.body.data
+          this.dialogData.id = res.body.data;
           this.dialogVisible = true;
           this.dialogTitle = "印制计划-新增";
-          this.dialogType = "create";  
+          this.dialogType = "create";
         }
       });
     },
     handleEdit(index, row) {
-      getById(row.id).then(res=>{
-        if (res&&res.body&&res.body.data) {
-          this.dialogData = res.body.data
+      getById(row.id).then((res) => {
+        if (res && res.body && res.body.data) {
+          this.dialogData = res.body.data;
         }
-      })
-      listByPrintingPlanId(row.id).then(res=>{
-        if (res&&res.body) {
-          this.dialogTableData = res.body.data
+      });
+      listByPrintingPlanId(row.id).then((res) => {
+        if (res && res.body) {
+          this.dialogTableData = res.body.data;
           this.dialogVisible = true;
-        this.dialogTitle = "印制计划-编辑";
-        this.dialogType = "update";
+          this.dialogTitle = "印制计划-编辑";
+          this.dialogType = "update";
         }
-      })
-      
+      });
     },
     handleDelete(index, row) {
-      deleteById(row.id).then(res=>{
-        if (res&&res.body&&res.body.data) {
+      deleteById(row.id).then((res) => {
+        if (res && res.body && res.body.data) {
           this.$notify({
             title: "success",
             message: "操作成功",
@@ -166,12 +155,12 @@ export default {
           });
           this.getTableData();
         }
-      })
+      });
     },
-    handleSubmit(index,row) {
-      row.status = 1
-      update(row).then(res=>{
-        if (res&&res.body&&res.body.data) {
+    handleSubmit(index, row) {
+      row.status = 1;
+      update(row).then((res) => {
+        if (res && res.body && res.body.data) {
           this.$notify({
             title: "success",
             message: "操作成功",
@@ -180,10 +169,11 @@ export default {
           });
           this.getTableData();
         }
-      })
-    }
+      });
+    },
   },
 };
 </script>
 <style>
+
 </style>

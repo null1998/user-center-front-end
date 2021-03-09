@@ -1,15 +1,6 @@
 <!-- 印制计划上报设置 -->
 <template>
   <div class="app-container">
-    <div class="filter-container">
-      <!-- 新增按钮 -->
-      <hyd-form
-        @handleCreate="handleCreate"
-        :editCfg="editCfg"
-        inline
-        size="medium"
-      />
-    </div>
     <hyd-table
       :tableKey="tableKey"
       :tableData="tableData"
@@ -17,6 +8,7 @@
       :loading="tableLoading"
       @handleEdit="handleUpdate"
       @handleDelete="handleDelete"
+      @handleCreate="handleCreate"
     />
     <limit-date-dialog
       :visible="dialogVisible"
@@ -57,14 +49,6 @@ export default {
         }
       ],
       tableLoading: false,
-      editCfg: [
-        {
-          type: "button",
-          name: "计划上报设置",
-          icon: "el-icon-plus",
-          handleName: "handleCreate",
-        },
-      ],
       dialogVisible: false,
       dialogTitle: "印制计划上报设置",
       dialogType: "",

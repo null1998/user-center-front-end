@@ -1,51 +1,63 @@
 <!-- 通用table，动态创建列 -->
 <template>
-  <el-table
-    v-if="show"
-    :key="tableKey"
-    :data="tableData"
-    v-loading="loading"
-    style="width: 100%"
-    @selection-change="handleSelectionChange"
-    :header-cell-style="{background:'#eef1f6',color:'#606266'}"
-    :row-class-name="handleRowClassName"
-    border
-  >
-    <el-table-column type="selection" v-if="selector"> </el-table-column>
-    <el-table-column label="ID" prop="id">
-      <template slot-scope="scope">
-        <span>{{ scope.$index + 1 }}</span>
-      </template>
-    </el-table-column>
-    <af-table-column
-      v-for="(item, index) in tableColumns"
-      :key="index"
-      :prop="item.prop"
-      :label="item.label"
-      :sortable="item.sortable"
-    ></af-table-column>
+  <div>
+    <el-table
+      v-if="show"
+      :key="tableKey"
+      :data="tableData"
+      v-loading="loading"
+      style="width: 100%"
+      @selection-change="handleSelectionChange"
+      :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
+      :row-class-name="handleRowClassName"
+      border
+    >
+      <el-table-column type="selection" v-if="selector"> </el-table-column>
+      <el-table-column label="ID" prop="id">
+        <template slot-scope="scope">
+          <span>{{ scope.$index + 1 }}</span>
+        </template>
+      </el-table-column>
+      <af-table-column
+        v-for="(item, index) in tableColumns"
+        :key="index"
+        :prop="item.prop"
+        :label="item.label"
+        :sortable="item.sortable"
+      ></af-table-column>
 
-    <el-table-column label="操作" fixed="right" width="200" v-if="edit || del">
-      <template slot-scope="scope">
-        <el-button
-          size="mini"
-          icon="el-icon-edit" round
-          v-if="edit"
-          :loading="editBtnLoading"
-          @click="handleEdit(scope.$index, scope.row)"
-          >编辑</el-button
-        >
-        <el-button
-          size="mini"
-          icon="el-icon-delete" round
-          v-if="del"
-          :loading="delBtnLoading"
-          @click="handleDelete(scope.$index, scope.row)"
-          >删除</el-button
-        >
-      </template>
-    </el-table-column>
-  </el-table>
+      <el-table-column
+        label="操作"
+        fixed="right"
+        width="200"
+        v-if="edit || del"
+      >
+        <template slot-scope="scope">
+          <el-button
+            size="mini"
+            icon="el-icon-edit"
+            round
+            v-if="edit"
+            :loading="editBtnLoading"
+            @click="handleEdit(scope.$index, scope.row)"
+            >编辑</el-button
+          >
+          <el-button
+            size="mini"
+            icon="el-icon-delete"
+            round
+            v-if="del"
+            :loading="delBtnLoading"
+            @click="handleDelete(scope.$index, scope.row)"
+            >删除</el-button
+          >
+        </template>
+      </el-table-column>
+    </el-table>
+    <div v-if="add" class="el-table-add-row" style="width: 100%" @click="handleCreate()">
+      <span>+ 添加</span>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -71,15 +83,19 @@ export default {
         return [];
       },
     },
-    handleRowClassName: {type: Function,default:function({row, rowIndex}) {
-      return 'white-row'
-    }}
+    handleRowClassName: {
+      type: Function,
+      default: function ({ row, rowIndex }) {
+        return "white-row";
+      },
+    },
   },
   data() {
     return {
       selector: false,
       edit: false,
       del: false,
+      add:false,
       editBtnLoading: false,
       delBtnLoading: false,
     };
@@ -94,6 +110,9 @@ export default {
     }
     if (this.$listeners["handleDelete"]) {
       this.del = true;
+    }
+    if (this.$listeners["handleCreate"]) {
+      this.add = true;
     }
   },
   methods: {
@@ -120,6 +139,12 @@ export default {
       this.$emit("handleDelete", index, row);
       this.delBtnLoading = false;
     },
+    /**
+     * 添加按钮
+     */
+    handleCreate() {
+      this.$emit("handleCreate")
+    }
   },
 };
 </script>
@@ -129,7 +154,7 @@ export default {
   display: table-cell !important;
 }
 .el-table {
-  border-radius: 4px
+  border-radius: 4px;
 }
 .el-table .warning-row {
   background: #e6a23c44;
@@ -142,7 +167,7 @@ export default {
   background: #f56c6c42;
 }
 .el-table .white-row {
-  background: #FFFFFF;
+  background: #ffffff;
 }
 .el-table .gray-row {
   background: rgb(240, 240, 238);
@@ -151,7 +176,18 @@ export default {
   background: #67c23a7c;
 }
 .el-button:hover,
-.el-button:focus{
+.el-button:focus {
   border-color: #18ab8f;
+}
+.el-table-add-row {
+  margin-top: 10px;
+  width: 100%;
+  height: 34px;
+  border: 1px dashed #c1c1cd;
+  border-radius: 3px;
+  cursor: pointer;
+  justify-content: center;
+  display: flex;
+  line-height: 34px;
 }
 </style>
