@@ -1,15 +1,21 @@
 <!-- 本级印制计划对话框 -->
 <template>
   <div>
-    <el-dialog
-      :visible.sync="visible"
-      width="75%"
-      :show-close="false"
-    >
+    <el-dialog :visible.sync="visible" width="75%" :show-close="false">
       <div slot="title" class="header-title">
-        <i class="el-icon-s-data" style="font-family: 'PingFang SC'">{{ title }}</i>
-        <i class="el-icon-circle-close" style="float: right;" @click="close">退出</i>
-        <i class="el-icon-circle-check" style="float: right;" @click="handleSaveDialog">保存</i>    
+        <i class="el-icon-s-data" style="font-family: 'PingFang SC'">{{
+          title
+        }}</i>
+        <i class="el-icon-circle-close" style="float: right" @click="close"
+          >退出</i
+        >
+        <i
+          class="el-icon-circle-check"
+          style="float: right"
+          @click="handleSaveDialog"
+          >保存</i
+        >
+           
       </div>
       <el-form v-model="data">
         <el-form-item label="年度">
@@ -145,26 +151,25 @@ export default {
   },
   methods: {
     handleSave(index, row) {
-      if (this.data.status===0 || this.data.status===3) {
+      if (this.data.status === 0 || this.data.status === 3) {
         if (row.id) {
-        updatePrintingPlanTicket(row).then((res) => {
-          if (res && res.body) {
-            this.listPrintingPlanTicket(this.data.id);
-          }
-        });
-      } else {
-        row.printingPlanId = this.data.id;
-        savePrintingPlanTicket(row).then((res) => {
-          if (res && res.body) {
-            this.listPrintingPlanTicket(this.data.id);
-          }
-        });
+          updatePrintingPlanTicket(row).then((res) => {
+            if (res && res.body) {
+              this.listPrintingPlanTicket(this.data.id);
+            }
+          });
+        } else {
+          row.printingPlanId = this.data.id;
+          savePrintingPlanTicket(row).then((res) => {
+            if (res && res.body) {
+              this.listPrintingPlanTicket(this.data.id);
+            }
+          });
+        }
       }
-      }
-      
     },
     handleDelete(index, row) {
-      if ((this.data.status===0 || this.data.status===3)&&row.id) {
+      if ((this.data.status === 0 || this.data.status === 3) && row.id) {
         deletePrintingPlanTicket(row.id).then((res) => {
           if (res && res.body) {
             this.listPrintingPlanTicket(this.data.id);
