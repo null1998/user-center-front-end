@@ -32,10 +32,19 @@
       <el-table-column
         label="操作"
         fixed="right"
-        width="200"
+        width="260"
         v-if="edit || del"
       >
         <template slot-scope="scope">
+          <el-button
+            size="mini"
+            icon="el-icon-upload2"
+            v-if="submit"
+            :loading="submitBtnLoading"
+            @click="handleSubmit(scope.$index, scope.row)"
+            style="box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12),0 0 6px rgba(0, 0, 0, 0.04); "
+            >上报</el-button
+          >
           <el-button
             size="mini"
             icon="el-icon-edit"
@@ -52,6 +61,7 @@
             :loading="delBtnLoading"
             @click="handleDelete(scope.$index, scope.row)"
             style="box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12),0 0 6px rgba(0, 0, 0, 0.04);"
+            type="danger"
             >删除</el-button
           >
         </template>
@@ -60,6 +70,7 @@
     <el-button
       v-if="add"
       icon="el-icon-plus"
+      :loading="addBtnLoading"
       style="
         width: 100%;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
@@ -103,17 +114,23 @@ export default {
   data() {
     return {
       selector: false,
+      submit:false,
       edit: false,
       del: false,
       add: false,
+      submitBtnLoading:false,
       editBtnLoading: false,
       delBtnLoading: false,
+      addBtnLoading:false
     };
   },
   created() {
     // 监听父组件传进来的数据
     if (this.$listeners["handleSelectionChange"]) {
       this.selector = true;
+    }
+    if (this.$listeners["handleSubmit"]) {
+      this.submit = true;
     }
     if (this.$listeners["handleEdit"]) {
       this.edit = true;
@@ -132,6 +149,14 @@ export default {
     handleSelectionChange(rows) {
       // 回调父组件函数
       this.$emit("handleSelectionChange", rows);
+    },
+    /**
+     * 上报按钮
+     */
+    handleSubmit(index, row) {
+      this.submitBtnLoading = true;
+      this.$emit("handleSubmit", index, row);
+      this.submitBtnLoading = false;
     },
     /**
      * 编辑按钮
@@ -153,7 +178,9 @@ export default {
      * 添加按钮
      */
     handleCreate() {
+      this.addBtnLoading = true
       this.$emit("handleCreate");
+      this.addBtnLoading = false
     },
   },
 };

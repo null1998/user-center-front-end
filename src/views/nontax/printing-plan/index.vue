@@ -11,8 +11,9 @@
         @handleEdit="handleEdit"
         @handleDelete="handleDelete"
         @handleCreate="handleCreate"
+        @handleSubmit="handleSubmit"
       />
-      
+
       <printing-plan-dialog
         :data="dialogData"
         :tableData="dialogTableData"
@@ -98,6 +99,9 @@ export default {
               case 2:
                 this.tableData[i].status = "已审核";
                 break;
+              case 3:
+                this.tableData[i].status = "已退回"
+                break;
               default:
                 break;
             }
@@ -130,6 +134,7 @@ export default {
       });
     },
     handleEdit(index, row) {
+      if (row.status==='待上报' || row.status==='已退回'){
       getById(row.id).then((res) => {
         if (res && res.body && res.body.data) {
           this.dialogData = res.body.data;
@@ -142,7 +147,7 @@ export default {
           this.dialogTitle = "印制计划-编辑";
           this.dialogType = "update";
         }
-      });
+      });}
     },
     handleDelete(index, row) {
       deleteById(row.id).then((res) => {
@@ -158,22 +163,24 @@ export default {
       });
     },
     handleSubmit(index, row) {
-      row.status = 1;
-      update(row).then((res) => {
-        if (res && res.body && res.body.data) {
-          this.$notify({
-            title: "success",
-            message: "操作成功",
-            type: "success",
-            duration: 2000,
-          });
-          this.getTableData();
-        }
-      });
+      if (row.status === '待上报') {
+        const dto = {...row}
+        dto.status = 1
+        update(dto).then((res) => {
+          if (res && res.body && res.body.data) {
+            this.$notify({
+              title: "success",
+              message: "操作成功",
+              type: "success",
+              duration: 2000,
+            });
+            this.getTableData();
+          }
+        });
+      }
     },
   },
 };
 </script>
 <style>
-
 </style>

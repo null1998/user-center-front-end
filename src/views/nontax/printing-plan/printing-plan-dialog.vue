@@ -3,7 +3,6 @@
   <div>
     <el-dialog
       :visible.sync="visible"
-      :title="title"
       width="75%"
       :show-close="false"
     >
@@ -146,7 +145,8 @@ export default {
   },
   methods: {
     handleSave(index, row) {
-      if (row.id) {
+      if (this.data.status===0 || this.data.status===3) {
+        if (row.id) {
         updatePrintingPlanTicket(row).then((res) => {
           if (res && res.body) {
             this.listPrintingPlanTicket(this.data.id);
@@ -160,9 +160,11 @@ export default {
           }
         });
       }
+      }
+      
     },
     handleDelete(index, row) {
-      if (row.id) {
+      if ((this.data.status===0 || this.data.status===3)&&row.id) {
         deletePrintingPlanTicket(row.id).then((res) => {
           if (res && res.body) {
             this.listPrintingPlanTicket(this.data.id);

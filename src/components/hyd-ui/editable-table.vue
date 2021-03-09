@@ -75,20 +75,22 @@
             v-if="editingRowIndex !== scope.$index"
             :loading="delBtnLoading"
             @click="handleDelete(scope.$index, scope.row)"
+            type="danger"
             style="box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04)"
             >删除</el-button
           >
           <el-button
             size="mini"
-            icon="el-icon-success"
+            icon="el-icon-circle-check"
             v-if="editingRowIndex === scope.$index"
+            :loading="saveBtnLoading"
             @click="handleSave(scope.$index, scope.row)"
             style="box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04)"
             >保存</el-button
           >
           <el-button
             size="mini"
-            icon="el-icon-close"
+            icon="el-icon-circle-close"
             v-if="editingRowIndex === scope.$index"
             @click="handleCancel(scope.$index, scope.row)"
             style="box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04)"
@@ -104,7 +106,7 @@
         width: 100%;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
       "
-      @click="handleCreate()"
+      @click="handleAdd()"
       >添加</el-button
     >
   </div>
@@ -146,7 +148,7 @@ export default {
       selector: false,
       edit: false,
       del: false,
-      editBtnLoading: false,
+      saveBtnLoading: false,
       delBtnLoading: false,
       editingRowIndex: -1,
       originRow: undefined,
@@ -207,9 +209,9 @@ export default {
      * 保存按钮
      */
     handleSave(index, row) {
-      this.editBtnLoading = true;
+      this.saveBtnLoading = true;
       this.$emit("handleSave", index, row);
-      this.editBtnLoading = false;
+      this.saveBtnLoading = false;
       this.editingRowIndex = -1;
       this.sumRow = this.myTableData.length;
     },

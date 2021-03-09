@@ -3,10 +3,14 @@
   <div>
     <el-dialog
       :visible.sync="visible"
-      :before-close="close"
-      :title="title"
       width="35%"
+      :show-close="false"
     >
+      <div slot="title" class="header-title">
+        <i class="el-icon-s-data" style="font-family: 'PingFang SC'">{{ title }}</i>
+        <i class="el-icon-circle-close" style="float: right;" @click="close">退出</i>
+        <i class="el-icon-circle-check" style="float: right;" @click="handle">保存</i>    
+      </div>
       <el-form
         ref="myform"
         :model="data"
@@ -40,10 +44,6 @@
           </el-date-picker>
         </el-form-item>
       </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="close">取 消</el-button>
-        <el-button type="primary" @click="handle">确 定</el-button>
-      </span>
     </el-dialog>
   </div>
 </template>
