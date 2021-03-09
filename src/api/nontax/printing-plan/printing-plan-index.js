@@ -55,3 +55,15 @@ export function getById(id) {
     method: 'get'
   })
 }
+/**
+ * 根据父单位ID,印制计划状态,年度，查询子单位的印制计划列表
+ * @param {父单位ID,印制计划状态,年度} params 
+ * @returns 
+ */
+export function listByParentUnitIdAndStatusAndYear(params) {
+  return request({
+    url: '/nontax/financial/printing/plan/list',
+    method: 'get',
+    params: params
+  })
+}

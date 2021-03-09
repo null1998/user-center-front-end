@@ -18,7 +18,6 @@
       :tableData="permissionList"
       :tableColumns="permissionTableColumons"
       :loading="permissionListLoading"
-      :handleRowClassName="handleRowClassName"
       @handleEdit="handleUpdate"
       @handleDelete="handleDelete"
     ></hyd-table>

@@ -13,7 +13,6 @@
         @handleCreate="handleCreate"
         @handleSubmit="handleSubmit"
       />
-
       <printing-plan-dialog
         :data="dialogData"
         :tableData="dialogTableData"
@@ -117,7 +116,7 @@ export default {
     },
     handleCreate() {
       this.dialogData.unitId = this.$store.getters.unitId;
-      this.dialogData.year = new Date().getFullYear();
+      this.dialogData.year = new Date().getFullYear()+1;
       save(this.dialogData).then((res) => {
         if (res && res.body && res.body.data) {
           this.$notify({

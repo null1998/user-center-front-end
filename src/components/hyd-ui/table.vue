@@ -33,9 +33,18 @@
         label="操作"
         fixed="right"
         width="260"
-        v-if="edit || del"
+        v-if="edit || del || submit || check"
       >
         <template slot-scope="scope">
+          <el-button
+            size="mini"
+            icon="el-icon-s-check"
+            v-if="check"
+            :loading="checkBtnLoading"
+            @click="handleCheck(scope.$index, scope.row)"
+            style="box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12),0 0 6px rgba(0, 0, 0, 0.04); "
+            >审核</el-button
+          >
           <el-button
             size="mini"
             icon="el-icon-upload2"
@@ -114,10 +123,12 @@ export default {
   data() {
     return {
       selector: false,
+      check:false,
       submit:false,
       edit: false,
       del: false,
       add: false,
+      checkBtnLoading:false,
       submitBtnLoading:false,
       editBtnLoading: false,
       delBtnLoading: false,
@@ -128,6 +139,9 @@ export default {
     // 监听父组件传进来的数据
     if (this.$listeners["handleSelectionChange"]) {
       this.selector = true;
+    }
+    if (this.$listeners["handleCheck"]) {
+      this.check = true;
     }
     if (this.$listeners["handleSubmit"]) {
       this.submit = true;
@@ -149,6 +163,14 @@ export default {
     handleSelectionChange(rows) {
       // 回调父组件函数
       this.$emit("handleSelectionChange", rows);
+    },
+    /**
+     * 审核
+     */
+    handleCheck(index, row) {
+      this.checkBtnLoading = true;
+      this.$emit("handleCheck", index, row);
+      this.checkBtnLoading = false;
     },
     /**
      * 上报按钮
