@@ -6,9 +6,12 @@
       :key="tableKey"
       :data="tableData"
       v-loading="loading"
-      style="width: 100%"
+      style="
+        width: 100%;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
+      "
       @selection-change="handleSelectionChange"
-      :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
+      :header-cell-style="{ background: '#409EFF', color: '#FFFFFF' }"
       :row-class-name="handleRowClassName"
       border
     >
@@ -36,27 +39,34 @@
           <el-button
             size="mini"
             icon="el-icon-edit"
-            round
             v-if="edit"
             :loading="editBtnLoading"
             @click="handleEdit(scope.$index, scope.row)"
+            style="box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12),0 0 6px rgba(0, 0, 0, 0.04); "
             >编辑</el-button
           >
           <el-button
             size="mini"
             icon="el-icon-delete"
-            round
             v-if="del"
             :loading="delBtnLoading"
             @click="handleDelete(scope.$index, scope.row)"
+            style="box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12),0 0 6px rgba(0, 0, 0, 0.04);"
             >删除</el-button
           >
         </template>
       </el-table-column>
     </el-table>
-    <div v-if="add" class="el-table-add-row" style="width: 100%" @click="handleCreate()">
-      <span>+ 添加</span>
-    </div>
+    <el-button
+      v-if="add"
+      icon="el-icon-plus"
+      style="
+        width: 100%;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
+      "
+      @click="handleCreate()"
+      >添加</el-button
+    >
   </div>
 </template>
 
@@ -95,7 +105,7 @@ export default {
       selector: false,
       edit: false,
       del: false,
-      add:false,
+      add: false,
       editBtnLoading: false,
       delBtnLoading: false,
     };
@@ -143,8 +153,8 @@ export default {
      * 添加按钮
      */
     handleCreate() {
-      this.$emit("handleCreate")
-    }
+      this.$emit("handleCreate");
+    },
   },
 };
 </script>
@@ -177,17 +187,7 @@ export default {
 }
 .el-button:hover,
 .el-button:focus {
-  border-color: #18ab8f;
+  border-color: #409eff;
 }
-.el-table-add-row {
-  margin-top: 10px;
-  width: 100%;
-  height: 34px;
-  border: 1px dashed #c1c1cd;
-  border-radius: 3px;
-  cursor: pointer;
-  justify-content: center;
-  display: flex;
-  line-height: 34px;
-}
+
 </style>

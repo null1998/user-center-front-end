@@ -8,9 +8,9 @@
       :show-close="false"
     >
       <div slot="title" class="header-title">
-        <i class="el-icon-s-data">{{ title }}</i>
-        <el-button style="float:right" size="mini" icon="el-icon-close" @click="close">退出</el-button>
-        <el-button style="float:right" size="mini" icon="el-icon-success" @click="handleSaveDialog">保存</el-button>         
+        <i class="el-icon-s-data" style="font-family: 'PingFang SC'">{{ title }}</i>
+        <i class="el-icon-circle-close" style="float: right;" @click="close">退出</i>
+        <i class="el-icon-circle-check" style="float: right;" @click="handleSaveDialog">保存</i>    
       </div>
       <el-form v-model="data">
         <el-form-item label="年度">
@@ -121,13 +121,13 @@ export default {
       ticketList: [],
       currentYear: new Date().getFullYear(),
       year: new Date().getFullYear(),
-      myTableData:this.tableData
+      myTableData: this.tableData,
     };
   },
-  watch:{
-    tableData(val){
-      this.myTableData = val
-    }
+  watch: {
+    tableData(val) {
+      this.myTableData = val;
+    },
   },
   created() {
     listAll().then((res) => {
@@ -164,17 +164,22 @@ export default {
     handleDelete(index, row) {
       if (row.id) {
         deletePrintingPlanTicket(row.id).then((res) => {
-        if (res && res.body) {
-          this.listPrintingPlanTicket(this.data.id);
-        }
-      });
+          if (res && res.body) {
+            this.listPrintingPlanTicket(this.data.id);
+          }
+        });
       }
-      
     },
     handleSaveDialog() {
       this.data.year = this.year;
       update(this.data).then((res) => {
         if (res && res.body && res.body.data) {
+          this.$notify({
+            title: "success",
+            message: "操作成功",
+            type: "success",
+            duration: 2000,
+          });
           this.close();
         }
       });
