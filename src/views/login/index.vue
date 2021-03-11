@@ -82,7 +82,8 @@ export default {
     };
     return {
       loginForm: {
-        username: "user-center-super",
+        //username: "user-center-super",
+        username: '福建省财政操作员',
         password: "111111",
       },
       loginRules: {

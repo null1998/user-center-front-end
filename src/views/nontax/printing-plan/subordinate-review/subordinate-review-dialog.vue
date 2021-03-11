@@ -37,6 +37,7 @@
 </template>
 
 <script>
+import { check } from "@/api/nontax/printing-plan/printing-plan-index";
 export default {
   name: "",
   props: {
@@ -51,7 +52,7 @@ export default {
       tableKey: 0,
       tableColumns:[
         {
-          prop: "ticketId",
+          prop: "ticketName",
           label: "财政票据名称",
         },
         {
@@ -71,11 +72,24 @@ export default {
           label: "四季度",
         },
       ],
-      tableLoading:false
+      tableLoading:false,
+      myData:this.data
     };
   },
+  watch:{
+    data(val){
+      this.myData = val
+    }
+  },
   methods: {
-    handleCheck(result) {},
+    handleCheck(result) {
+      this.myData.status = result ? 2 : 3
+      check(this.myData).then(res=>{
+        if (res&&res.body) {
+          this.close()
+        }
+      })
+    },
   },
 };
 </script>

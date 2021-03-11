@@ -123,7 +123,7 @@
       :loading="roleListLoading"
       :tableKey="tableKey"
       :tableData="roleList"
-      :tableColumns="permissionTableColumons"
+      :tableColumns="roleTableColumons"
       @handleSelectionChange="handleTableSelect"
     ></hyd-table>
       <div slot="footer" class="dialog-footer">

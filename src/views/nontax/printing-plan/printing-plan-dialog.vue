@@ -54,7 +54,7 @@
           <hyd-table
             :tableKey="subordinateTableKey"
             :tableData="subordinateTableData"
-            :tableColumns="tableColumons"
+            :tableColumns="subordinateTableColumns"
             :loading="subordinateTableLoading"
           />
         </el-tab-pane>
@@ -66,7 +66,7 @@
 
 <script>
 import { listAll } from "@/api/basedata/ticket";
-import { update } from "@/api/nontax/printing-plan/printing-plan-index";
+import { update, listByParentUnitIdAndStatusAndYear } from "@/api/nontax/printing-plan/printing-plan-index";
 import {
   update as updatePrintingPlanTicket,
   listByPrintingPlanId,
@@ -121,6 +121,28 @@ export default {
       lastYearTableData: [],
       lastYearTableLoading: false,
       subordinateTableKey: 0,
+      subordinateTableColumns:[
+        {
+          prop: "ticketName",
+          label: "财政票据名称",
+        },
+        {
+          prop: "theFirstSeason",
+          label: "一季度",
+        },
+        {
+          prop: "theSecondSeason",
+          label: "二季度",
+        },
+        {
+          prop: "theThirdSeason",
+          label: "三季度",
+        },
+        {
+          prop: "theFourthSeason",
+          label: "四季度",
+        },
+      ],
       subordinateTableData: [],
       subordinateTableLoading: false,
       ticketList: [],
@@ -148,6 +170,7 @@ export default {
         console.log(this.tableColumons[0].options);
       }
     });
+    this.getSubordinateTableData()
   },
   methods: {
     handleSave(index, row) {
@@ -160,11 +183,14 @@ export default {
           });
         } else {
           row.printingPlanId = this.data.id;
-          savePrintingPlanTicket(row).then((res) => {
+          
+            savePrintingPlanTicket(row).then((res) => {
             if (res && res.body) {
               this.listPrintingPlanTicket(this.data.id);
             }
           });
+          
+          
         }
       }
     },
@@ -198,6 +224,24 @@ export default {
         }
       });
     },
+    getSubordinateTableData(){
+      const params = {}
+      params.parentUnitId = this.$store.getters.unitId
+      params.printingPlanStatus = 2
+      params.year = new Date().getFullYear()+1
+      listByParentUnitIdAndStatusAndYear(params).then(res=>{
+        if (res&&res.body&&res.body.data) {
+          for (let i = 0; i < res.body.data.length; i++) {
+            const element = res.body.data[i];
+            listByPrintingPlanId(element.id).then(res=>{
+              if (res&&res.body&&res.body.data) {
+                this.subordinateTableData = this.subordinateTableData.concat(res.body.data)
+              }
+            })
+          }
+        }
+      })
+    }
   },
 };
 </script>

@@ -35,6 +35,18 @@ export function update(dto) {
   })
 }
 /**
+ * 审核
+ * @param {印制计划} dto 
+ * @returns 
+ */
+export function check(dto) {
+  return request({
+    url: '/nontax/financial/printing/plan/review',
+    method: 'put',
+    data:dto
+  })
+}
+/**
  * 根据单位ID查询印制计划列表
  * @param {单位ID} unitId 
  */

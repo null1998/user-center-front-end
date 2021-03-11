@@ -226,6 +226,9 @@ export default {
      * 添加按钮
      */
     handleAdd() {
+      if(this.myTableData.length === 0) {
+        this.editingRowIndex = -1
+      }
       if (this.myTableData.length > this.sumRow) {
         return;
       }

@@ -342,25 +342,25 @@ export const asyncRoutes = [
   {
     path: '/nontax/printing/plan',
     component: Layout,
-    meta: { title: '印制计划', icon: 'el-icon-s-promotion',roles: ['财政票据系统路由角色']},
+    meta: { title: '印制计划', icon: 'el-icon-date',roles: ['财政票据系统路由角色']},
     children: [
       {
         path: 'limit-date',
         name: 'limit-date',
         component: () => import('@/views/nontax/printing-plan/limit-date/index'),
-        meta: { title: '印制计划上报设置', icon: 'el-icon-s-promotion', roles: ['印制计划时间限制-查询与编辑'] }
+        meta: { title: '印制计划上报设置', icon: 'el-icon-upload', roles: ['印制计划时间限制-查询与编辑'] }
       },
       {
         path: 'subordinate-review',
         name: 'subordinate-review',
         component: () => import('@/views/nontax/printing-plan/subordinate-review/index'),
-        meta: { title: '下级印制计划审核', icon: 'el-icon-s-promotion', roles: ['财政票据系统路由角色'] }
+        meta: { title: '下级印制计划审核', icon: 'el-icon-s-check', roles: ['印制计划-查询与审核'] }
       },
       {
         path: 'printing-plan',
         name: 'printing-plan',
         component: () => import('@/views/nontax/printing-plan/index'),
-        meta: { title: '本级印制计划维护', icon: 'el-icon-s-promotion', roles: ['财政票据系统路由角色'] }
+        meta: { title: '本级印制计划维护', icon: 'el-icon-edit', roles: ['印制计划-查询与编辑'] }
       }
     ]
   },
