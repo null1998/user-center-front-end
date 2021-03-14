@@ -264,6 +264,16 @@ export const constantRoutes = [
       meta: { title: 'Dashboard', icon: 'dashboard' }
     }]
   },
+  {
+    path: '/basedata/ticket',
+    component: Layout,
+    children: [{
+      path: 'ticket',
+      name: 'Ticket',
+      component: () => import('@/views/basedata/ticket/index'),
+      meta:{title: '票据管理',icon: 'el-icon-s-management'}
+    }]
+  }
   // {
   //   path: '/404',
   //   component: () => import('@/views/404'),

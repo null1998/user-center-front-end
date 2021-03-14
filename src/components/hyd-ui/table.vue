@@ -42,6 +42,7 @@
             v-if="check"
             :loading="checkBtnLoading"
             @click="handleCheck(scope.$index, scope.row)"
+            class="pan-btn light-blue-btn"
             style="box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12),0 0 6px rgba(0, 0, 0, 0.04); "
             >审核</el-button
           >
@@ -51,6 +52,7 @@
             v-if="submit"
             :loading="submitBtnLoading"
             @click="handleSubmit(scope.$index, scope.row)"
+            class="pan-btn light-blue-btn"
             style="box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12),0 0 6px rgba(0, 0, 0, 0.04); "
             >上报</el-button
           >
@@ -60,6 +62,7 @@
             v-if="edit"
             :loading="editBtnLoading"
             @click="handleEdit(scope.$index, scope.row)"
+            class="pan-btn light-blue-btn"
             style="box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12),0 0 6px rgba(0, 0, 0, 0.04); "
             >编辑</el-button
           >
@@ -69,6 +72,7 @@
             v-if="del"
             :loading="delBtnLoading"
             @click="handleDelete(scope.$index, scope.row)"
+            class="pan-btn light-blue-btn"
             style="box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12),0 0 6px rgba(0, 0, 0, 0.04);"
             type="danger"
             >删除</el-button
@@ -78,14 +82,13 @@
     </el-table>
     <el-button
       v-if="add"
-      icon="el-icon-plus"
       :loading="addBtnLoading"
       style="
         width: 100%;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
       "
       @click="handleCreate()"
-      >添加</el-button
+      ><mallki class-name="mallki-text" text="添加" /></el-button
     >
   </div>
 </template>
@@ -234,9 +237,9 @@ export default {
 .el-table .success-row {
   background: #67c23a7c;
 }
-.el-button:hover,
+/* .el-button:hover,
 .el-button:focus {
   border-color: #409eff;
-}
+} */
 
 </style>

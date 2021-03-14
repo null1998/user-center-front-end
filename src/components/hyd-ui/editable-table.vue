@@ -27,6 +27,9 @@
       >
         <template slot-scope="scope">
           <span v-if="editingRowIndex === scope.$index">
+            <div v-if="item.type === 'show'">
+              {{scope.row[item.prop]}}
+            </div>
             <el-input
               v-if="item.type === 'input'"
               size="mini"
@@ -66,6 +69,7 @@
             icon="el-icon-edit"
             v-if="editingRowIndex !== scope.$index"
             @click="handleEdit(scope.$index, scope.row)"
+            class="pan-btn light-blue-btn"
             style="box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04)"
             >编辑</el-button
           >
@@ -76,6 +80,7 @@
             :loading="delBtnLoading"
             @click="handleDelete(scope.$index, scope.row)"
             type="danger"
+            class="pan-btn light-blue-btn"
             style="box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04)"
             >删除</el-button
           >
@@ -85,6 +90,7 @@
             v-if="editingRowIndex === scope.$index"
             :loading="saveBtnLoading"
             @click="handleSave(scope.$index, scope.row)"
+            class="pan-btn light-blue-btn"
             style="box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04)"
             >保存</el-button
           >
@@ -93,6 +99,7 @@
             icon="el-icon-circle-close"
             v-if="editingRowIndex === scope.$index"
             @click="handleCancel(scope.$index, scope.row)"
+            class="pan-btn light-blue-btn"
             style="box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04)"
             >取消</el-button
           >
@@ -101,13 +108,14 @@
     </el-table>
 
     <el-button
-      icon="el-icon-plus"
       style="
         width: 100%;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
       "
       @click="handleAdd()"
-      >添加</el-button
+      >
+      <mallki class-name="mallki-text" text="添加" />
+      </el-button
     >
   </div>
 </template>
@@ -158,6 +166,9 @@ export default {
   watch: {
       tableData (val) {
         this.myTableData = val
+      },
+      myTableData(val) {
+
       }
     },
   created() {
@@ -229,9 +240,9 @@ export default {
       if(this.myTableData.length === 0) {
         this.editingRowIndex = -1
       }
-      if (this.myTableData.length > this.sumRow) {
-        return;
-      }
+      // if (this.myTableData.length > this.sumRow) {
+      //   return;
+      // }
       if (this.editingRowIndex !== -1) {
         this.$confirm("有尚未保存的数据, 是否保存?", "提示", {
           confirmButtonText: "确定",
@@ -254,6 +265,7 @@ export default {
         for (let i = 0; i < this.tableColumns[index].options.length; i++) {
           const element = this.tableColumns[index].options[i];
           if (element['value'] === key) {
+            
             return element['label'];
           }
         }
