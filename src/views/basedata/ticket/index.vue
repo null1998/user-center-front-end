@@ -45,6 +45,8 @@ export default {
           label: "地区",
           type: "select",
           options: [],
+          optionLabel:'name',
+          optionValue:'id',
           placeholder: "请选择地区",
         },
         {
@@ -52,6 +54,8 @@ export default {
           label: "类别",
           type: "select",
           options: [],
+          optionLabel:'remark',
+          optionValue:'id',
           placeholder: "请选择类别",
         },
         {
@@ -96,14 +100,8 @@ export default {
     getProvinceZone(){
       listProvinceZone().then(res=>{
         if (res&&res.body&&res.body.data) {
-          var zoneList = res.body.data
-          for (let i = 0; i < zoneList.length; i++) {
-            const zone = zoneList[i];
-            const option = {}
-            option.value = zone.id
-            option.label = zone.name
-            this.tableColumons[3].options.push({...option})
-          }
+          this.tableColumons[3].options = res.body.data
+          console.log(this.tableColumons[3])
         }
       })
     },
@@ -113,14 +111,8 @@ export default {
     getTicketDictionary(params){
       listByCategoryName(params).then(res=>{
         if (res&&res.body&&res.body.data) {
-          var dictionList = res.body.data
-          for (let i = 0; i < dictionList.length; i++) {
-            const dictionary = dictionList[i];
-            const option = {}
-            option.value = dictionary.id
-            option.label = dictionary.remark
-            this.tableColumons[4].options.push({...option})
-          }
+          this.tableColumons[4].options = res.body.data
+          console.log(this.tableColumons[4])
         }
       })
     }

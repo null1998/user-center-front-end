@@ -66,7 +66,10 @@
 
 <script>
 import { listAll } from "@/api/basedata/ticket";
-import { update, listByParentUnitIdAndStatusAndYear } from "@/api/nontax/printing-plan/printing-plan-index";
+import {
+  update,
+  listByParentUnitIdAndStatusAndYear,
+} from "@/api/nontax/printing-plan/printing-plan-index";
 import {
   update as updatePrintingPlanTicket,
   listByPrintingPlanId,
@@ -92,6 +95,8 @@ export default {
           label: "财政票据名称",
           type: "select",
           options: [],
+          optionLabel: "name",
+          optionValue: "id",
           placeholder: "请选择票据",
         },
         {
@@ -121,7 +126,7 @@ export default {
       lastYearTableData: [],
       lastYearTableLoading: false,
       subordinateTableKey: 0,
-      subordinateTableColumns:[
+      subordinateTableColumns: [
         {
           prop: "ticketName",
           label: "财政票据名称",
@@ -159,18 +164,10 @@ export default {
   created() {
     listAll().then((res) => {
       if (res && res.body && res.body.data) {
-        this.ticketList = res.body.data;
-        for (let i = 0; i < this.ticketList.length; i++) {
-          const ticket = this.ticketList[i];
-          const option = {};
-          option.label = ticket.name;
-          option.value = ticket.id;
-          this.tableColumons[0].options.push({ ...option });
-        }
-        console.log(this.tableColumons[0].options);
+        this.tableColumons[0].options = res.body.data;
       }
     });
-    this.getSubordinateTableData()
+    this.getSubordinateTableData();
   },
   methods: {
     handleSave(index, row) {
@@ -183,14 +180,12 @@ export default {
           });
         } else {
           row.printingPlanId = this.data.id;
-          
-            savePrintingPlanTicket(row).then((res) => {
+
+          savePrintingPlanTicket(row).then((res) => {
             if (res && res.body) {
               this.listPrintingPlanTicket(this.data.id);
             }
           });
-          
-          
         }
       }
     },
@@ -224,24 +219,26 @@ export default {
         }
       });
     },
-    getSubordinateTableData(){
-      const params = {}
-      params.parentUnitId = this.$store.getters.unitId
-      params.printingPlanStatus = 2
-      params.year = new Date().getFullYear()+1
-      listByParentUnitIdAndStatusAndYear(params).then(res=>{
-        if (res&&res.body&&res.body.data) {
+    getSubordinateTableData() {
+      const params = {};
+      params.parentUnitId = this.$store.getters.unitId;
+      params.printingPlanStatus = 2;
+      params.year = new Date().getFullYear() + 1;
+      listByParentUnitIdAndStatusAndYear(params).then((res) => {
+        if (res && res.body && res.body.data) {
           for (let i = 0; i < res.body.data.length; i++) {
             const element = res.body.data[i];
-            listByPrintingPlanId(element.id).then(res=>{
-              if (res&&res.body&&res.body.data) {
-                this.subordinateTableData = this.subordinateTableData.concat(res.body.data)
+            listByPrintingPlanId(element.id).then((res) => {
+              if (res && res.body && res.body.data) {
+                this.subordinateTableData = this.subordinateTableData.concat(
+                  res.body.data
+                );
               }
-            })
+            });
           }
         }
-      })
-    }
+      });
+    },
   },
 };
 </script>

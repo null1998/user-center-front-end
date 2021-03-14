@@ -47,16 +47,16 @@
               :placeholder="item.placeholder"
             >
               <el-option
-                v-for="op in item.options"
-                :label="op.label"
-                :value="op.value"
-                :key="op.value"
+                v-for="option in item.options"
+                :label="option[item.optionLabel?item.optionLabel:'label']"
+                :value="option[item.optionValue?item.optionValue:'value']"
+                :key="option[item.optionValue?item.optionValue:'value']"
               ></el-option>
             </el-select>
           </span>
           <span v-else>{{
             item.type === "select"
-              ? showSelectorValue(index, scope.row[item.prop])
+              ? showSelectorValue(index, scope.row[item.prop],item.optionLabel,item.optionValue)
               : scope.row[item.prop]
           }}</span>
         </template>
@@ -260,13 +260,13 @@ export default {
         this.myTableData.push({});
       }
     },
-    showSelectorValue(index, key) {
+    showSelectorValue(index, key, optionLabel, optionValue) {
       if (key) {
         for (let i = 0; i < this.tableColumns[index].options.length; i++) {
           const element = this.tableColumns[index].options[i];
-          if (element['value'] === key) {
+          if (element[optionValue?optionValue:'value'] === key) {
             
-            return element['label'];
+            return element[optionLabel?optionLabel:'label'];
           }
         }
       }
