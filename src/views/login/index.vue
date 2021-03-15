@@ -83,7 +83,7 @@ export default {
     return {
       loginForm: {
         //username: "user-center-super",
-        username: '福建省财政操作员',
+        username: '',
         password: "111111",
       },
       loginRules: {

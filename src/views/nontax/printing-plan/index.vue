@@ -117,6 +117,7 @@ export default {
     handleCreate() {
       this.dialogData.unitId = this.$store.getters.unitId;
       this.dialogData.year = new Date().getFullYear()+1;
+      this.dialogData.person = this.$store.getters.nickname
       this.dialogData.status = 0
       save(this.dialogData).then((res) => {
         if (res && res.body && res.body.data) {

@@ -34,9 +34,15 @@
         label-width="70px"
         style="width: 400px; margin-left: 50px"
       >
-        <el-form-item label="用户名" prop="username">
+        <el-form-item label="账号" prop="username">
           <el-input
             v-model="userData.username"
+            :disabled="this.dialogStatus === 'update'"
+          />
+        </el-form-item>
+        <el-form-item label="用户名" prop="nickname">
+          <el-input
+            v-model="userData.nickname"
             :disabled="this.dialogStatus === 'update'"
           />
         </el-form-item>
@@ -178,7 +184,11 @@ export default {
       userTableColumons: [
         {
           prop: "username",
-          label: "用户名",
+          label: "账号",
+        },
+        {
+          prop:'nickname',
+          label: '用户名'
         },
         {
           prop: "sex",
@@ -220,7 +230,7 @@ export default {
             trigger: ["blur", "change"],
           },
         ],
-        tel: [{ validator: checkPhoneNumberValidator, trigger: "change" }],
+        //tel: [{ validator: checkPhoneNumberValidator, trigger: "change" }],
         password: [{ validator: validatePass, trigger: "blur" }],
         confirmPassword: [{ validator: validatePass2, trigger: "blur" }],
       },

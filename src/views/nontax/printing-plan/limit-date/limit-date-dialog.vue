@@ -5,6 +5,7 @@
       :visible.sync="visible"
       width="35%"
       :show-close="false"
+      :before-close="close"
     >
       <div slot="title" class="header-title">
         <i class="el-icon-s-data" style="font-family: 'PingFang SC'">{{ title }}</i>
@@ -18,20 +19,6 @@
         label-width="110px"
         label-position="right"
       >
-        <el-form-item prop="year" label="年度">
-          <el-select v-model="data.year" style="width: 350px">
-            <el-option
-              :label="currentYear"
-              :value="currentYear"
-              :key="currentYear"
-            ></el-option>
-            <el-option
-              :label="currentYear + 1"
-              :value="currentYear + 1"
-              :key="currentYear + 1"
-            ></el-option>
-          </el-select>
-        </el-form-item>
         <el-form-item prop="dateRange" label="上报日期范围">
           <el-date-picker
             v-model="data.dateRange"
@@ -67,16 +54,14 @@ export default {
         unitId: undefined,
       },
       rules: {
-        year: [{ required: true, message: "请选择年度", trigger: "change" }],
+        //year: [{ required: true, message: "请选择年度", trigger: "change" }],
         dateRange: [
           { required: true, message: "请选择上报日期", trigger: "blur" },
         ],
       },
-      currentYear: undefined,
     };
   },
   created() {
-    this.currentYear = new Date().getFullYear();
     this.data.unitId = this.$store.getters.unitId;
   },
   methods: {
@@ -84,7 +69,7 @@ export default {
       this.$refs["myform"].validate((valid) => {
         if (valid) {
           var dto = {};
-          dto.year = this.data.year;
+          dto.year = new Date().getFullYear() + 1
           dto.startDate = this.data.dateRange[0];
           dto.endDate = this.data.dateRange[1];
           dto.unitId = this.data.unitId;

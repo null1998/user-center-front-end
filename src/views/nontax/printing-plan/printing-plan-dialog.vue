@@ -15,24 +15,7 @@
           @click="handleSaveDialog"
           >保存</i
         >
-           
       </div>
-      <el-form v-model="data">
-        <el-form-item label="年度">
-          <el-select v-model="year" style="width: 100px" size="mini">
-            <el-option
-              :label="currentYear"
-              :value="currentYear"
-              :key="currentYear"
-            ></el-option>
-            <el-option
-              :label="currentYear + 1"
-              :value="currentYear + 1"
-              :key="currentYear + 1"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-      </el-form>
       <hyd-editable-table
         :tableKey="tableKey"
         :tableData="myTableData"
@@ -151,8 +134,6 @@ export default {
       subordinateTableData: [],
       subordinateTableLoading: false,
       ticketList: [],
-      currentYear: new Date().getFullYear(),
-      year: new Date().getFullYear(),
       myTableData: this.tableData,
     };
   },
@@ -172,6 +153,7 @@ export default {
   methods: {
     handleSave(index, row) {
       if (this.data.status === 0 || this.data.status === 3) {
+        this.data.person = this.$store.getters.nickname
         if (row.id) {
           updatePrintingPlanTicket(row).then((res) => {
             if (res && res.body) {
@@ -199,7 +181,6 @@ export default {
       }
     },
     handleSaveDialog() {
-      this.data.year = this.year;
       update(this.data).then((res) => {
         if (res && res.body && res.body.data) {
           this.$notify({
