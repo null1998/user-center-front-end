@@ -48,7 +48,8 @@
 </template>
 
 <script>
-import { listAll } from "@/api/basedata/ticket";
+import { listByZoneId } from "@/api/basedata/ticket";
+import { listProvinceZone, getById } from "@/api/basedata/zone";
 import {
   update,
   listByParentUnitIdAndStatusAndYear,
@@ -143,17 +144,24 @@ export default {
     },
   },
   created() {
-    listAll().then((res) => {
-      if (res && res.body && res.body.data) {
-        this.tableColumons[0].options = res.body.data;
+    this.getProvinceZone().then((provinceZone) => {
+      if (provinceZone) {
+        /**
+         * 查询该省的所有票据
+         */
+        listByZoneId(provinceZone.id).then((res) => {
+          if (res && res.body && res.body.data) {
+            this.tableColumons[0].options = res.body.data;
+          }
+        });
+        this.getSubordinateTableData();
       }
     });
-    this.getSubordinateTableData();
   },
   methods: {
     handleSave(index, row) {
       if (this.data.status === 0 || this.data.status === 3) {
-        this.data.person = this.$store.getters.nickname
+        this.data.person = this.$store.getters.nickname;
         if (row.id) {
           updatePrintingPlanTicket(row).then((res) => {
             if (res && res.body) {
@@ -220,6 +228,31 @@ export default {
         }
       });
     },
+    /**
+     * 获取该单位对应的省级区划
+     */
+    getProvinceZone() {
+      return new Promise((resolve, reject) => {
+      const zoneId = this.$store.getters.zoneId;
+      getById(zoneId).then((res) => {
+        if (res && res.body && res.body.data) {
+          const zoneCode = res.body.data.code;
+          listProvinceZone().then((res) => {
+            if (res && res.body && res.body.data) {
+              const zoneList = res.body.data;
+              for (let i = 0; i < zoneList.length; i++) {
+                const zone = zoneList[i];
+                if (zone.code === zoneCode.substring(0, 2)) {
+                  return resolve(zone);
+                }
+              }
+            }
+          });
+        }
+      });
+      });
+    },
+    
   },
 };
 </script>

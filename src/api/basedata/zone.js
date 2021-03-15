@@ -5,3 +5,9 @@ export function listProvinceZone() {
     method: 'get'
   })
 }
+export function getById(id) {
+  return request({
+    url: '/nontax/basedata/zone/'+id,
+    method: 'get'
+  })
+}

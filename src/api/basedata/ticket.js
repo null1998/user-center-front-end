@@ -5,6 +5,12 @@ export function listAll() {
     method: 'get'
   })
 }
+export function listByZoneId(zoneId) {
+  return request({
+    url: '/nontax/basedata/ticket/list/zone/'+zoneId,
+    method: 'get'
+  })
+}
 export function save(dto) {
   return request({
     url: '/nontax/basedata/ticket',
