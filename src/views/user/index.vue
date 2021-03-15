@@ -261,8 +261,10 @@ export default {
   },
   methods: {
     getList() {
+      this.userListLoading=true
       listAllUser().then((resp) => {
         if (resp && resp.body) {
+          this.userListLoading =false
           this.userList = resp.body.data;
         }
       });

@@ -263,16 +263,6 @@ export const constantRoutes = [
       component: () => import('@/views/dashboard/index'),
       meta: { title: 'Dashboard', icon: 'dashboard' }
     }]
-  },
-  {
-    path: '/basedata/ticket',
-    component: Layout,
-    children: [{
-      path: 'ticket',
-      name: 'Ticket',
-      component: () => import('@/views/basedata/ticket/index'),
-      meta:{title: '票据管理',icon: 'el-icon-s-management'}
-    }]
   }
   // {
   //   path: '/404',
@@ -286,6 +276,16 @@ export const constantRoutes = [
  * the routes that need to be dynamically loaded based on user roles
  */
 export const asyncRoutes = [
+  {
+    path: '/basedata/ticket',
+    component: Layout,
+    children: [{
+      path: 'ticket',
+      name: 'Ticket',
+      component: () => import('@/views/basedata/ticket/index'),
+      meta:{title: '票据管理',icon: 'el-icon-s-management',roles:['票据-查询与编辑']}
+    }]
+  },
   {
     path: '/permission',
     component: Layout,
