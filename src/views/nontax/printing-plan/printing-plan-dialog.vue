@@ -1,7 +1,7 @@
 <!-- 本级印制计划对话框 -->
 <template>
   <div>
-    <el-dialog :visible.sync="visible" width="75%" :show-close="false">
+    <el-dialog :visible.sync="visible" width="75%" :show-close="false" :before-close="close">
       <div slot="title" class="header-title">
         <i class="el-icon-s-data" style="font-family: 'PingFang SC'">{{
           title
@@ -213,18 +213,20 @@ export default {
       params.parentUnitId = this.$store.getters.unitId;
       params.printingPlanStatus = 2;
       params.year = new Date().getFullYear() + 1;
+      // 查询下级印制计划
       listByParentUnitIdAndStatusAndYear(params).then((res) => {
         if (res && res.body && res.body.data) {
+          const map = new Map()
           for (let i = 0; i < res.body.data.length; i++) {
-            const element = res.body.data[i];
-            listByPrintingPlanId(element.id).then((res) => {
-              if (res && res.body && res.body.data) {
-                this.subordinateTableData = this.subordinateTableData.concat(
-                  res.body.data
-                );
+            const printingPlan = res.body.data[i];
+            // 查询该印制计划中的票据信息
+            listByPrintingPlanId(printingPlan.id).then((resp) => {
+              if (resp && resp.body && resp.body.data) {
+                this.subordinateTableData = this.subordinateTableData.concat(resp.body.data)
               }
             });
           }
+          
         }
       });
     },
@@ -252,7 +254,6 @@ export default {
       });
       });
     },
-    
   },
 };
 </script>

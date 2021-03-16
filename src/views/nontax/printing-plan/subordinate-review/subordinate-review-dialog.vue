@@ -5,6 +5,7 @@
       :visible.sync="visible"
       width="75%"
       :show-close="false"
+      :before-close="close"
     >
       <div slot="title" class="header-title">
         <i class="el-icon-s-data">{{ title }}</i>
