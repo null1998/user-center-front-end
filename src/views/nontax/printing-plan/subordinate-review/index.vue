@@ -39,6 +39,10 @@ export default {
       tableData: [],
       tableColumons: [
         {
+          prop: "orderNumber",
+          label:"单号"
+        },
+        {
           prop: "year",
           label: "计划年度",
           sortable: true,
@@ -50,6 +54,10 @@ export default {
         {
           prop: "person",
           label: "填报人",
+        },
+        {
+          prop: "submitDate",
+          label:"填报日期"
         }
       ],
       tableLoading: false,

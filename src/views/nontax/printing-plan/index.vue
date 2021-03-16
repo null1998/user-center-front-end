@@ -51,6 +51,10 @@ export default {
       tableData: [],
       tableColumons: [
         {
+          prop: "orderNumber",
+          label:"单号"
+        },
+        {
           prop: "year",
           label: "计划年度",
           sortable: true,
@@ -58,6 +62,10 @@ export default {
         {
           prop: "person",
           label: "填报人",
+        },
+        {
+          prop: "submitDate",
+          label:"填报日期"
         },
         {
           prop: "status",
@@ -163,10 +171,15 @@ export default {
         }
       });
     },
+    /**
+     * 上报按钮
+     */
     handleSubmit(index, row) {
       if (row.status === '待上报') {
         const dto = {...row}
         dto.status = 1
+        const now = new Date()
+        dto.submitDate = now.getFullYear()+'年'+parseInt(now.getMonth()+1)+'月'+now.getDate()+'日'
         update(dto).then((res) => {
           if (res && res.body && res.body.data) {
             this.$notify({
