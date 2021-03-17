@@ -5,6 +5,16 @@
     <breadcrumb class="breadcrumb-container" />
 
     <div class="right-menu">
+      <!-- <template>
+        <search id="header-search" class="right-menu-item" />
+
+        <screenfull id="screenfull" class="right-menu-item hover-effect" />
+
+        <el-tooltip content="Global Size" effect="dark" placement="bottom">
+          <size-select id="size-select" class="right-menu-item hover-effect" />
+        </el-tooltip>
+
+      </template> -->
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
           <el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></el-avatar>
@@ -29,11 +39,16 @@
 import { mapGetters } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
-
+import Screenfull from '@/components/Screenfull'
+import SizeSelect from '@/components/SizeSelect'
+import Search from '@/components/HeaderSearch'
 export default {
   components: {
     Breadcrumb,
-    Hamburger
+    Hamburger,
+    Screenfull,
+    SizeSelect,
+    Search
   },
   computed: {
     ...mapGetters([
@@ -49,6 +64,7 @@ export default {
     async logout() {
       await this.$store.dispatch('user/logout')
       this.$router.push(`/login`)
+      location.reload()
     }
   }
 }

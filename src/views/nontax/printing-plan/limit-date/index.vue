@@ -28,7 +28,7 @@ import {
 } from "@/api/nontax/printing-plan/limit-date";
 export default {
   components: { limitDateDialog },
-  name: "",
+  name: "limit-date",
   data() {
     return {
       tableKey: 0,

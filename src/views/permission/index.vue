@@ -109,7 +109,7 @@
 <script>
 import { listPermission, save, update, deleteById } from "@/api/permission";
 export default {
-  name: "",
+  name: "permission",
   data() {
     return {
       dialogEditCfg:[

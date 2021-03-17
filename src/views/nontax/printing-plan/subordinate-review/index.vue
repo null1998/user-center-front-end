@@ -30,7 +30,7 @@ import { listByPrintingPlanId } from "@/api/nontax/printing-plan/printing-plan-t
 import subordinateReviewDialog from './subordinate-review-dialog.vue';
 export default {
   components: { subordinateReviewDialog },
-  name: '',
+  name: 'subordinate-review',
   data () {
     return {
       showTable: false,

@@ -139,7 +139,7 @@ import { listPermission } from "@/api/permission";
 import { saveList as saveRolePermissionList } from "@/api/role-permission";
 import { saveList as saveRoleRelateList } from "@/api/role-relate";
 export default {
-  name: "",
+  name: "role",
   data() {
     return {
       editCfg: [

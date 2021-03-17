@@ -24,7 +24,7 @@ import {
 } from "@/api/basedata/ticket";
 import { pinyin } from "@/utils/pinyin";
 export default {
-  name: "",
+  name: "ticket",
   data() {
     return {
       tableKey: 0,

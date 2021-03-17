@@ -42,7 +42,7 @@ import {
 import { listByPrintingPlanId } from "@/api/nontax/printing-plan/printing-plan-ticket";
 export default {
   components: { printingPlanDialog },
-  name: "",
+  name: "printing-plan",
   data() {
     return {
       showTable: false,

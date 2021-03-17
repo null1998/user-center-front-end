@@ -133,7 +133,7 @@ import { listAll as listAllUnit } from "@/api/basedata/unit";
 import { listAll as listAllUser, save, removeById, update } from "@/api/user";
 import { listRole } from "@/api/role";
 export default {
-  name: "",
+  name: "user",
   data() {
     const checkPhoneNumberValidator = (rule, value, callback) => {
       // if (this.dialogStatus == "update" && (!value || value === "")) {

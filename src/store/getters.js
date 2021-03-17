@@ -9,6 +9,8 @@ const getters = {
   id: state => state.user.id,
   unitId: state => state.user.unitId,
   nickname: state => state.user.nickname,
-  zoneId:state=>state.user.zoneId
+  zoneId: state => state.user.zoneId,
+  visitedViews: state => state.tagsView.visitedViews,
+  cachedViews: state => state.tagsView.cachedViews,
 }
 export default getters
