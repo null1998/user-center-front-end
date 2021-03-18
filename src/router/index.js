@@ -154,7 +154,13 @@ export const asyncRoutes = [
         name: 'printing-plan',
         component: () => import('@/views/nontax/printing-plan/index'),
         meta: { title: '本级印制计划维护', icon: 'el-icon-edit', roles: ['印制计划-查询与编辑'] }
-      }
+      },
+      {
+        path: 'printing-order',
+        name: 'printing-order',
+        component: () => import('@/views/nontax/printing-order/index'),
+        meta: { title: '省级财政印制订单', icon: 'el-icon-s-order', roles: ['印制订单-查询与编辑'] }
+      },
     ]
   },
   // 404 page must be placed at the end !!!

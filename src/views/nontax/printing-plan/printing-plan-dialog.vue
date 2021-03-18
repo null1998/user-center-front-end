@@ -1,7 +1,12 @@
 <!-- 本级印制计划对话框 -->
 <template>
   <div>
-    <el-dialog :visible.sync="visible" width="75%" :show-close="false" :before-close="close">
+    <el-dialog
+      :visible.sync="visible"
+      width="75%"
+      :show-close="false"
+      :before-close="close"
+    >
       <div slot="title" class="header-title">
         <i class="el-icon-s-data" style="font-family: 'PingFang SC'">{{
           title
@@ -154,7 +159,7 @@ export default {
             this.tableColumons[0].options = res.body.data;
           }
         });
-        this.getSubordinateTableData();
+        this.listSubordinatePrintingPlanTicket(this.$store.getters.unitId);
       }
     });
   },
@@ -208,26 +213,70 @@ export default {
         }
       });
     },
-    getSubordinateTableData() {
+    /**
+     * 查询下级单位下年的审核通过的印制计划票据
+     * @param {父级单位id} parentUnitId
+     */
+    listSubordinatePrintingPlanTicket(parentUnitId) {
       const params = {};
-      params.parentUnitId = this.$store.getters.unitId;
+      params.parentUnitId = parentUnitId;
       params.printingPlanStatus = 2;
       params.year = new Date().getFullYear() + 1;
-      // 查询下级印制计划
+      // 查询下级单位下年的审核通过的印制计划
       listByParentUnitIdAndStatusAndYear(params).then((res) => {
         if (res && res.body && res.body.data) {
-          const map = new Map()
-          for (let i = 0; i < res.body.data.length; i++) {
-            const printingPlan = res.body.data[i];
-            // 查询该印制计划中的票据信息
-            listByPrintingPlanId(printingPlan.id).then((resp) => {
-              if (resp && resp.body && resp.body.data) {
-                this.subordinateTableData = this.subordinateTableData.concat(resp.body.data)
+          // 查询其中的所有票据
+          this.listPrintingPlanTicket(res.body.data).then(
+            (printingPlanTicketList) => {
+              var map = new Map();
+              for (let i = 0; i < printingPlanTicketList.length; i++) {
+                const printingPlanTicket = { ...printingPlanTicketList[i] };
+                if (map.get(printingPlanTicket.ticketId)) {
+                  let old = map.get(printingPlanTicket.ticketId);
+                  old.theFirstSeason =
+                    parseInt(old.theFirstSeason) +
+                    parseInt(printingPlanTicket.theFirstSeason);
+                  old.theSecondSeason =
+                    parseInt(old.theSecondSeason) +
+                    parseInt(printingPlanTicket.theSecondSeason);
+                  old.theThirdSeason =
+                    parseInt(old.theThirdSeason) +
+                    parseInt(printingPlanTicket.theThirdSeason);
+                  old.theFourthSeason =
+                    parseInt(old.theFourthSeason) +
+                    parseInt(printingPlanTicket.theFourthSeason);
+                  map.set(printingPlanTicket.ticketId, old);
+                } else {
+                  map.set(printingPlanTicket.ticketId, printingPlanTicket);
+                }
+              }
+              for (var value of map.values()) {
+                this.subordinateTableData.push(value)
+              }
+            }
+          );
+        }
+      });
+    },
+    /**
+     * 根据印制计划列表查询所有票据
+     */
+    listPrintingPlanTicket(printingPlanList) {
+      return new Promise(async (resolve, reject) => {
+        let printingPlanTicketList = [];
+        for (let i = 0; i < printingPlanList.length; i++) {
+          const printingPlan = printingPlanList[i];
+          if (printingPlan.id) {
+            await listByPrintingPlanId(printingPlan.id).then((res) => {
+              if (res && res.body && res.body.data) {
+                printingPlanTicketList = printingPlanTicketList.concat(
+                  res.body.data
+                );
               }
             });
           }
-          
         }
+        resolve(printingPlanTicketList);
       });
     },
     /**
@@ -235,23 +284,23 @@ export default {
      */
     getProvinceZone() {
       return new Promise((resolve, reject) => {
-      const zoneId = this.$store.getters.zoneId;
-      getById(zoneId).then((res) => {
-        if (res && res.body && res.body.data) {
-          const zoneCode = res.body.data.code;
-          listProvinceZone().then((res) => {
-            if (res && res.body && res.body.data) {
-              const zoneList = res.body.data;
-              for (let i = 0; i < zoneList.length; i++) {
-                const zone = zoneList[i];
-                if (zone.code === zoneCode.substring(0, 2)) {
-                  return resolve(zone);
+        const zoneId = this.$store.getters.zoneId;
+        getById(zoneId).then((res) => {
+          if (res && res.body && res.body.data) {
+            const zoneCode = res.body.data.code;
+            listProvinceZone().then((res) => {
+              if (res && res.body && res.body.data) {
+                const zoneList = res.body.data;
+                for (let i = 0; i < zoneList.length; i++) {
+                  const zone = zoneList[i];
+                  if (zone.code === zoneCode.substring(0, 2)) {
+                    return resolve(zone);
+                  }
                 }
               }
-            }
-          });
-        }
-      });
+            });
+          }
+        });
       });
     },
   },
