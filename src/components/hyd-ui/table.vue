@@ -58,6 +58,16 @@
           >
           <el-button
             size="mini"
+            icon="el-icon-view"
+            v-if="view"
+            :loading="viewBtnLoading"
+            @click="handleView(scope.$index, scope.row)"
+            class="pan-btn light-blue-btn"
+            style="box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12),0 0 6px rgba(0, 0, 0, 0.04); "
+            >查看</el-button
+          >
+          <el-button
+            size="mini"
             icon="el-icon-edit"
             v-if="edit"
             :loading="editBtnLoading"
@@ -128,11 +138,13 @@ export default {
       selector: false,
       check:false,
       submit:false,
+      view:false,
       edit: false,
       del: false,
       add: false,
       checkBtnLoading:false,
       submitBtnLoading:false,
+      viewBtnLoading:false,
       editBtnLoading: false,
       delBtnLoading: false,
       addBtnLoading:false
@@ -145,6 +157,9 @@ export default {
     }
     if (this.$listeners["handleCheck"]) {
       this.check = true;
+    }
+    if (this.$listeners["handleView"]) {
+      this.view = true;
     }
     if (this.$listeners["handleSubmit"]) {
       this.submit = true;
@@ -182,6 +197,14 @@ export default {
       this.submitBtnLoading = true;
       this.$emit("handleSubmit", index, row);
       this.submitBtnLoading = false;
+    },
+    /**
+     * 查看按钮
+     */
+    handleView(index, row) {
+      this.viewBtnLoading = true;
+      this.$emit("handleView", index, row);
+      this.viewBtnLoading = false;
     },
     /**
      * 编辑按钮

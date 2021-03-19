@@ -38,7 +38,7 @@
             :loading="lastYearTableLoading"
           />
         </el-tab-pane>
-        <el-tab-pane label="下级上报汇总数" name="subordinate">
+        <el-tab-pane label="下级上报汇总参考" name="subordinate">
           <hyd-table
             :tableKey="subordinateTableKey"
             :tableData="subordinateTableData"
@@ -170,6 +170,7 @@ export default {
         if (row.id) {
           updatePrintingPlanTicket(row).then((res) => {
             if (res && res.body) {
+              this.success()
               this.listPrintingPlanTicket(this.data.id);
             }
           });
@@ -178,6 +179,7 @@ export default {
 
           savePrintingPlanTicket(row).then((res) => {
             if (res && res.body) {
+              this.success()
               this.listPrintingPlanTicket(this.data.id);
             }
           });
@@ -188,6 +190,7 @@ export default {
       if ((this.data.status === 0 || this.data.status === 3) && row.id) {
         deletePrintingPlanTicket(row.id).then((res) => {
           if (res && res.body) {
+            this.success()
             this.listPrintingPlanTicket(this.data.id);
           }
         });
@@ -301,6 +304,14 @@ export default {
             });
           }
         });
+      });
+    },
+    success() {
+      this.$notify({
+        title: "success",
+        message: "操作成功",
+        type: "success",
+        duration: 2000,
       });
     },
   },

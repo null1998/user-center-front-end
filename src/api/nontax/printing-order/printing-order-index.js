@@ -19,6 +19,12 @@ export function update(dto) {
     data:dto
   })
 }
+export function getById(id) {
+  return request({
+    url: '/nontax/financial/printing/order/'+id,
+    method: 'get'
+  })
+}
 /**
  * 通用查询，支持id，unitId，printUnitId，status字段
  * @param {} params 

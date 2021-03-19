@@ -15,7 +15,7 @@ export function saveList(dto) {
 }
 export function deleteById(id) {
   return request({
-    url: '/nontax/financial/printing/order/ticket'+id,
+    url: '/nontax/financial/printing/order/ticket/'+id,
     method: 'delete'
   })
 }
