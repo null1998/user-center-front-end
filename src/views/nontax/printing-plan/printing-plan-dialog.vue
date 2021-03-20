@@ -162,13 +162,18 @@ export default {
   },
   methods: {
     handleSave(index, row) {
+      // 数据不合法，返回
+      if (!this.dataValid(row)) {
+        this.getTableData()
+        return;
+      }
       if (this.data.status === 0 || this.data.status === 3) {
         this.data.person = this.$store.getters.nickname;
         if (row.id) {
           updatePrintingPlanTicket(row).then((res) => {
             if (res && res.body) {
               this.success();
-              this.listPrintingPlanTicket(this.data.id);
+              this.getTableData();
             }
           });
         } else {
@@ -177,7 +182,7 @@ export default {
           savePrintingPlanTicket(row).then((res) => {
             if (res && res.body) {
               this.success();
-              this.listPrintingPlanTicket(this.data.id);
+              this.getTableData();
             }
           });
         }
@@ -188,7 +193,7 @@ export default {
         deletePrintingPlanTicket(row.id).then((res) => {
           if (res && res.body) {
             this.success();
-            this.listPrintingPlanTicket(this.data.id);
+            this.getTableData();
           }
         });
       }
@@ -206,8 +211,8 @@ export default {
         }
       });
     },
-    listPrintingPlanTicket(printingPlanId) {
-      listByPrintingPlanId(printingPlanId).then((res) => {
+    getTableData() {
+      listByPrintingPlanId(this.data.id).then((res) => {
         if (res && res.body) {
           this.myTableData = res.body.data;
         }
@@ -287,6 +292,29 @@ export default {
         duration: 2000,
       });
     },
+    dataValid(row) {
+      
+      if (!row || !row.ticketId) {
+        return false;
+      }
+      if (!row.theFirstSeason||row.theFirstSeason==='') {
+        row.theFirstSeason = 0
+      }
+      if (!row.theSecondSeason||row.theSecondSeason==='') {
+        row.theSecondSeason = 0
+      }
+      if (!row.theThirdSeason||row.theThirdSeason==='') {
+        row.theThirdSeason = 0
+      }
+      if (!row.theFourthSeason||row.theFourthSeason==='') {
+        row.theFourthSeason = 0
+      }
+      var result1 = /^[0-9]+$/.test(row.theFirstSeason)
+      var result2 = /^[0-9]+$/.test(row.theSecondSeason)
+      var result3 = /^[0-9]+$/.test(row.theThirdSeason)
+      var result4 = /^[0-9]+$/.test(row.theFourthSeason)
+      return result1&&result2&&result3&&result4
+    }
   },
 };
 </script>

@@ -14,6 +14,7 @@
     <printing-order-dialog
       :dialogData="dialogData"
       :dialogTableData="dialogTableData"
+      :dialogAmount="dialogAmount"
       :visible="dialogVisible"
       :close="dialogClose"
       :title="dialogTitle"
@@ -61,8 +62,9 @@ export default {
       dialogVisible: false,
       dialogTitle: "",
       dialogData: {},
+      dialogAmount: 0,
       dialogTableData: [],
-      dialogClearValidate:false,
+      dialogClearValidate: false,
       statusMap: ["待付款", "已付款"],
     };
   },
@@ -91,15 +93,20 @@ export default {
       if (row && row.id) {
         getById(row.id).then((res) => {
           if (res && res.body && res.body.data) {
-            this.dialogData = res.body.data
-            listByPrintingOrderId(this.dialogData.id).then(resp=>{
-              if (resp&&resp.body&&resp.body.data) {
-                this.dialogTableData = resp.body.data
+            this.dialogData = res.body.data;
+            listByPrintingOrderId(this.dialogData.id).then((resp) => {
+              if (resp && resp.body && resp.body.data) {
+                // 计算价格
+                this.dialogAmount = 0
+                for (let i = 0; i < resp.body.data.length; i++) {
+                  const row = resp.body.data[i];
+                  this.dialogAmount += row.price * row.number;
+                }
+                this.dialogTableData = resp.body.data;
                 this.dialogVisible = true;
                 this.dialogTitle = "印制订单-编辑";
               }
-            })
-            
+            });
           }
         });
       }
@@ -120,7 +127,7 @@ export default {
         unitId: this.$store.getters.unitId,
         status: 0,
         person: this.$store.getters.nickname,
-      }
+      };
       save(this.dialogData).then((res) => {
         if (res && res.body && res.body.data) {
           this.success();
@@ -132,7 +139,7 @@ export default {
     },
     dialogClose() {
       this.getTableData();
-      this.dialogClearValidate = true
+      this.dialogClearValidate = true;
       this.dialogVisible = false;
       this.dialogData = {};
       this.dialogTableData = [];

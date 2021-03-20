@@ -82,6 +82,13 @@
         @handleSave="handleSave"
         @handleDelete="handleDelete"
       />
+      <el-row>
+      <div style="float: right">
+        <div class="example">
+          ￥<countTo :startVal="0" :endVal="amount" :duration="2000"></countTo>
+        </div>
+      </div>
+      </el-row>
       <el-tabs v-model="active" type="border-card" v-if="data.status === 0">
         <el-tab-pane label="下级需求汇总参考" name="subordinate">
           <hyd-table
@@ -97,6 +104,7 @@
 </template>
 
 <script>
+import countTo from "vue-count-to";
 import { listByPrintingPlanId } from "@/api/nontax/printing-plan/printing-plan-ticket";
 import { listByParentUnitIdAndStatusAndYear } from "@/api/nontax/printing-plan/printing-plan-index";
 import { commonQuery } from "@/api/basedata/unit";
@@ -106,10 +114,12 @@ import { commonQuery as listTicket } from "@/api/basedata/ticket";
 import { update } from "@/api/nontax/printing-order/printing-order-index";
 import {
   save,
+  update as updateTicket,
   listByPrintingOrderId,
   deleteById,
 } from "@/api/nontax/printing-order/printing-order-ticket";
 export default {
+  components: { countTo },
   name: "",
   props: {
     visible: { type: Boolean, required: true, default: false },
@@ -118,6 +128,7 @@ export default {
     type: { type: String },
     dialogData: { type: Object, required: true },
     dialogTableData: { type: Array },
+    dialogAmount: { type: Number },
     clearValidate: { type: Boolean },
   },
   data() {
@@ -159,6 +170,11 @@ export default {
           label: "需求数量",
           type: "input",
         },
+        {
+          prop: "price",
+          label: "单价",
+          type: "show",
+        },
       ],
       tableLoading: false,
       subordinateTableKey: 0,
@@ -175,6 +191,7 @@ export default {
       ],
       subordinateTableLoading: false,
       active: "subordinate",
+      amount: 0,
     };
   },
   created() {
@@ -189,6 +206,9 @@ export default {
     },
     dialogTableData(val) {
       this.tableData = val;
+    },
+    dialogAmount(val) {
+      this.amount = val;
     },
     clearValidate(val) {
       if (val) {
@@ -221,18 +241,28 @@ export default {
       });
     },
     handleSave(index, row) {
+      // 数据不合法，返回
+      if (!this.dataValid(row)) {
+        this.getTableData();
+        return;
+      }
       if (this.data.status === 0 && row) {
-        row.printingOrderId = this.data.id;
-        save(row).then((res) => {
-          if (res && res.body && res.body.data) {
-            this.success();
-            listByPrintingOrderId(this.data.id).then((resp) => {
-              if (resp && resp.body && resp.body.data) {
-                this.tableData = resp.body.data;
-              }
-            });
-          }
-        });
+        if (!row.id) {
+          row.printingOrderId = this.data.id;
+          save(row).then((res) => {
+            if (res && res.body && res.body.data) {
+              this.success();
+              this.getTableData();
+            }
+          });
+        } else {
+          updateTicket(row).then((res) => {
+            if (res && res.body && res.body.data) {
+              this.success();
+              this.getTableData();
+            }
+          });
+        }
       }
     },
     handleDelete(index, row) {
@@ -240,14 +270,26 @@ export default {
         deleteById(row.id).then((res) => {
           if (res && res.body && res.body.data) {
             this.success();
-            listByPrintingOrderId(this.data.id).then((resp) => {
-              if (resp && resp.body && resp.body.data) {
-                this.tableData = resp.body.data;
-              }
-            });
+            this.getTableData();
           }
         });
       }
+    },
+    /**
+     * 获取印制订单表格数据
+     */
+    getTableData() {
+      listByPrintingOrderId(this.data.id).then((resp) => {
+        if (resp && resp.body && resp.body.data) {
+          this.tableData = resp.body.data;
+          // 计算总价
+          this.amount = 0;
+          for (let i = 0; i < this.tableData.length; i++) {
+            const row = this.tableData[i];
+            this.amount += row.price * row.number;
+          }
+        }
+      });
     },
     /**
      * 查询本省的所有票据
@@ -374,8 +416,22 @@ export default {
         duration: 2000,
       });
     },
+    dataValid(row) {
+      if (row && row.ticketId && row.number) {
+        return /^[0-9]+$/.test(row.number);
+      }
+      return false;
+    },
   },
 };
 </script>
-<style>
+<style scoped>
+.example {
+  color: #f6416c;
+  display: block;
+  margin: 10px 0;
+  text-align: center;
+  font-size: 30px;
+  font-weight: 500;
+}
 </style>
