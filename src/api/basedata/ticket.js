@@ -31,3 +31,15 @@ export function deleteById(id) {
     method: 'delete'
   })
 }
+/**
+ * 通用查询。支持字段id，zoneId，year，name
+ * @param {*} params 
+ * @returns 
+ */
+export function commonQuery(params) {
+  return request({
+    url: '/nontax/basedata/ticket/common/query',
+    method: 'get',
+    params:params
+  })
+}

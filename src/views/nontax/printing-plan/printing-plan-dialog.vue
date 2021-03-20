@@ -53,7 +53,7 @@
 </template>
 
 <script>
-import { listByZoneId } from "@/api/basedata/ticket";
+import { commonQuery } from "@/api/basedata/ticket";
 import { listProvinceZone, getById } from "@/api/basedata/zone";
 import {
   update,
@@ -149,19 +149,16 @@ export default {
     },
   },
   created() {
-    this.getProvinceZone().then((provinceZone) => {
-      if (provinceZone) {
-        /**
-         * 查询该省的所有票据
-         */
-        listByZoneId(provinceZone.id).then((res) => {
-          if (res && res.body && res.body.data) {
-            this.tableColumons[0].options = res.body.data;
-          }
-        });
-        this.listSubordinatePrintingPlanTicket(this.$store.getters.unitId);
+    let params = {};
+    params.zoneId = this.$store.getters.provinceZoneId;
+    params.year = new Date().getFullYear() + 1;
+    // 查询明年本省所有票据
+    commonQuery(params).then((res) => {
+      if (res && res.body && res.body.data) {
+        this.tableColumons[0].options = res.body.data;
       }
     });
+    this.listSubordinatePrintingPlanTicket(this.$store.getters.unitId);
   },
   methods: {
     handleSave(index, row) {
@@ -170,7 +167,7 @@ export default {
         if (row.id) {
           updatePrintingPlanTicket(row).then((res) => {
             if (res && res.body) {
-              this.success()
+              this.success();
               this.listPrintingPlanTicket(this.data.id);
             }
           });
@@ -179,7 +176,7 @@ export default {
 
           savePrintingPlanTicket(row).then((res) => {
             if (res && res.body) {
-              this.success()
+              this.success();
               this.listPrintingPlanTicket(this.data.id);
             }
           });
@@ -190,7 +187,7 @@ export default {
       if ((this.data.status === 0 || this.data.status === 3) && row.id) {
         deletePrintingPlanTicket(row.id).then((res) => {
           if (res && res.body) {
-            this.success()
+            this.success();
             this.listPrintingPlanTicket(this.data.id);
           }
         });
@@ -254,7 +251,7 @@ export default {
                 }
               }
               for (var value of map.values()) {
-                this.subordinateTableData.push(value)
+                this.subordinateTableData.push(value);
               }
             }
           );
@@ -280,30 +277,6 @@ export default {
           }
         }
         resolve(printingPlanTicketList);
-      });
-    },
-    /**
-     * 获取该单位对应的省级区划
-     */
-    getProvinceZone() {
-      return new Promise((resolve, reject) => {
-        const zoneId = this.$store.getters.zoneId;
-        getById(zoneId).then((res) => {
-          if (res && res.body && res.body.data) {
-            const zoneCode = res.body.data.code;
-            listProvinceZone().then((res) => {
-              if (res && res.body && res.body.data) {
-                const zoneList = res.body.data;
-                for (let i = 0; i < zoneList.length; i++) {
-                  const zone = zoneList[i];
-                  if (zone.code === zoneCode.substring(0, 2)) {
-                    return resolve(zone);
-                  }
-                }
-              }
-            });
-          }
-        });
       });
     },
     success() {

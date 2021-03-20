@@ -102,9 +102,13 @@ import { listByParentUnitIdAndStatusAndYear } from "@/api/nontax/printing-plan/p
 import { commonQuery } from "@/api/basedata/unit";
 import { listByUnitId } from "@/api/basedata/warehouse";
 import { listByCategoryName } from "@/api/basedata/dictionary";
-import { listByZoneId as listTicketByZoneId } from "@/api/basedata/ticket";
+import { commonQuery as listTicket } from "@/api/basedata/ticket";
 import { update } from "@/api/nontax/printing-order/printing-order-index";
-import { save,listByPrintingOrderId,deleteById } from "@/api/nontax/printing-order/printing-order-ticket";
+import {
+  save,
+  listByPrintingOrderId,
+  deleteById,
+} from "@/api/nontax/printing-order/printing-order-ticket";
 export default {
   name: "",
   props: {
@@ -189,7 +193,7 @@ export default {
     clearValidate(val) {
       if (val) {
         this.$nextTick(function () {
-          this.$refs['data'].clearValidate();
+          this.$refs["data"].clearValidate();
         });
       }
     },
@@ -218,38 +222,41 @@ export default {
     },
     handleSave(index, row) {
       if (this.data.status === 0 && row) {
-        row.printingOrderId = this.data.id
-        save(row).then(res=>{
-          if (res&&res.body&&res.body.data) {
-            this.success()
-            listByPrintingOrderId(this.data.id).then(resp=>{
-              if (resp&&resp.body&&resp.body.data) {
-                this.tableData = resp.body.data
+        row.printingOrderId = this.data.id;
+        save(row).then((res) => {
+          if (res && res.body && res.body.data) {
+            this.success();
+            listByPrintingOrderId(this.data.id).then((resp) => {
+              if (resp && resp.body && resp.body.data) {
+                this.tableData = resp.body.data;
               }
-            })
+            });
           }
-        })
+        });
       }
     },
     handleDelete(index, row) {
       if (this.data.status === 0 && row && row.id) {
-        deleteById(row.id).then(res=>{
-          if (res&&res.body&&res.body.data) {
-            this.success()
-            listByPrintingOrderId(this.data.id).then(resp=>{
-              if (resp&&resp.body&&resp.body.data) {
-                this.tableData = resp.body.data
+        deleteById(row.id).then((res) => {
+          if (res && res.body && res.body.data) {
+            this.success();
+            listByPrintingOrderId(this.data.id).then((resp) => {
+              if (resp && resp.body && resp.body.data) {
+                this.tableData = resp.body.data;
               }
-            })
+            });
           }
-        })
+        });
       }
     },
     /**
      * 查询本省的所有票据
      */
     listTicket() {
-      listTicketByZoneId(this.$store.getters.provinceZoneId).then((res) => {
+      let params = {};
+      params.zoneId = this.$store.getters.provinceZoneId;
+      params.year = new Date().getFullYear() + 1;
+      listTicket(params).then((res) => {
         if (res && res.body && res.body.data) {
           this.tableColumns[0].options = res.body.data;
         }
