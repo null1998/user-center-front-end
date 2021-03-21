@@ -45,6 +45,10 @@ export default {
           label: "单号",
         },
         {
+          prop:"printUnitName",
+          label:"印刷单位"
+        },
+        {
           prop: "start",
           label: "通知日期",
           sortable: true,
@@ -65,7 +69,7 @@ export default {
       dialogAmount: 0,
       dialogTableData: [],
       dialogClearValidate: false,
-      statusMap: ["待付款", "已付款"],
+      statusMap: ["待付款", "已付款","部分完工","全部完工","已发货","已入库"],
     };
   },
   created() {
