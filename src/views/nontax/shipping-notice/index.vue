@@ -7,6 +7,7 @@
       :tableColumns="tableColumons"
       :loading="tableLoading"
       :handleEdit="handleEdit"
+      :handleDelete="handleDelete"
     />
   </div>
 </template>
@@ -70,6 +71,9 @@ export default {
       });
     },
     handleEdit(index,view) {
+
+    },
+    handleDelete(index,view){
 
     }
   }

@@ -34,7 +34,7 @@ import {
 import { listByPrintingOrderId } from "@/api/nontax/printing-order/printing-order-ticket";
 export default {
   components: { printingOrderDialog },
-  name: "",
+  name: "printing-order",
   data() {
     return {
       tableKey: 0,
