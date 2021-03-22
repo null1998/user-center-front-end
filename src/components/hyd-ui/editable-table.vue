@@ -42,6 +42,7 @@
               v-if="item.type === 'select'"
               size="mini"
               v-model="scope.row[item.prop]"
+              :width="item.width?item.width:1000"
               filterable
               clearable
               :placeholder="item.placeholder"

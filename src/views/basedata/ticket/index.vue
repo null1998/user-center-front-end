@@ -111,6 +111,7 @@ export default {
         }
         dto.code = dto.code + "00" + row.year.substring(2);
         dto.mnemonic = pinyin(dto.name)[0];
+        dto.name = dto.year+'年'+dto.name
         // 根据是否有id分别做更新和插入操作
         if (dto.id) {
           update(dto).then((res) => {

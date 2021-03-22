@@ -27,7 +27,7 @@ import {
 import { listByPrintingOrderId as getDialogTableData } from "@/api/nontax/printing-order/printing-order-ticket";
 export default {
   components:{orderProgressDialog},
-  name: "",
+  name: "order-progress",
   data() {
     return {
       tableKey: 0,
@@ -75,6 +75,7 @@ export default {
   },
   methods: {
     getTableData() {
+      this.tableLoading = true
       commonQuery({ printUnitId: this.$store.getters.unitId }).then((res) => {
         if (res && res.body && res.body.data) {
           this.tableData = res.body.data;
@@ -83,6 +84,7 @@ export default {
               this.tableData[i]["status"]
             ];
           }
+          this.tableLoading = false
         }
       });
     },

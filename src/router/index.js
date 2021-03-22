@@ -169,16 +169,31 @@ export const asyncRoutes = [
     children: [
       {
         path: 'index',
-        name: 'orderProgress',
+        name: 'order-progress',
         component: () => import('@/views/nontax/order-progress/index'),
         meta: {
-          title: '订单进度',
+          title: '印制订单进度',
           icon: 'form',
           roles: ['订单进度-查询与编辑']
         }
       }
     ]
-
+  },
+  {
+    path: '/nontax/ticket/product/record',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'ticket-product-record',
+        component: () => import('@/views/nontax/ticket-product-record/index'),
+        meta: {
+          title: '票据生产记录',
+          icon: 'form',
+          roles:['票据生产记录-查询与编辑']
+        }
+      }
+    ]
   },
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }

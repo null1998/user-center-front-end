@@ -77,6 +77,7 @@ export default {
   },
   methods: {
     getTableData() {
+      this.tableLoading = true
       commonQuery({ unitId: this.$store.getters.unitId }).then((res) => {
         if (res && res.body && res.body.data) {
           this.tableData = res.body.data;
@@ -85,6 +86,7 @@ export default {
               this.tableData[i]["status"]
             ];
           }
+          this.tableLoading = false
         }
       });
     },

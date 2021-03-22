@@ -25,6 +25,11 @@ export function getById(id) {
     method: 'get'
   })
 }
+/**
+ * 通用查询，支持字段id，ticketId，printOrderNumber，printUnitId
+ * @param {*} params 
+ * @returns 
+ */
 export function commonQuery(params) {
   return request({
     url: '/nontax/financial/ticket/product/record/common/query',
