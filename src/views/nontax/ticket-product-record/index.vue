@@ -28,7 +28,7 @@ export default {
      tableData: [],
      tableColumons: [
        {
-         props:'',
+         prop:'',
          label:''
        }
      ],
@@ -86,7 +86,7 @@ export default {
      this.dialogTableData = []
    },
    success() {
-     this.notify({
+     this.$notify({
      title: 'success',
      message: '操作成功',
      type: 'success',
@@ -94,7 +94,7 @@ export default {
      })
     },
    error() {
-     this.notify({
+     this.$notify({
      title: 'error',
      message: '操作失败',
      type: 'error',

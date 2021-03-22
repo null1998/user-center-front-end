@@ -1,39 +1,33 @@
 import request from '@/utils/request'
-
 export function save(dto) {
   return request({
-    url: '/nontax/financial/printing/order',
+    url: '/nontax/financial/ticket/product/record',
     method: 'post',
     data:dto
   })
 }
 export function deleteById(id) {
   return request({
-    url: '/nontax/financial/printing/order/'+id,
+    url: '/nontax/financial/ticket/product/record/'+id,
     method: 'delete'
   })
 }
 export function update(dto) {
   return request({
-    url: '/nontax/financial/printing/order',
+    url: '/nontax/financial/ticket/product/record',
     method: 'put',
     data:dto
   })
 }
 export function getById(id) {
   return request({
-    url: '/nontax/financial/printing/order/'+id,
+    url: '/nontax/financial/ticket/product/record/'+id,
     method: 'get'
   })
 }
-/**
- * 通用查询，支持id，unitId，printUnitId，status字段
- * @param {} params 
- * @returns 
- */
 export function commonQuery(params) {
   return request({
-    url: '/nontax/financial/printing/order/common/query',
+    url: '/nontax/financial/ticket/product/record/common/query',
     method: 'get',
     params:params
   })
