@@ -1,0 +1,149 @@
+<!--  -->
+<template>
+  <div>
+     <hyd-table
+       :tableKey='tableKey'
+       :tableData='tableData'
+       :tableColumns='tableColumons'
+       :loading='tableLoading'
+       @handleEdit='handleEdit'
+       @handleDelete='handleDelete'
+       @handleCreate='handleCreate'
+     />
+     <ticket-store-record-dialog
+       :dialogData='dialogData'
+       :dialogTableData='dialogTableData'
+       :visible='dialogVisible'
+       :close='dialogClose'
+       :title='dialogTitle'
+     />
+   </div>
+</template>
+
+<script>
+import ticketStoreRecordDialog from './ticket-store-record-dialog.vue'
+import { save,deleteById,commonQuery,getById } from "@/api/nontax/ticket-store-record/ticket-store-record-index";
+import { commonQuery as getDialogTableData} from "@/api/nontax/ticket-store-record/ticket-store-record-ticket";
+export default {
+  components: { ticketStoreRecordDialog },
+  name: 'ticket-store-record',
+  data () {
+    return {
+     tableKey: 0,
+     tableData: [],
+     tableColumons: [
+       {
+         prop:'orderNumber',
+         label:'入库单号'
+       },
+       {
+         prop:'sourceOrderNumber',
+         label:'来源单号'
+       },
+       {
+         prop:'sourceUnitId',
+         label:'来源单位'
+       },
+       {
+         prop:'sourceWarehouseId',
+         label:'来源仓库'
+       },
+       {
+         prop:'dictionaryId',
+         label:'入库方式'
+       },
+       {
+         prop:'storeDate',
+         label:'入库日期'
+       }
+     ],
+     tableLoading: false,
+     dialogVisible: false,
+     dialogTitle: '',
+     dialogData: {},
+     dialogTableData: [],
+    }
+  },
+  watch:{
+
+  },
+  created(){
+    this.getTableData()
+  },
+  methods:{
+   getTableData(){
+     this.tableLoading=true
+     commonQuery({}).then((res) => {
+       if (res && res.body && res.body.data) {
+         this.tableData = res.body.data
+         this.tableLoading=false
+       }
+     })
+   },
+   handleEdit(index,row) {
+     debugger
+     if(row&&row.id){
+       getById(row.id).then((res)=>{
+         if(res&&res.body&&res.body.data){
+           this.dialogData = res.body.data
+           getDialogTableData(this.dialogData.id).then(resp=>{
+             if (resp && resp.body && resp.body.data) {
+               this.dialogTableData = resp.body.data
+               this.dialogVisible = true
+               this.dialogTitle = ''
+             }
+           })
+         }
+       })
+     }
+
+   },
+   handleDelete(index,row){
+     if (row && row.id) {
+       deleteById(row.id).then((res) => {
+         debugger
+         if (res && res.body && res.body.data) {
+           this.success()
+           this.getTableData()
+         }
+       })
+     }
+   },
+   handleCreate(){
+     save({unitId:this.$store.getters.unitId}).then(res=>{
+       debugger
+       if (res&&res.body&&res.body.data) {
+         debugger
+         this.success()
+         this.handleEdit(undefined,{id:res.body.data})
+       }
+     })
+   },
+   dialogClose() {
+     this.getTableData()
+     this.dialogVisible = false
+     this.dialogData = {}
+     this.dialogTableData = []
+   },
+   success() {
+     this.$notify({
+     title: 'success',
+     message: '操作成功',
+     type: 'success',
+     duration: 2000,
+     })
+    },
+   error() {
+     this.$notify({
+     title: 'error',
+     message: '操作失败',
+     type: 'error',
+     duration: 2000,
+     })
+    },
+  }
+}
+
+</script>
+<style>
+</style>

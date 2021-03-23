@@ -195,6 +195,23 @@ export const asyncRoutes = [
       }
     ]
   },
+  {
+    path: '/nontax/ticket/store/record',
+    component: Layout,
+    meta: { title: '票据存储', icon: 'el-icon-date', roles: ['财政票据系统路由角色'] },
+    children: [
+      {
+        path: 'index',
+        name: 'ticket-store-record',
+        component: () => import('@/views/nontax/ticket-store-record/index'),
+        meta: {
+          title: '入库记录',
+          icon: 'form',
+          roles:['票据入库记录-编辑与查询']
+        }
+      }
+    ]
+  },
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }
 ]
