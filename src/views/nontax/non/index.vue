@@ -10,7 +10,7 @@
        @handleDelete='handleDelete'
        @handleCreate='handleCreate'
      />
-     <ticket-store-record-dialog
+     <dialog
        :dialogData='dialogData'
        :dialogTableData='dialogTableData'
        :visible='dialogVisible'
@@ -21,41 +21,21 @@
 </template>
 
 <script>
-import ticketStoreRecordDialog from './ticket-store-record-dialog.vue'
-import { save,deleteById,commonQuery,getById } from "@/api/nontax/ticket-store-record/ticket-store-record-index";
-import { commonQuery as getDialogTableData} from "@/api/nontax/ticket-store-record/ticket-store-record-ticket";
+import Dialog from ''
+import { save,deleteById,commonQuery,getById } from ''
+import { commonQuery as getDialogTableData} from ''
 export default {
-  components: { ticketStoreRecordDialog },
-  name: 'ticket-store-record',
+  components: {},
+  name: '',
   data () {
     return {
      tableKey: 0,
      tableData: [],
      tableColumons: [
        {
-         prop:'orderNumber',
-         label:'入库单号'
+         prop:'',
+         label:''
        },
-       {
-         prop:'sourceOrderNumber',
-         label:'来源单号'
-       },
-       {
-         prop:'sourceUnitName',
-         label:'来源单位'
-       },
-       {
-         prop:'sourceWarehouseName',
-         label:'来源仓库'
-       },
-       {
-         prop:'theWay',
-         label:'入库方式'
-       },
-       {
-         prop:'storeDate',
-         label:'入库日期'
-       }
      ],
      tableLoading: false,
      dialogVisible: false,
@@ -81,16 +61,15 @@ export default {
      })
    },
    handleEdit(index,row) {
-     
      if(row&&row.id){
-       commonQuery({id:row.id}).then((res)=>{
+       getById(row.id).then((res)=>{
          if(res&&res.body&&res.body.data){
-           this.dialogData = res.body.data[0]
-           getDialogTableData({ticketStoreRecordId:this.dialogData.id}).then(resp=>{
+           this.dialogData = res.body.data
+           getDialogTableData(this.dialogData.id).then(resp=>{
              if (resp && resp.body && resp.body.data) {
                this.dialogTableData = resp.body.data
                this.dialogVisible = true
-               this.dialogTitle = '票据入库编辑'
+               this.dialogTitle = ''
              }
            })
          }
@@ -108,11 +87,11 @@ export default {
        })
      }
    },
-   handleCreate(){
-     save({unitId:this.$store.getters.unitId}).then(res=>{
+  handleCreate(){
+     save({unitId:this.store.getters.unitId}).then(res=>{
        if (res&&res.body&&res.body.data) {
-         this.handleEdit(undefined,{id:res.body.data})
          this.success()
+         this.handleEdit(undefined,{id:res.body.data})
        }
      })
    },
@@ -123,7 +102,7 @@ export default {
      this.dialogTableData = []
    },
    success() {
-     this.$notify({
+     this.notify({
      title: 'success',
      message: '操作成功',
      type: 'success',
@@ -131,7 +110,7 @@ export default {
      })
     },
    error() {
-     this.$notify({
+     this.notify({
      title: 'error',
      message: '操作失败',
      type: 'error',

@@ -38,8 +38,8 @@ export default {
           label: "印制订单号",
           type: "select",
           options:[],
-          optionLabel:"ordernumber",
-          optionValue:"ordernumber"
+          optionLabel:"orderNumber",
+          optionValue:"orderNumber"
         },
         {
           prop: "ticketId",

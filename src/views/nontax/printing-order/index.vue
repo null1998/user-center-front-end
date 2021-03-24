@@ -41,7 +41,7 @@ export default {
       tableData: [],
       tableColumons: [
         {
-          prop: "ordernumber",
+          prop: "orderNumber",
           label: "单号",
         },
         {
