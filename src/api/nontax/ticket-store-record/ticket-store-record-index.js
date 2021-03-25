@@ -25,6 +25,11 @@ export function getById(id) {
     method: 'get'
   })
 }
+/**
+ * 通用查询，支持字段id，unitId
+ * @param ticketStoreRecordQO 票据入库记录
+ * @return 票据入库记录列表
+ */
 export function commonQuery(params) {
   return request({
     url: '/nontax/financial/ticket/store/record/common/query',

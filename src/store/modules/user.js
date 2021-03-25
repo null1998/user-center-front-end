@@ -1,6 +1,7 @@
 import { login, logout, getInfo } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { resetRouter } from '@/router'
+import { commonQuery } from '@/api/basedata/ticket'
 
 const getDefaultState = () => {
   return {
@@ -78,11 +79,12 @@ const actions = {
         if (!body) {
           return reject('获取用户信息失败，重新登录')
         }
-        const { username, avatar, roleNameList,unitId,nickname,zoneId,provinceZoneId } = body.data
+        const { username, avatar, roleNameList,unitId,nickname,zoneId,provinceZoneId,id } = body.data
       
         if (roleNameList.length === 0) {
           roleNameList.push('tourist')
         }
+        commit('SET_ID',id)
         commit('SET_ROLES', roleNameList)
         commit('SET_NAME', username)
         commit('SET_AVATAR', avatar)

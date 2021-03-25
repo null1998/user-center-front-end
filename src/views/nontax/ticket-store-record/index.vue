@@ -73,7 +73,7 @@ export default {
   methods:{
    getTableData(){
      this.tableLoading=true
-     commonQuery({}).then((res) => {
+     commonQuery({unitId:this.$store.getters.unitId}).then((res) => {
        if (res && res.body && res.body.data) {
          this.tableData = res.body.data
          this.tableLoading=false

@@ -135,7 +135,7 @@ export const asyncRoutes = [
   {
     path: '/nontax/printing/plan',
     component: Layout,
-    meta: { title: '印制计划', icon: 'el-icon-date',roles: ['财政票据系统路由角色']},
+    meta: { title: '票据印制计划', icon: 'el-icon-date',roles: ['财政票据系统路由角色']},
     children: [
       {
         path: 'limit-date',
@@ -204,7 +204,7 @@ export const asyncRoutes = [
         name: 'ticket-store-record',
         component: () => import('@/views/nontax/ticket-store-record/index'),
         meta: {
-          title: '入库记录',
+          title: '票据入库记录',
           icon: 'form',
           roles:['票据入库记录-编辑与查询']
         }
@@ -220,7 +220,7 @@ export const asyncRoutes = [
         name: 'ticket-storage',
         component:()=>import('@/views/nontax/ticket-storage/index'),
         meta: {
-          title: '票据库存',
+          title: '票据库存管理',
           icon: 'form',
           roles:['票据库存-查询与编辑']
         }

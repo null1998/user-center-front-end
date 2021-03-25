@@ -170,7 +170,7 @@ export default {
       })
     },
     getTicketList() {
-      commonQueryTicket({}).then(res=>{
+      commonQueryTicket({zoneId:this.$store.getters.provinceZoneId}).then(res=>{
         if (res&&res.body&&res.body.data) {
           this.tableColumons[0].options = res.body.data
         }

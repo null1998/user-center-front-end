@@ -14,6 +14,9 @@
 
 <script>
 import { save as saveRow,deleteById,update as updateRow,commonQuery} from '@/api/nontax/ticket-storage/ticket-storage-index'
+import { getDate } from "@/utils/date";
+import { commonQuery as commonQueryWarehouse } from "@/api/basedata/warehouse";
+import { commonQuery as commonQueryTicket } from "@/api/basedata/ticket";
 export default {
   name: 'ticket-storage',
   data () {
@@ -48,8 +51,8 @@ export default {
          type:'input'
        },
        {
-         prop:'userName',
-         label:'操作人员',
+         prop:'number',
+         label:'数量',
          type:'show'
        },
        {
@@ -62,12 +65,28 @@ export default {
     }
   },
   created(){
-    
+    this.getTableData()
+    this.getWarehouseList()
+    this.getTicketList()
   },
   methods:{
+    getWarehouseList(){
+      commonQueryWarehouse({unitId:this.$store.getters.unitId}).then(res=>{
+        if (res&&res.body&&res.body.data) {
+          this.tableColumons[0].options = res.body.data
+        }
+      })
+    },
+    getTicketList() {
+      commonQueryTicket({zoneId:this.$store.getters.provinceZoneId}).then(res=>{
+        if (res&&res.body&&res.body.data) {
+          this.tableColumons[1].options = res.body.data
+        }
+      })
+    },
    getTableData(){
      this.tableLoading=true
-     commonQuery({}).then((res) => {
+     commonQuery({unitId:this.$store.getters.unitId}).then((res) => {
        if (res && res.body && res.body.data) {
          this.tableData = res.body.data
          this.tableLoading=false
@@ -79,8 +98,10 @@ export default {
        this.getTableData()
        return
      }
+     row.unitId = this.$store.getters.unitId
+     row.userId = this.$store.getters.id
+     row.operateDate = getDate()
      if (!row.id) {
-     //row.xxId = this.data.id
        saveRow(row).then((res) => {
          if (res && res.body && res.body.data) {
            this.success();
@@ -107,10 +128,14 @@ export default {
      }
    },
    dataValid(row) {
+     if (row&&row.ticketId&&row.warehouseId&&row.startNumber&&row.endNumber) {
+       let s = /^[0-9]{10}$/
+       return s.test(row.startNumber)&&s.test(row.endNumber)&&row.startNumber<=row.endNumber
+     }
      return false
    },
    success() {
-     this.notify({
+     this.$notify({
      title: 'success',
      message: '操作成功',
      type: 'success',
@@ -118,7 +143,7 @@ export default {
      })
     },
    error() {
-     this.notify({
+     this.$notify({
      title: 'error',
      message: '操作失败',
      type: 'error',
