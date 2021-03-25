@@ -1,25 +1,7 @@
-<!--  -->
+<!-- 票据库存 -->
 <template>
   <div>
-    <el-dialog
-      :visible.sync='visible'
-      :show-close='false'
-      :before-close='close'
-    >
-    <div slot='title' class='header-title'>
-      <i class='el-icon-s-data'>{{
-        title
-      }}</i>
-      <i class='el-icon-circle-close' style='float: right' @click='close'
-        >退出</i>
-      <i
-        class='el-icon-circle-check'
-        style='float: right'
-        @click='handleSaveDialog'
-        >保存</i
-      >
-    </div>
-     <hyd-editable-table
+    <hyd-editable-table
        :tableKey='tableKey'
        :tableData='tableData'
        :tableColumns='tableColumons'
@@ -27,42 +9,57 @@
        @handleSave='handleSave'
        @handleDelete='handleDelete'
      />
-    </el-dialog>
    </div>
 </template>
 
 <script>
-import { update } from ''
-import { save as saveRow,deleteById,update as updateRow,commonQuery} from ''
+import { save as saveRow,deleteById,update as updateRow,commonQuery} from '@/api/nontax/ticket-storage/ticket-storage-index'
 export default {
-  name: '',
-  props:{
-    visible: { type: Boolean, required: true, default: false },
-    close: { type: Function, required: true },
-    title: { type: String, default: '' },
-    dialogData: { type: Object, required: true },
-    dialogTableData: { type: Array },
-  },
+  name: 'ticket-storage',
   data () {
     return {
      tableKey: 0,
      tableData: [],
      tableColumons: [
        {
-         prop:'',
-         label:''
+         prop:'warehouseId',
+         label:'仓库名',
+         type:'select',
+         options:[],
+         optionLabel:"name",
+         optionValue:"id"
+       },
+       {
+         prop:'ticketId',
+         label:'财政票据名称',
+         type:'select',
+         options:[],
+         optionLabel:"name",
+         optionValue:"id"
+       },
+       {
+         prop:'startNumber',
+         label:'起始号',
+         type:'input'
+       },
+       {
+         prop:'endNumber',
+         label:'终止号',
+         type:'input'
+       },
+       {
+         prop:'userName',
+         label:'操作人员',
+         type:'show'
+       },
+       {
+         prop:'operateDate',
+         label:'操作日期',
+         type:'show'
        },
      ],
      tableLoading: false,
     }
-  },
-  watch:{
-    dialogData(val) {
-      this.data = val
-    },
-    dialogTableData(val) {
-      this.tableData = val
-    },
   },
   created(){
     
@@ -74,14 +71,6 @@ export default {
        if (res && res.body && res.body.data) {
          this.tableData = res.body.data
          this.tableLoading=false
-       }
-     })
-   },
-   handleSaveDialog() {
-     update(this.data).then(res=>{
-       if (res&&res.body&&res.body.data) {
-         this.success()
-         this.close()
        }
      })
    },

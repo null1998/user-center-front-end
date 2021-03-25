@@ -1,10 +1,11 @@
-<!--  -->
+<!-- 票据入库记录对话框 -->
 <template>
   <div>
     <el-dialog
       :visible.sync="visible"
       :show-close="false"
       :before-close="close"
+      width="80%"
     >
       <div slot="title" class="header-title">
         <i class="el-icon-s-data">{{ title }}</i>

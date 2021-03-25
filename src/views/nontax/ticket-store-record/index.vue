@@ -1,4 +1,4 @@
-<!--  -->
+<!-- 票据入库记录 -->
 <template>
   <div>
      <hyd-table

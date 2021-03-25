@@ -198,7 +198,6 @@ export const asyncRoutes = [
   {
     path: '/nontax/ticket/store/record',
     component: Layout,
-    meta: { title: '票据存储', icon: 'el-icon-date', roles: ['财政票据系统路由角色'] },
     children: [
       {
         path: 'index',
@@ -208,6 +207,22 @@ export const asyncRoutes = [
           title: '入库记录',
           icon: 'form',
           roles:['票据入库记录-编辑与查询']
+        }
+      }
+    ]
+  },
+  {
+    path: '/nontax/ticket/storage',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'ticket-storage',
+        component:()=>import('@/views/nontax/ticket-storage/index'),
+        meta: {
+          title: '票据库存',
+          icon: 'form',
+          roles:['票据库存-查询与编辑']
         }
       }
     ]
