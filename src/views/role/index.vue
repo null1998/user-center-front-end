@@ -4,8 +4,8 @@
     <!-- 搜索栏和新增按钮 -->
     <div class="filter-container">
       <hyd-form
-        @handleFilter='handleFilter'
-        @handleCreate='handleCreate'
+        @handleFilter="handleFilter"
+        @handleCreate="handleCreate"
         :editCfg="editCfg"
         :editData="roleListQuery"
         inline
@@ -18,6 +18,7 @@
       :tableColumns="roleTableColumons"
       :loading="roleListLoading"
       @handleDelete="handleDelete"
+      @handleView="handleView"
     ></hyd-table>
     <!-- 对话框，用于新增，编辑角色 -->
     <el-dialog
@@ -65,83 +66,103 @@
       </el-form>
       <!-- 选择权限，创建基础角色 -->
       <!-- 搜索栏-->
-    <div class="filter-container" v-if="roleData.type == '基础角色'">
-      <el-input
-        v-model="permissionListQuery.name"
-        placeholder="资源名"
-        style="width: 200px"
-        class="filter-item"
-        @keyup.enter.native="handlePermissionFilter"
-      />
-      <el-select
-        v-model="permissionListQuery.action"
-        placeholder="动作"
-        clearable
-        class="filter-item"
-        style="width: 130px"
-      >
-        <el-option
-          v-for="item in actions"
-          :key="item"
-          :label="item"
-          :value="item"
+      <div class="filter-container" v-if="roleData.type == '基础角色'">
+        <el-input
+          v-model="permissionListQuery.name"
+          placeholder="资源名"
+          style="width: 200px"
+          class="filter-item"
+          @keyup.enter.native="handlePermissionFilter"
         />
-      </el-select>
-      <el-button
-        class="filter-item"
-        type="primary"
-        icon="el-icon-search"
-        :loading="searchPermissionBtnLoading"
-        @click="handlePermissionFilter"
-      >
-        搜索
-      </el-button>
-    </div>
-    <!-- 创建基础角色 -->
+        <el-select
+          v-model="permissionListQuery.action"
+          placeholder="动作"
+          clearable
+          class="filter-item"
+          style="width: 130px"
+        >
+          <el-option
+            v-for="item in actions"
+            :key="item"
+            :label="item"
+            :value="item"
+          />
+        </el-select>
+        <el-button
+          class="filter-item"
+          type="primary"
+          icon="el-icon-search"
+          :loading="searchPermissionBtnLoading"
+          @click="handlePermissionFilter"
+        >
+          搜索
+        </el-button>
+      </div>
+      <!-- 创建基础角色 -->
       <hyd-table
-      :show="roleData.type == '基础角色'"
-      :loading="permissionListLoading"
-      :tableKey="permissionTableKey"
-      :tableData="permissionList"
-      :tableColumns="permissionTableColumons"
-      @handleSelectionChange="handleTableSelect"
-    ></hyd-table>
+        :show="roleData.type == '基础角色'"
+        :loading="permissionListLoading"
+        :tableKey="permissionTableKey"
+        :tableData="permissionList"
+        :tableColumns="permissionTableColumons"
+        @handleSelectionChange="handleTableSelect"
+      ></hyd-table>
       <el-pagination
-      v-if="roleData.type == '基础角色'"
-      layout="total, sizes, prev, pager, next, jumper"
-      :current-page.sync="pageInfo.pageNum"
-      :page-sizes="[10, 30, 50]"
-      :page-size="pageInfo.pageSize"
-      :total="pageInfo.total"
-      style="margin-top: 10px; margin-bottom: 10px; margin-right: 20px"
-      @size-change="handlePageSizeChange"
-      @current-change="handleCurrentPageChange"
-    />
+        v-if="roleData.type == '基础角色'"
+        layout="total, sizes, prev, pager, next, jumper"
+        :current-page.sync="pageInfo.pageNum"
+        :page-sizes="[10, 30, 50]"
+        :page-size="pageInfo.pageSize"
+        :total="pageInfo.total"
+        style="margin-top: 10px; margin-bottom: 10px; margin-right: 20px"
+        @size-change="handlePageSizeChange"
+        @current-change="handleCurrentPageChange"
+      />
       <!-- 选择基础角色，创建高级角色 -->
       <hyd-table
-      :show="roleData.type == '高级角色'"
-      :loading="roleListLoading"
-      :tableKey="tableKey"
-      :tableData="roleList"
-      :tableColumns="roleTableColumons"
-      @handleSelectionChange="handleTableSelect"
-    ></hyd-table>
+        :show="roleData.type == '高级角色'"
+        :loading="roleListLoading"
+        :tableKey="tableKey"
+        :tableData="roleList"
+        :tableColumns="roleTableColumons"
+        @handleSelectionChange="handleTableSelect"
+      ></hyd-table>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="handleEdit"> 确认 </el-button>
       </div>
     </el-dialog>
+    <role-dialog
+      :visible="visible"
+      :close="dialogClose"
+      :dialogTableData="dialogTableData"
+    />
+    <role-advanced-dialog
+      :visible="visibleAdvanced"
+      :close="dialogCloseAdvanced"
+      :dialogTableData="dialogTableDataAdvanced"
+    />
   </div>
 </template>
 
 <script>
+import roleDialog from "./role-dialog.vue";
+import roleAdvancedDialog  from "./role-advanced-dialog.vue";
 import { listRole, save, deleteById } from "@/api/role";
 import { listPermission } from "@/api/permission";
-import { saveList as saveRolePermissionList } from "@/api/role-permission";
-import { saveList as saveRoleRelateList } from "@/api/role-relate";
+import {
+  saveList as saveRolePermissionList,
+  listByRoleId,
+} from "@/api/role-permission";
+import { saveList as saveRoleRelateList,listByParentRoleId } from "@/api/role-relate";
 export default {
+  components: { roleDialog,roleAdvancedDialog },
   name: "role",
   data() {
     return {
+      visible: false,
+      dialogTableData: [],
+      visibleAdvanced:false,
+      dialogTableDataAdvanced:[],
       editCfg: [
         {
           prop: "name",
@@ -167,18 +188,19 @@ export default {
           ],
         },
         {
-          type:'button',
-          name: '搜索',
-          icon: 'el-icon-search',
-          handleName: 'handleFilter'
+          type: "button",
+          name: "搜索",
+          icon: "el-icon-search",
+          handleName: "handleFilter",
         },
         {
-          type:'button',
-          name: '新增',
-          icon: 'el-icon-plus',
-          handleName: 'handleCreate'
-        }],
-      permissionTableColumons:[
+          type: "button",
+          name: "新增",
+          icon: "el-icon-plus",
+          handleName: "handleCreate",
+        },
+      ],
+      permissionTableColumons: [
         {
           prop: "name",
           label: "资源名",
@@ -193,21 +215,21 @@ export default {
           label: "备注",
         },
       ],
-      roleTableColumons:[
+      roleTableColumons: [
         {
-          prop:"name",
-          label:"角色名",
-          sortable:true
+          prop: "name",
+          label: "角色名",
+          sortable: true,
         },
         {
-          prop:"type",
-          label:"角色类型",
-          sortable:true
+          prop: "type",
+          label: "角色类型",
+          sortable: true,
         },
         {
-          prop:"remark",
-          label:"备注"
-        }
+          prop: "remark",
+          label: "备注",
+        },
       ],
       tableKey: 0,
       permissionTableKey: 0,
@@ -263,8 +285,8 @@ export default {
        * 权限列表搜素条件
        */
       permissionListQuery: {
-        pageNum:1,
-        pageSize:10,
+        pageNum: 1,
+        pageSize: 10,
         name: undefined,
         action: undefined,
       },
@@ -281,8 +303,8 @@ export default {
        */
       roleCreated: false,
       permissionOrRoleList: [],
-      
-      searchPermissionBtnLoading : false,
+
+      searchPermissionBtnLoading: false,
       /**
        * 查询条件是否改变
        */
@@ -308,6 +330,34 @@ export default {
     this.getRoleList();
   },
   methods: {
+    handleView(index, row) {
+      if (row&&row.id&&row.type) {
+        if (row.type==='基础角色') {
+          listByRoleId(row.id).then((resp) => {
+          if(resp&&resp.body&&resp.body.data) {
+            this.dialogTableData = resp.body.data;
+            this.visible = true;
+          }
+          });
+        } else if(row.type==='高级角色') {
+          listByParentRoleId(row.id).then(resp=>{
+            if(resp&&resp.body&&resp.body.data) {
+            this.dialogTableDataAdvanced = resp.body.data;
+            this.visibleAdvanced = true;
+          }
+          })
+        }
+        
+      }
+    },
+    dialogClose() {
+      this.visible = false;
+      this.dialogTableData = [];
+    },
+    dialogCloseAdvanced(){
+      this.visibleAdvanced = false;
+      this.dialogTableDataAdvanced = []
+    },
     /**
      * 查询权限列表
      */
@@ -318,7 +368,6 @@ export default {
           if (resp && resp.body) {
             this.roleList = resp.body.data;
           }
-          
         })
         .finally(() => {
           this.roleListLoading = false;
@@ -346,12 +395,13 @@ export default {
     /**
      * 删除
      */
-    handleDelete(index,row) {
+    handleDelete(index, row) {
       this.$confirm("此操作将永久删除该角色, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
-      }).then(() => {
+      })
+        .then(() => {
           this.deleteBtnLoading = true;
           deleteById(row.id)
             .then((resp) => {
@@ -381,7 +431,7 @@ export default {
      */
     handleSeletorChange(val) {
       if (val == "基础角色") {
-        this.getPermissionList()
+        this.getPermissionList();
       } else if (val == "高级角色") {
         this.getRoleList();
       }
@@ -495,7 +545,7 @@ export default {
         })
         .finally(() => {
           this.permissionListLoading = false;
-          this.queryPermissionOptionsChanged = false
+          this.queryPermissionOptionsChanged = false;
         });
     },
     handlePageSizeChange(currentPageSize) {
@@ -507,9 +557,7 @@ export default {
       this.permissionListQuery.pageNum = currentPageNum;
       this.getPermissionList();
     },
-    handleRowClassName(){
-
-    }
+    handleRowClassName() {},
   },
 };
 </script>

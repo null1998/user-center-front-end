@@ -4,7 +4,7 @@
     <!-- 新增按钮 -->
     <div class="filter-container">
       <hyd-form
-        @handleCreate='handleCreate'
+        @handleCreate="handleCreate"
         :editCfg="editCfg"
         inline
         size="medium"
@@ -18,6 +18,7 @@
       :loading="userListLoading"
       @handleEdit="handleUpdate"
       @handleDelete="handleDelete"
+      @handleView="handleView"
     ></hyd-table>
     <!-- 对话框，用于新增，编辑角色 -->
     <el-dialog
@@ -125,14 +126,22 @@
         </el-button>
       </div>
     </el-dialog>
+    <user-dialog
+      :visible="visible"
+      :close="dialogClose"
+      :dialogTableData="dialogTableData"
+    />
   </div>
 </template>
 
 <script>
+import userDialog  from "./user-dialog.vue";
 import { listAll as listAllUnit } from "@/api/basedata/unit";
 import { listAll as listAllUser, save, removeById, update } from "@/api/user";
 import { listRole } from "@/api/role";
+import { listByUserId } from "@/api/user-role";
 export default {
+  components: { userDialog },
   name: "user",
   data() {
     const checkPhoneNumberValidator = (rule, value, callback) => {
@@ -173,13 +182,15 @@ export default {
       }
     };
     return {
-      editCfg:[
+      visible: false,
+      dialogTableData: [],
+      editCfg: [
         {
-          type:'button',
-          name: '新增',
-          icon: 'el-icon-plus',
-          handleName: 'handleCreate'
-        }
+          type: "button",
+          name: "新增",
+          icon: "el-icon-plus",
+          handleName: "handleCreate",
+        },
       ],
       userTableColumons: [
         {
@@ -187,8 +198,8 @@ export default {
           label: "账号",
         },
         {
-          prop:'nickname',
-          label: '用户名'
+          prop: "nickname",
+          label: "用户名",
         },
         {
           prop: "sex",
@@ -222,7 +233,9 @@ export default {
       dialogStatus: "",
       userData: {},
       rules: {
-        username:[{required:true,message:'用户名不能为空',trigger: "blur"}],
+        username: [
+          { required: true, message: "用户名不能为空", trigger: "blur" },
+        ],
         email: [
           {
             type: "email",
@@ -270,11 +283,25 @@ export default {
     this.getList();
   },
   methods: {
+    handleView(index, row) {
+      if (row && row.id) {
+        listByUserId(row.id).then((resp) => {
+          if (resp && resp.body && resp.body.data) {
+            this.dialogTableData = resp.body.data;
+            this.visible = true;
+          }
+        });
+      }
+    },
+    dialogClose() {
+      this.visible = false;
+      this.dialogTableData = [];
+    },
     getList() {
-      this.userListLoading=true
+      this.userListLoading = true;
       listAllUser().then((resp) => {
         if (resp && resp.body) {
-          this.userListLoading =false
+          this.userListLoading = false;
           this.userList = resp.body.data;
         }
       });
@@ -304,7 +331,7 @@ export default {
       this.userData = {};
       this.dialogFormVisible = false;
     },
-    handleDelete(index,row) {
+    handleDelete(index, row) {
       this.$confirm("此操作将永久删除该用户, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",

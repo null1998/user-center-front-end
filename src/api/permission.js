@@ -38,3 +38,9 @@ export function deleteById(id) {
     method: 'delete'
   })
 }
+export function getById(id) {
+  return request({
+    url: '/user/center/permission/'+id,
+    method: 'get'
+  })
+}

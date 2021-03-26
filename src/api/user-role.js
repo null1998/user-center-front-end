@@ -6,3 +6,9 @@ export function saveList(dto) {
     data: dto
   })
 }
+export function listByUserId(id) {
+  return request({
+    url: '/user/center/user/role/list/'+id,
+    method: 'get',
+  })
+}

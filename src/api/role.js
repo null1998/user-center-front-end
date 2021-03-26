@@ -38,3 +38,10 @@ export function deleteById(id) {
     method: 'delete'
   })
 }
+
+export function getById(id) {
+  return request({
+    url: '/user/center/role/' + id,
+    method:'get'
+  })
+}

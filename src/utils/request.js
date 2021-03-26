@@ -54,7 +54,7 @@ service.interceptors.response.use(
           })
         })
       } else if (res.head.code === '50000') {
-        alert('角色:\n'+store.getters.roles+'\n没有权限访问:\n'+response.config.url)
+        alert('角色:\n'+store.getters.roles+'\n没有权限访问:\n'+'['+response.config.method+']'+response.config.url)
         return null
       }
       return res  
