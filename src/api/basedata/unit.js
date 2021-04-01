@@ -7,8 +7,8 @@ export function listAll() {
 }
 /**
  * 通用查询，支持字段id，zoneId，dictionaryId
- * @param {*} params 
- * @returns 
+ * @param {*} params
+ * @returns
  */
 export function commonQuery(params) {
   return request({

@@ -88,7 +88,7 @@ export default {
      }
    },
   handleCreate(){
-     save({unitId:this.$store.getters.unitId}).then(res=>{
+     save({unitId:this.$store.getters.unitId,userId:this.$store.getters.id,status:0}).then(res=>{
        if (res&&res.body&&res.body.data) {
          this.success()
          this.handleEdit(undefined,{id:res.body.data})
@@ -102,7 +102,7 @@ export default {
      this.dialogTableData = []
    },
    success() {
-     this.notify({
+     this.$notify({
      title: 'success',
      message: '操作成功',
      type: 'success',
@@ -110,7 +110,7 @@ export default {
      })
     },
    error() {
-     this.notify({
+     this.$notify({
      title: 'error',
      message: '操作失败',
      type: 'error',

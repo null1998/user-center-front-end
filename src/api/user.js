@@ -37,7 +37,7 @@ export function save(dto) {
 }
 export function removeById(id) {
   return request({
-    url: '/user/center/user/'+id,
+    url: '/user/center/user/' + id,
     method: 'delete'
   })
 }

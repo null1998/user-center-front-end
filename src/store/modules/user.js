@@ -13,7 +13,7 @@ const getDefaultState = () => {
     unitId: '',
     nickname: '',
     zoneId: '',
-    provinceZoneId:''
+    provinceZoneId: ''
   }
 }
 
@@ -42,10 +42,10 @@ const mutations = {
     state.unitId = unitId
   },
   SET_NICKNAME: (state, nickname) => {
-    state.nickname=nickname
+    state.nickname = nickname
   },
   SET_ZONE_ID: (state, zoneId) => {
-    state.zoneId=zoneId
+    state.zoneId = zoneId
   },
   SET_PROVINCE_ZONE_ID: (state, provinceZoneId) => {
     state.provinceZoneId = provinceZoneId
@@ -75,23 +75,23 @@ const actions = {
     return new Promise((resolve, reject) => {
       getInfo().then(response => {
         const { body } = response
-        
+
         if (!body) {
           return reject('获取用户信息失败，重新登录')
         }
-        const { username, avatar, roleNameList,unitId,nickname,zoneId,provinceZoneId,id } = body.data
-      
+        const { username, avatar, roleNameList, unitId, nickname, zoneId, provinceZoneId, id } = body.data
+
         if (roleNameList.length === 0) {
           roleNameList.push('tourist')
         }
-        commit('SET_ID',id)
+        commit('SET_ID', id)
         commit('SET_ROLES', roleNameList)
         commit('SET_NAME', username)
         commit('SET_AVATAR', avatar)
         commit('SET_UNIT_ID', unitId)
         commit('SET_NICKNAME', nickname)
         commit('SET_ZONE_ID', zoneId)
-        commit('SET_PROVINCE_ZONE_ID',provinceZoneId)
+        commit('SET_PROVINCE_ZONE_ID', provinceZoneId)
         resolve(body.data)
       }).catch(error => {
         reject(error)
@@ -114,7 +114,7 @@ const actions = {
   },
   refreshToken({ commit }, accessToken) {
     return new Promise(resolve => {
-      commit('SET_TOKEN',accessToken)
+      commit('SET_TOKEN', accessToken)
       setToken(accessToken)
       resolve()
     })

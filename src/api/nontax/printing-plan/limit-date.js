@@ -11,12 +11,12 @@ export function save(dto) {
 }
 /**
  * 删除
- * @param {ID} id 
+ * @param {ID} id
  */
 export function deleteById(id) {
   return request({
-    url: '/nontax/financial/printing/plan/limit/date/'+id,
-    method: 'delete',
+    url: '/nontax/financial/printing/plan/limit/date/' + id,
+    method: 'delete'
   })
 }
 /**
@@ -31,21 +31,21 @@ export function update(dto) {
 }
 /**
  * 根据单位ID查询印制计划上报日期列表
- * @param {单位ID} unitId 
+ * @param {单位ID} unitId
  */
 export function listByUnitId(unitId) {
   return request({
-    url: '/nontax/financial/printing/plan/limit/date/'+unitId,
+    url: '/nontax/financial/printing/plan/limit/date/' + unitId,
     method: 'get'
   })
 }
 /**
  * 查询是否在上报时间内
- * @param {单位ID} unitId 
+ * @param {单位ID} unitId
  */
 export function inRangeOfLimitDate(unitId) {
   return request({
-    url: '/nontax/financial/printing/plan/limit/date/in/range/'+unitId,
+    url: '/nontax/financial/printing/plan/limit/date/in/range/' + unitId,
     method: 'get'
   })
 }

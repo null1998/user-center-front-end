@@ -3,12 +3,12 @@ export function save(dto) {
   return request({
     url: '/nontax/financial/ticket/store',
     method: 'post',
-    data:dto
+    data: dto
   })
 }
 export function deleteById(id) {
   return request({
-    url: '/nontax/financial/ticket/store/'+id,
+    url: '/nontax/financial/ticket/store/' + id,
     method: 'delete'
   })
 }
@@ -16,12 +16,12 @@ export function update(dto) {
   return request({
     url: '/nontax/financial/ticket/store',
     method: 'put',
-    data:dto
+    data: dto
   })
 }
 export function getById(id) {
   return request({
-    url: '/nontax/financial/ticket/store/'+id,
+    url: '/nontax/financial/ticket/store/' + id,
     method: 'get'
   })
 }
@@ -34,6 +34,6 @@ export function commonQuery(params) {
   return request({
     url: '/nontax/financial/ticket/store/common/query',
     method: 'get',
-    params:params
+    params: params
   })
 }

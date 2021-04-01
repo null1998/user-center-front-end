@@ -8,7 +8,7 @@ export function saveList(dto) {
 }
 export function listByRoleId(id) {
   return request({
-    url: '/user/center/role/permission/list/'+id,
+    url: '/user/center/role/permission/list/' + id,
     method: 'get'
   })
 }

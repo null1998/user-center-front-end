@@ -17,6 +17,7 @@ import '@/permission' // permission control
 
 import hydui from './components/hyd-ui'
 import AFTableColumn from 'af-table-column'
+import echarts from 'echarts'
 /**
  * If you don't want to use mock-server
  * you want to use MockJs for mock api
@@ -31,11 +32,10 @@ import AFTableColumn from 'af-table-column'
 // }
 Vue.use(hydui)
 // set ElementUI lang to EN
-//Vue.use(ElementUI, { locale })
+// Vue.use(ElementUI, { locale })
 // 如果想要中文版 element-ui，按如下方式声明
- Vue.use(ElementUI)
+Vue.use(ElementUI)
 Vue.use(AFTableColumn)
-
 Vue.config.productionTip = false
 
 new Vue({

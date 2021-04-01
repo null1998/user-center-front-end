@@ -34,13 +34,13 @@ export function update(dto) {
  */
 export function deleteById(id) {
   return request({
-    url: '/user/center/permission/'+id,
+    url: '/user/center/permission/' + id,
     method: 'delete'
   })
 }
 export function getById(id) {
   return request({
-    url: '/user/center/permission/'+id,
+    url: '/user/center/permission/' + id,
     method: 'get'
   })
 }

@@ -8,7 +8,7 @@ export function saveList(dto) {
 }
 export function listByParentRoleId(id) {
   return request({
-    url: '/user/center/role/relate/list/'+id,
-    method: 'get',
+    url: '/user/center/role/relate/list/' + id,
+    method: 'get'
   })
 }

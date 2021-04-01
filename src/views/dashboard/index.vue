@@ -1,18 +1,25 @@
 <template>
   <div class="dashboard-container">
-    <div class="dashboard-text">你好， {{ name }}</div>
+    <nighting-gale-role :data="ticketStorage" />
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
-
 export default {
   name: 'Dashboard',
   computed: {
     ...mapGetters([
       'name'
     ])
+  },
+  data(){
+    return {
+      ticketStorage:[{value:10,name:'abc'}]
+    }
+  },
+  methods:{
+    
   }
 }
 </script>

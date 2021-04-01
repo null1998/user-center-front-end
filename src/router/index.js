@@ -66,17 +66,17 @@ export const asyncRoutes = [
       path: 'ticket',
       name: 'ticket',
       component: () => import('@/views/basedata/ticket/index'),
-      meta:{title: '票据管理',icon: 'el-icon-s-management',roles:['票据-查询与编辑']}
+      meta: { title: '票据管理', icon: 'el-icon-s-management', roles: ['票据-查询与编辑'] }
     }]
   },
   {
     path: '/permission',
     component: Layout,
     meta: {
-          title: '权限管理',
-          icon: 'form',
-          roles: ['权限编辑者','用户中心超级管理员']
-        },
+      title: '权限管理',
+      icon: 'form',
+      roles: ['权限编辑者', '用户中心超级管理员']
+    },
     children: [
       {
         path: 'index',
@@ -85,7 +85,7 @@ export const asyncRoutes = [
         meta: {
           title: '权限管理',
           icon: 'form',
-          roles: ['权限编辑者','用户中心超级管理员']
+          roles: ['权限编辑者', '用户中心超级管理员']
         }
       }
     ]
@@ -94,10 +94,10 @@ export const asyncRoutes = [
     path: '/role',
     component: Layout,
     meta: {
-          title: '角色管理',
-          icon: 'form',
-          roles: ['角色编辑者','用户中心超级管理员']
-        },
+      title: '角色管理',
+      icon: 'form',
+      roles: ['角色编辑者', '用户中心超级管理员']
+    },
     children: [
       {
         path: 'index',
@@ -106,7 +106,7 @@ export const asyncRoutes = [
         meta: {
           title: '角色管理',
           icon: 'form',
-          roles: ['角色编辑者','用户中心超级管理员']
+          roles: ['角色编辑者', '用户中心超级管理员']
         }
       }
     ]
@@ -115,10 +115,10 @@ export const asyncRoutes = [
     path: '/user',
     component: Layout,
     meta: {
-          title: '用户管理',
-          icon: 'form',
-          roles: ['用户编辑者','用户中心超级管理员']
-        },
+      title: '用户管理',
+      icon: 'form',
+      roles: ['用户编辑者', '用户中心超级管理员']
+    },
     children: [
       {
         path: 'index',
@@ -127,7 +127,7 @@ export const asyncRoutes = [
         meta: {
           title: '用户管理',
           icon: 'form',
-          roles: ['用户编辑者','用户中心超级管理员']
+          roles: ['用户编辑者', '用户中心超级管理员']
         }
       }
     ]
@@ -135,7 +135,7 @@ export const asyncRoutes = [
   {
     path: '/nontax/printing/plan',
     component: Layout,
-    meta: { title: '票据印制计划', icon: 'el-icon-date',roles: ['财政票据系统路由角色']},
+    meta: { title: '票据印制计划', icon: 'el-icon-date', roles: ['财政票据系统路由角色'] },
     children: [
       {
         path: 'limit-date',
@@ -160,7 +160,7 @@ export const asyncRoutes = [
         name: 'printing-order',
         component: () => import('@/views/nontax/printing-order/index'),
         meta: { title: '省级财政印制订单', icon: 'el-icon-s-order', roles: ['印制订单-查询与编辑'] }
-      },
+      }
     ]
   },
   {
@@ -190,7 +190,7 @@ export const asyncRoutes = [
         meta: {
           title: '票据生产记录',
           icon: 'form',
-          roles:['票据生产记录-查询与编辑']
+          roles: ['票据生产记录-查询与编辑']
         }
       }
     ]
@@ -206,7 +206,7 @@ export const asyncRoutes = [
         meta: {
           title: '票据入库记录',
           icon: 'form',
-          roles:['票据入库记录-编辑与查询']
+          roles: ['票据入库记录-编辑与查询']
         }
       }
     ]
@@ -218,11 +218,11 @@ export const asyncRoutes = [
       {
         path: 'index',
         name: 'ticket-storage',
-        component:()=>import('@/views/nontax/ticket-storage/index'),
+        component: () => import('@/views/nontax/ticket-storage/index'),
         meta: {
           title: '票据库存管理',
           icon: 'form',
-          roles:['票据库存-查询与编辑']
+          roles: ['票据库存-查询与编辑']
         }
       }
     ]
@@ -234,11 +234,11 @@ export const asyncRoutes = [
       {
         path: 'index',
         name: 'ticket-claim',
-        component:()=>import('@/views/nontax/ticket-claim/index'),
+        component: () => import('@/views/nontax/ticket-claim/index'),
         meta: {
           title: '票据申领管理',
           icon: 'form',
-          roles:['票据申领-查询与编辑']
+          roles: ['票据申领-查询与编辑']
         }
       }
     ]

@@ -50,7 +50,7 @@ const actions = {
     return new Promise(resolve => {
       let accessedRoutes = []
       accessedRoutes = filterAsyncRoutes(asyncRoutes, roles)
-      
+
       commit('SET_ROUTES', accessedRoutes)
       resolve(constantRoutes.concat(accessedRoutes))
     })

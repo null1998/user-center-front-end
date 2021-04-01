@@ -70,6 +70,9 @@ export default {
     this.getTicketList()
   },
   methods:{
+    getNgrData(){
+
+    },
     getWarehouseList(){
       commonQueryWarehouse({unitId:this.$store.getters.unitId}).then(res=>{
         if (res&&res.body&&res.body.data) {

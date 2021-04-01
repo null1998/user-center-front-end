@@ -12,6 +12,6 @@ const getters = {
   zoneId: state => state.user.zoneId,
   provinceZoneId: state => state.user.provinceZoneId,
   visitedViews: state => state.tagsView.visitedViews,
-  cachedViews: state => state.tagsView.cachedViews,
+  cachedViews: state => state.tagsView.cachedViews
 }
 export default getters
