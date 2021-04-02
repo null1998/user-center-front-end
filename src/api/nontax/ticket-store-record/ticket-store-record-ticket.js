@@ -32,3 +32,9 @@ export function commonQuery(params) {
     params: params
   })
 }
+export function numberPerMonth(unitId) {
+  return request({
+    url: '/nontax/financial/ticket/store/record/ticket/number/' + unitId,
+    method: 'get'
+  })
+}

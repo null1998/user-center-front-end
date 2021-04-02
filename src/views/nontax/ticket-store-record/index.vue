@@ -10,6 +10,7 @@
        @handleDelete='handleDelete'
        @handleCreate='handleCreate'
      />
+     <link-age :data="linkAgeData" :show="linkAgeData.length > 0" />
      <ticket-store-record-dialog
        :dialogData='dialogData'
        :dialogTableData='dialogTableData'
@@ -23,7 +24,7 @@
 <script>
 import ticketStoreRecordDialog from './ticket-store-record-dialog.vue'
 import { save,deleteById,commonQuery,getById } from "@/api/nontax/ticket-store-record/ticket-store-record-index";
-import { commonQuery as getDialogTableData} from "@/api/nontax/ticket-store-record/ticket-store-record-ticket";
+import { commonQuery as getDialogTableData,numberPerMonth} from "@/api/nontax/ticket-store-record/ticket-store-record-ticket";
 export default {
   components: { ticketStoreRecordDialog },
   name: 'ticket-store-record',
@@ -62,21 +63,53 @@ export default {
      dialogTitle: '',
      dialogData: {},
      dialogTableData: [],
+     linkAgeData:[]
     }
-  },
-  watch:{
-
   },
   created(){
     this.getTableData()
+    
   },
   methods:{
+    getNumberPerMonth() {
+      numberPerMonth(this.$store.getters.unitId).then(res=>{
+        if (res && res.body && res.body.data) {
+          let tmp = []
+          let month = new Date().getMonth() + 1;
+          let product = ['product']
+          for (let index = 1; index <= month; index++) {
+            product.push(index+'')
+          }
+          tmp.push(product)
+          for (let index = 0; index < res.body.data.length; index++) {
+            const record = res.body.data[index];
+            let item = [record.ticketName]
+            for (let i = 1; i <= month; i++) {
+              item.push(!record.number[i]?0:parseInt(record.number[i])) 
+            }
+            tmp.push(item)
+          }
+          this.linkAgeData = []
+          // this.linkAgeData = [
+          //       ['product', '2012', '2013', '2014', '2015', '2016', '2017'],
+          //       ['Milk Tea', 56.5, 82.1, 88.7, 70.1, 53.4, 85.1],
+          //       ['Matcha Latte', 51.1, 51.4, 55.1, 53.3, 73.8, 68.7],
+          //       ['Cheese Cocoa', 40.1, 62.2, 69.5, 36.4, 45.2, 32.5],
+          //       ['Walnut Brownie', 25.2, 37.1, 41.2, 18, 33.9, 49.1]
+          //   ]
+          this.linkAgeData = tmp
+          console.log(this.linkAgeData)
+        }
+      })
+    },
    getTableData(){
      this.tableLoading=true
      commonQuery({unitId:this.$store.getters.unitId}).then((res) => {
+       this.linkAgeData.push({})
        if (res && res.body && res.body.data) {
          this.tableData = res.body.data
          this.tableLoading=false
+         this.getNumberPerMonth()
        }
      })
    },

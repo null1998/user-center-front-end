@@ -9,6 +9,7 @@
        @handleSave='handleSave'
        @handleDelete='handleDelete'
      />
+     <nighting-gale-role :data="ngrData" :show="ngrData.length > 0"/>
    </div>
 </template>
 
@@ -62,6 +63,7 @@ export default {
        },
      ],
      tableLoading: false,
+     ngrData:[],
     }
   },
   created(){
@@ -70,8 +72,20 @@ export default {
     this.getTicketList()
   },
   methods:{
-    getNgrData(){
-
+    getNgrData(array){
+      let map = new Map()
+      for (let index = 0; index < array.length; index++) {
+        const element = array[index];
+        if (!map.get(element.ticketName)) {
+          map.set(element.ticketName,element.number)
+        } else {
+          map.set(element.ticketName,parseInt(element.number)+parseInt(map.get(element.ticketName)))
+        }
+      }
+      this.ngrData = []
+      for (var key of map.keys()) {
+        this.ngrData.push({value:Number.parseInt(map.get(key)),name:key})
+      }
     },
     getWarehouseList(){
       commonQueryWarehouse({unitId:this.$store.getters.unitId}).then(res=>{
@@ -92,6 +106,7 @@ export default {
      commonQuery({unitId:this.$store.getters.unitId}).then((res) => {
        if (res && res.body && res.body.data) {
          this.tableData = res.body.data
+         this.getNgrData(this.tableData)
          this.tableLoading=false
        }
      })

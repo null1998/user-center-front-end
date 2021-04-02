@@ -1,6 +1,6 @@
 <template>
   <div class="dashboard-container">
-    <nighting-gale-role :data="ticketStorage" />
+    
   </div>
 </template>
 
