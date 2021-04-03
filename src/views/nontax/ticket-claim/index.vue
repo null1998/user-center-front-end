@@ -33,15 +33,33 @@ export default {
      tableData: [],
      tableColumons: [
        {
-         prop:'',
-         label:''
+         prop:'orderNumber',
+         label:'单号'
        },
+       {
+         prop:'targetUnitName',
+         label:'目标单位'
+       },
+       {
+         prop:'warehouseName',
+         label:'收货仓库'
+       },
+       {
+         prop:'date',
+         label:'申领日期'
+       },
+       {
+         prop:'status',
+         label:'状态'
+       },
+       
      ],
      tableLoading: false,
      dialogVisible: false,
      dialogTitle: '',
      dialogData: {},
      dialogTableData: [],
+     statusMap:['待上报','已上报','已通过','已退回']
     }
   },
   watch:{
@@ -53,9 +71,13 @@ export default {
   methods:{
    getTableData(){
      this.tableLoading=true
-     commonQuery({}).then((res) => {
+     commonQuery({unitId:this.$store.getters.unitId}).then((res) => {
        if (res && res.body && res.body.data) {
          this.tableData = res.body.data
+         for (let index = 0; index < this.tableData.length; index++) {
+           const element = this.tableData[index];
+           element.status = this.statusMap[element.status]
+         }
          this.tableLoading=false
        }
      })
@@ -65,11 +87,12 @@ export default {
        getById(row.id).then((res)=>{
          if(res&&res.body&&res.body.data){
            this.dialogData = res.body.data
+           
            getDialogTableData(this.dialogData.id).then(resp=>{
              if (resp && resp.body && resp.body.data) {
                this.dialogTableData = resp.body.data
                this.dialogVisible = true
-               this.dialogTitle = ''
+               this.dialogTitle = '票据申领'
              }
            })
          }

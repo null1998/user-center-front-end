@@ -13,7 +13,8 @@ const getDefaultState = () => {
     unitId: '',
     nickname: '',
     zoneId: '',
-    provinceZoneId: ''
+    provinceZoneId: '',
+    unitLevel: '',
   }
 }
 
@@ -49,6 +50,9 @@ const mutations = {
   },
   SET_PROVINCE_ZONE_ID: (state, provinceZoneId) => {
     state.provinceZoneId = provinceZoneId
+  },
+  SET_UNIT_LEVEL: (state, unitLevel) => {
+    state.unitLevel = unitLevel
   }
 }
 
@@ -79,7 +83,7 @@ const actions = {
         if (!body) {
           return reject('获取用户信息失败，重新登录')
         }
-        const { username, avatar, roleNameList, unitId, nickname, zoneId, provinceZoneId, id } = body.data
+        const { username, avatar, roleNameList, unitId, nickname, zoneId, provinceZoneId, id,unitLevel } = body.data
 
         if (roleNameList.length === 0) {
           roleNameList.push('tourist')
@@ -92,6 +96,7 @@ const actions = {
         commit('SET_NICKNAME', nickname)
         commit('SET_ZONE_ID', zoneId)
         commit('SET_PROVINCE_ZONE_ID', provinceZoneId)
+        commit('SET_UNIT_LEVEL',unitLevel)
         resolve(body.data)
       }).catch(error => {
         reject(error)

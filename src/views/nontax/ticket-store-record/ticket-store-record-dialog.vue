@@ -67,9 +67,6 @@ import {
   update as updateRow,
   commonQuery,
 } from "@/api/nontax/ticket-store-record/ticket-store-record-ticket";
-import { commonQuery as 
-commonQueryUnit} from "@/api/basedata/unit";
-import { commonQuery as commonQueryWarehouse } from "@/api/basedata/warehouse";
 import { commonQuery as commonQueryPrintOrder } from "@/api/nontax/printing-order/printing-order-index";
 import { listByCategoryName } from "@/api/basedata/dictionary";
 import { commonQuery as commonQueryTicket } from "@/api/basedata/ticket";
@@ -147,7 +144,9 @@ export default {
       }
     },
     getPrintOrderList() {
-      commonQueryPrintOrder({unitId:this.$store.getters.unitId}).then(res=>{
+      // 省级单位才查询印制订单
+      if (this.$store.getters.unitLevel == 2) {
+        commonQueryPrintOrder({unitId:this.$store.getters.unitId}).then(res=>{
         if (res&&res.body&&res.body.data) {
           for (let i = 0; i < res.body.data.length; i++) {
             const element = res.body.data[i];
@@ -161,6 +160,8 @@ export default {
           }
         }
       })
+      }
+      
     },
     getTheWayList() {
       listByCategoryName({categoryName:"票据入库方式分类"}).then(res=>{

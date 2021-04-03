@@ -63,7 +63,7 @@
         </template>
       </af-table-column>
 
-      <el-table-column label="操作" fixed="right" width="200">
+      <el-table-column label="操作" fixed="right" width="200" v-if="showButton">
         <template slot-scope="scope">
           <el-button
             size="mini"
@@ -109,6 +109,7 @@
     </el-table>
 
     <el-button
+      v-if="showButton"
       style="
         width: 100%;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
@@ -150,6 +151,7 @@ export default {
         return "white-row";
       },
     },
+    showButton:{type:Boolean,required:false,default:true}
   },
   data() {
     return {

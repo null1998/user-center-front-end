@@ -11,6 +11,7 @@ const getters = {
   nickname: state => state.user.nickname,
   zoneId: state => state.user.zoneId,
   provinceZoneId: state => state.user.provinceZoneId,
+  unitLevel: state => state.user.unitLevel,
   visitedViews: state => state.tagsView.visitedViews,
   cachedViews: state => state.tagsView.cachedViews
 }
