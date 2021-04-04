@@ -9,7 +9,9 @@
        @handleSave='handleSave'
        @handleDelete='handleDelete'
      />
-     <nighting-gale-role :data="ngrData" :show="ngrData.length > 0"/>
+     <div v-if="ngrData">
+      <nighting-gale-role :data="ngrData" :show="ngrData.length > 0"/>
+     </div>
    </div>
 </template>
 

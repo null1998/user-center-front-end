@@ -6,6 +6,7 @@ import editableTable from './editable-table.vue'
 import mallki from './TextHoverEffect/Mallki.vue'
 import nightingGaleRole from './echarts/nighting-gale-role.vue'
 import linkAge from './echarts/link-age.vue'
+import annulurPie from './echarts/annulur-pie.vue'
 
 const hydui = {
   install: function(Vue) {
@@ -16,7 +17,8 @@ const hydui = {
     Vue.component('hyd-editable-table', editableTable)
     Vue.component('mallki', mallki)
     Vue.component('nighting-gale-role', nightingGaleRole)
-    Vue.component('link-age',linkAge)
+    Vue.component('link-age', linkAge)
+    Vue.component('annulur-pie',annulurPie)
   }
 }
 // 导出组件

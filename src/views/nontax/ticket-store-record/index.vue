@@ -10,7 +10,10 @@
        @handleDelete='handleDelete'
        @handleCreate='handleCreate'
      />
-     <link-age :data="linkAgeData" :show="linkAgeData.length > 0" />
+     <div v-if="linkAgeData">
+       <link-age :data="linkAgeData" :show="linkAgeData.length > 0" />
+     </div>
+     
      <ticket-store-record-dialog
        :dialogData='dialogData'
        :dialogTableData='dialogTableData'

@@ -21,6 +21,9 @@
         :title="dialogTitle"
         :type="dialogType"
       ></printing-plan-dialog>
+      <div v-if="annulurPieData">
+       <annulur-pie name='状态' :data='annulurPieData'/>
+     </div>
     </div>
     <!-- 不在上报日期内，显示告示牌 -->
     <div v-if="showBillboard">
@@ -78,6 +81,7 @@ export default {
       dialogVisible: false,
       dialogTitle: "",
       dialogType: "",
+      annulurPieData:[]
     };
   },
   created() {
@@ -94,6 +98,8 @@ export default {
       listByUnitId(this.$store.getters.unitId).then((res) => {
         if (res && res.body && res.body.data) {
           this.tableData = res.body.data;
+          this.annulurPieData = []
+          let map = new Map()
           for (let i = 0; i < this.tableData.length; i++) {
             const element = this.tableData[i];
             switch (element.status) {
@@ -112,7 +118,18 @@ export default {
               default:
                 break;
             }
+            if (map.get(this.tableData[i].status)) {
+              let tmp = map.get(this.tableData[i].status)
+              tmp.value = tmp.value + 1
+           } else {
+              let tmp = {value:1,name:this.tableData[i].status}
+              map.set(this.tableData[i].status,tmp)
+           }
+
           }
+          for (let value of map.values()) {
+           this.annulurPieData.push(value)
+         }
         }
       });
     },
