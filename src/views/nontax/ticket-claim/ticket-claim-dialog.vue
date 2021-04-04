@@ -13,7 +13,7 @@
           >退出</i
         >
         <i
-          v-if="data.status == 0"
+          v-if="data.status == 0 || data.status == 3"
           class="el-icon-circle-check"
           style="float: right"
           @click="handleSaveDialog"
@@ -22,7 +22,7 @@
       </div>
       <el-form ref="data" inline :rules="rule" :model="data">
         <el-form-item label="目标单位" prop="targetUnitId">
-          <el-select v-model="data.targetUnitId" v-if="data.status == 0">
+          <el-select v-model="data.targetUnitId" v-if="data.status == 0 || data.status == 3">
             <el-option
               v-for="item in superiorUnitList"
               :label="item.name"
@@ -33,7 +33,7 @@
           <div v-else>{{data.targetUnitName}}</div>
         </el-form-item>
         <el-form-item label="收货仓库" prop="warehouseId">
-          <el-select v-model="data.warehouseId" v-if="data.status == 0">
+          <el-select v-model="data.warehouseId" v-if="data.status == 0 || data.status == 3">
             <el-option
               v-for="item in warehouseList"
               :label="item.name"
@@ -49,7 +49,7 @@
         :tableData="tableData"
         :tableColumns="tableColumons"
         :loading="tableLoading"
-        :showButton="data.status == 0"
+        :showButton="data.status == 0 || data.status == 3"
         @handleSave="handleSave"
         @handleDelete="handleDelete"
       />

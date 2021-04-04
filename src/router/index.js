@@ -243,6 +243,22 @@ export const asyncRoutes = [
       }
     ]
   },
+  {
+    path: '/nontax/ticket/claim/review',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'ticket-claim-review',
+        component: () => import('@/views/nontax/ticket-claim/ticket-claim-review/index'),
+        meta: {
+          title: '下级申领管理',
+          icon: 'form',
+          roles: ['票据申领-查询与编辑']
+        }
+      }
+    ]
+  },
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }
 ]
