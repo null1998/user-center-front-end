@@ -236,7 +236,7 @@ export const asyncRoutes = [
         name: 'ticket-claim',
         component: () => import('@/views/nontax/ticket-claim/index'),
         meta: {
-          title: '票据申领管理',
+          title: '票据申领订单',
           icon: 'form',
           roles: ['票据申领-查询与编辑']
         }

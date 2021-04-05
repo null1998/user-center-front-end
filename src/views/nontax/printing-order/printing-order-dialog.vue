@@ -231,6 +231,7 @@ export default {
             now.getDate() +
             "日";
           this.data.status = 1;
+          this.data.payStatus = 1;
           update(this.data).then((res) => {
             if (res && res.body && res.body.data) {
               this.success();

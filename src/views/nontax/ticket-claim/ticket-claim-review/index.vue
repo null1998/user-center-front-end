@@ -52,6 +52,7 @@ export default {
      dialogTitle: '',
      dialogData: {},
      dialogTableData: [],
+     payStatusMap:['待下单','待付款','已付款']
     }
   },
   watch:{

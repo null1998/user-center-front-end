@@ -76,11 +76,7 @@ export default {
       tableLoading: false,
       statusList: [
         {
-          label: "部分完工",
-          value: "2",
-        },
-        {
-          label: "全部完工",
+          label: "已完工",
           value: "3",
         },
         {

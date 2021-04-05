@@ -61,6 +61,10 @@ export default {
           prop: "status",
           label: "订单状态",
         },
+        {
+          prop: 'payStatus',
+          label: '结算状态'
+        }
       ],
       tableLoading: false,
       dialogVisible: false,
@@ -69,7 +73,8 @@ export default {
       dialogAmount: 0,
       dialogTableData: [],
       dialogClearValidate: false,
-      statusMap: ["待付款", "已付款","部分完工","全部完工","已发货","已入库"],
+      statusMap: ["待下单", "已下单","已完工","已发货","已入库"],
+      payStatusMap:['待下单','待付款','已付款']
     };
   },
   created() {
@@ -85,6 +90,7 @@ export default {
             this.tableData[i]["status"] = this.statusMap[
               this.tableData[i]["status"]
             ];
+            this.tableData[i]['payStatus'] = this.payStatusMap[this.tableData[i]['payStatus']]
           }
           this.tableLoading = false
         }
@@ -132,6 +138,7 @@ export default {
       this.dialogData = {
         unitId: this.$store.getters.unitId,
         status: 0,
+        payStatus: 0,
         person: this.$store.getters.nickname,
       };
       save(this.dialogData).then((res) => {

@@ -54,8 +54,12 @@ export default {
        },
        {
          prop:'status',
-         label:'状态'
+         label:'订单状态'
        },
+       {
+         prop:'payStatus',
+         label:'结算状态'
+       }
        
      ],
      tableLoading: false,
@@ -63,7 +67,8 @@ export default {
      dialogTitle: '',
      dialogData: {},
      dialogTableData: [],
-     statusMap:['待上报','已上报','已通过','已退回'],
+     statusMap:['待下单','已下单','已发货','已退回'],
+     payStatusMap:['待下单','待付款','已付款'],
      annulurPieData:[]
     }
   },
@@ -84,6 +89,7 @@ export default {
          for (let index = 0; index < this.tableData.length; index++) {
            const element = this.tableData[index];
            element.status = this.statusMap[element.status]
+           element.payStatus = this.payStatusMap[element.payStatus]
            if (map.get(element.status)) {
               let tmp = map.get(element.status)
               tmp.value = tmp.value + 1
@@ -128,7 +134,7 @@ export default {
      }
    },
   handleCreate(){
-     save({unitId:this.$store.getters.unitId,userId:this.$store.getters.id,status:0}).then(res=>{
+     save({unitId:this.$store.getters.unitId,userId:this.$store.getters.id,status:0,payStatus:0}).then(res=>{
        if (res&&res.body&&res.body.data) {
          this.success()
          this.handleEdit(undefined,{id:res.body.data})

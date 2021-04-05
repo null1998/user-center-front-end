@@ -61,10 +61,10 @@ export default {
       dialogData: {},
       dialogTableData: [],
       statusMap: [
-        "待付款",
+        "待下单",
+        "已下单",
         "已付款",
-        "部分完工",
-        "全部完工",
+        "已完工",
         "已发货",
         "已入库",
       ],
