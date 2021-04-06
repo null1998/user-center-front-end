@@ -212,6 +212,22 @@ export const asyncRoutes = [
     ]
   },
   {
+    path: '/nontax/ticket/out/record',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'ticket-out-record',
+        component: () => import('@/views/nontax/ticket-out-record/index'),
+        meta: {
+          title: '票据出库记录',
+          icon: 'form',
+          roles: ['票据出库记录-查询与编辑']
+        }
+      }
+    ]
+  },
+  {
     path: '/nontax/ticket/storage',
     component: Layout,
     children: [

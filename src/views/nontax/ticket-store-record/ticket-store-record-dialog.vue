@@ -40,9 +40,6 @@
         <el-form-item label="来源单位" prop="sourceUnitId">
           <div>{{data.sourceUnitName}}</div>
         </el-form-item>
-        <el-form-item label="来源仓库" prop="sourceWarehouseId">
-          <div>{{data.sourceWarehouseName}}</div>
-        </el-form-item>
         <el-form-item label="入库方式" prop="dictionaryId">
           <div>{{data.theWay}}</div>
         </el-form-item>
