@@ -49,10 +49,6 @@ export default {
          label:'来源单位'
        },
        {
-         prop:'sourceWarehouseName',
-         label:'来源仓库'
-       },
-       {
          prop:'theWay',
          label:'入库方式'
        },

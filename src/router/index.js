@@ -275,6 +275,22 @@ export const asyncRoutes = [
       }
     ]
   },
+  {
+    path: '/nontax/payment',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'payment',
+        component: () => import('@/views/nontax/payment/index'),
+        meta: {
+          title: '支付结算管理',
+          icon: 'form',
+          roles: ['票据结算-查询与编辑']
+        }
+      }
+    ]
+  },
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }
 ]

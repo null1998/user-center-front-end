@@ -2,6 +2,7 @@
 <template>
   <div>
     <el-dialog
+      width="80%"
       :visible.sync="visible"
       :show-close="false"
       :before-close="close"
@@ -65,6 +66,7 @@ import {
 } from "@/api/nontax/ticket-out-record/ticket-out-record-ticket";
 import { commonQuery as commonQueryTicket } from "@/api/basedata/ticket";
 import { commonQuery as commonQueryTicketClaim } from "@/api/nontax/ticket-claim/ticket-claim-index";
+import { getDate } from "@/utils/date";
 export default {
   name: "",
   props: {
@@ -174,6 +176,7 @@ export default {
     handleSaveDialog() {
       this.$refs["data"].validate((valid) => {
         if (valid) {
+          this.data.outDate = getDate()
           update(this.data).then((res) => {
             if (res && res.body && res.body.data) {
               this.success();
@@ -189,7 +192,7 @@ export default {
         return;
       }
       if (!row.id) {
-        row.xxId = this.data.id;
+        row.ticketOutRecordId = this.data.id;
         saveRow(row).then((res) => {
           if (res && res.body && res.body.data) {
             this.success();
