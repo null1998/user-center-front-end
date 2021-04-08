@@ -43,7 +43,9 @@
             :loading="checkBtnLoading"
             @click="handleCheck(scope.$index, scope.row)"
             class="pan-btn light-blue-btn"
-            style="box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12),0 0 6px rgba(0, 0, 0, 0.04); "
+            style="
+              box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12),0 0 6px rgba(0, 0, 0, 0.04);
+            "
             >审核</el-button
           >
           <el-button
@@ -53,7 +55,9 @@
             :loading="submitBtnLoading"
             @click="handleSubmit(scope.$index, scope.row)"
             class="pan-btn light-blue-btn"
-            style="box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12),0 0 6px rgba(0, 0, 0, 0.04); "
+            style="
+              box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12),0 0 6px rgba(0, 0, 0, 0.04);
+            "
             >上报</el-button
           >
           <el-button
@@ -63,17 +67,21 @@
             :loading="viewBtnLoading"
             @click="handleView(scope.$index, scope.row)"
             class="pan-btn light-blue-btn"
-            style="box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12),0 0 6px rgba(0, 0, 0, 0.04); "
+            style="
+              box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12),0 0 6px rgba(0, 0, 0, 0.04);
+            "
             >查看</el-button
           >
           <el-button
             size="mini"
             icon="el-icon-edit"
             v-if="edit"
-            :loading="editBtnLoading"
+            v-loading.fullscreen.lock="editBtnLoading"
             @click="handleEdit(scope.$index, scope.row)"
             class="pan-btn light-blue-btn"
-            style="box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12),0 0 6px rgba(0, 0, 0, 0.04); "
+            style="
+              box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12),0 0 6px rgba(0, 0, 0, 0.04);
+            "
             >编辑</el-button
           >
           <el-button
@@ -83,7 +91,9 @@
             :loading="delBtnLoading"
             @click="handleDelete(scope.$index, scope.row)"
             class="pan-btn light-blue-btn"
-            style="box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12),0 0 6px rgba(0, 0, 0, 0.04);"
+            style="
+              box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12),0 0 6px rgba(0, 0, 0, 0.04);
+            "
             type="danger"
             >删除</el-button
           >
@@ -98,8 +108,8 @@
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
       "
       @click="handleCreate()"
-      ><mallki class-name="mallki-text" text="添加" /></el-button
-    >
+      ><mallki class-name="mallki-text" text="添加"
+    /></el-button>
   </div>
 </template>
 
@@ -136,18 +146,18 @@ export default {
   data() {
     return {
       selector: false,
-      check:false,
-      submit:false,
-      view:false,
+      check: false,
+      submit: false,
+      view: false,
       edit: false,
       del: false,
       add: false,
-      checkBtnLoading:false,
-      submitBtnLoading:false,
-      viewBtnLoading:false,
-      editBtnLoading: false,
-      delBtnLoading: false,
-      addBtnLoading:false
+      checkBtnLoading: undefined,
+      submitBtnLoading: undefined,
+      viewBtnLoading: undefined,
+      editBtnLoading: undefined,
+      delBtnLoading: undefined,
+      addBtnLoading: false,
     };
   },
   created() {
@@ -175,6 +185,9 @@ export default {
     }
   },
   methods: {
+    sleep(time) {
+      return new Promise((resolve) => setTimeout(resolve, time));
+    },
     /**
      * 选择器
      */
@@ -226,9 +239,10 @@ export default {
      * 添加按钮
      */
     handleCreate() {
-      this.addBtnLoading = true
+      this.addBtnLoading = true;
       this.$emit("handleCreate");
-      this.addBtnLoading = false
+      this.addBtnLoading = false;
+      
     },
   },
 };
@@ -264,5 +278,4 @@ export default {
 .el-button:focus {
   border-color: #409eff;
 } */
-
 </style>

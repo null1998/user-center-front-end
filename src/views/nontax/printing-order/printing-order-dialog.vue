@@ -21,6 +21,7 @@
           @click="handleSaveDialog"
           >下单</i
         >
+        
       </div>
       <el-form
         ref="data"
@@ -63,22 +64,14 @@
           </el-select>
           <div v-else>{{ data.warehouseName }}</div>
         </el-form-item>
-        <el-form-item label="收货日期" prop="end">
-          <el-date-picker
-            v-if="data.status === 0"
-            type="date"
-            placeholder="选择收获日期"
-            v-model="data.end"
-            value-format="yyyy年MM月dd日"
-          ></el-date-picker>
-          <div v-else>{{ data.end }}</div>
-        </el-form-item>
+        
       </el-form>
       <hyd-editable-table
         :tableKey="tableKey"
         :tableData="tableData"
         :tableColumns="tableColumns"
         :loading="tableLoading"
+        :showButton="data.status === 0"
         @handleSave="handleSave"
         @handleDelete="handleDelete"
       />
@@ -118,6 +111,11 @@ import {
   listByPrintingOrderId,
   deleteById,
 } from "@/api/nontax/printing-order/printing-order-ticket";
+import { save as savePayment } from "@/api/nontax/payment/payment";
+import { getDate } from '@/utils/date';
+import { save as saveStoreRecord } from "@/api/nontax/ticket-store-record/ticket-store-record-index";
+import { save as saveStoreRecordTicket } from "@/api/nontax/ticket-store-record/ticket-store-record-ticket";
+import { save as saveStorage } from "@/api/nontax/ticket-storage/ticket-storage-index";
 export default {
   components: { countTo },
   name: "",
@@ -238,6 +236,17 @@ export default {
               this.close();
             }
           });
+          let payment = {
+            sourceOrderNumber : this.data.orderNumber,
+            srcUnitId: this.data.unitId,
+            desUnitId: this.data.printUnitId,
+            orderType: '印制结算',
+            totalPrice: this.amount,
+            date: getDate(),
+            status: 0
+          }
+          // 最好使用消息队列重试
+          savePayment(payment);
         }
       });
     },
@@ -280,11 +289,11 @@ export default {
      * 获取印制订单表格数据
      */
     getTableData() {
+      this.amount = 0;
       listByPrintingOrderId(this.data.id).then((resp) => {
         if (resp && resp.body && resp.body.data) {
           this.tableData = resp.body.data;
           // 计算总价
-          this.amount = 0;
           for (let i = 0; i < this.tableData.length; i++) {
             const row = this.tableData[i];
             this.amount += row.price * row.number;

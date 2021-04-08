@@ -50,12 +50,8 @@ export default {
         },
         {
           prop: "start",
-          label: "通知日期",
+          label: "下单日期",
           sortable: true,
-        },
-        {
-          prop: "end",
-          label: "交货日期",
         },
         {
           prop: "status",
@@ -70,10 +66,10 @@ export default {
       dialogVisible: false,
       dialogTitle: "",
       dialogData: {},
-      dialogAmount: 0,
+      dialogAmount: undefined,
       dialogTableData: [],
       dialogClearValidate: false,
-      statusMap: ["待下单", "已下单","已完工","已发货","已入库"],
+      statusMap: ["待下单", "已下单","已完工","已入库"],
       payStatusMap:['待下单','待付款','已付款']
     };
   },
@@ -106,10 +102,10 @@ export default {
         getById(row.id).then((res) => {
           if (res && res.body && res.body.data) {
             this.dialogData = res.body.data;
+            this.dialogAmount = 0
             listByPrintingOrderId(this.dialogData.id).then((resp) => {
               if (resp && resp.body && resp.body.data) {
                 // 计算价格
-                this.dialogAmount = 0
                 for (let i = 0; i < resp.body.data.length; i++) {
                   const row = resp.body.data[i];
                   this.dialogAmount += row.price * row.number;
@@ -141,6 +137,7 @@ export default {
         payStatus: 0,
         person: this.$store.getters.nickname,
       };
+      this.dialogAmount = 0;
       save(this.dialogData).then((res) => {
         if (res && res.body && res.body.data) {
           this.success();
@@ -156,6 +153,7 @@ export default {
       this.dialogVisible = false;
       this.dialogData = {};
       this.dialogTableData = [];
+      this.dialogAmount = undefined
     },
     success() {
       this.$notify({

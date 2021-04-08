@@ -2,12 +2,12 @@
 <template>
   <div>
      <hyd-table
-       :tableKey='tableKey'
-       :tableData='tableData'
-       :tableColumns='tableColumons'
-       :loading='tableLoading'
-       @handleView='handleView'
-     />
+      :tableKey="tableKey"
+      :tableData="tableData"
+      :tableColumns="tableColumons"
+      :loading="tableLoading"
+      @handleEdit="handleEdit"
+    />
      <payment-dialog
        :dialogData='dialogData'
        :visible='dialogVisible'
@@ -29,55 +29,60 @@ export default {
      tableData: [],
      tableColumons: [
        {
-         prop:'payType',
-         label:'支付方式'
+         prop:'orderNumber',
+         label: '结算单号'
        },
        {
-         prop:'orderNumber',
-         label:'支付单号'
-       },
+         prop:'status',
+         label:'结算状态'
+       },   
+       {
+         prop:'orderType',
+         label:'业务类型'
+       }, 
        {
          prop:'sourceOrderNumber',
          label:'业务单号'
        },
        {
-         prop:'srcUnitId',
+         prop:'srcUnitName',
          label:'付款单位'
        },
        {
-         prop:'desUnitId',
+         prop:'desUnitName',
          label:'收款单位'
-       },
+       },    
        {
-         prop:'orderType',
-         label:'业务类型'
+         prop:'date',
+         label:'下单日期'
        },
        {
          prop:'totalPrice',
          label:'金额'
        },
        {
-         prop:'date',
-         label:'下单日期'
-       },
-       {
          prop:'payDate',
          label:'结算日期'
        },
        {
-         prop:'status',
-         label:'结算状态'
+         prop:'payType',
+         label:'支付方式'
        },
+       
      ],
      tableLoading: false,
      dialogVisible: false,
      dialogTitle: '',
      dialogData: {},
      dialogTableData: [],
+     statusMap:['待付款','已付款']
     }
   },
   watch:{
 
+  },
+  activated() {
+    this.getTableData()
   },
   created(){
     this.getTableData()
@@ -88,11 +93,15 @@ export default {
       commonQuery({srcUnitId:this.$store.getters.unitId}).then((res) => {
         if (res && res.body && res.body.data) {
           this.tableData = res.body.data
+          for (let index = 0; index < this.tableData.length; index++) {
+            const element = this.tableData[index];
+            element['status'] = this.statusMap[element['status']]
+          }
           this.tableLoading=false
         }
       })
     },
-    handleView(index,row) {
+    handleEdit(index,row) {
       if(row&&row.id){
         getById(row.id).then((res)=>{
           if(res&&res.body&&res.body.data){

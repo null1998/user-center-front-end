@@ -1,4 +1,4 @@
-<!-- 票据生产记录 -->
+<!-- 票号分配 -->
 <template>
   <div>
     <hyd-editable-table
@@ -28,11 +28,6 @@ export default {
       tableKey: 0,
       tableData: [],
       tableColumons: [
-        {
-          prop: "orderNumber",
-          label: "生产单号",
-          type: "show",
-        },
         {
           prop: "printOrderNumber",
           label: "印制订单号",
@@ -64,11 +59,7 @@ export default {
           label: "终止号",
           type: "show",
         },
-        {
-          prop: "createdDate",
-          label: "生产日期",
-          type: "show",
-        },
+        
       ],
       tableLoading: false,
     };
@@ -86,17 +77,17 @@ export default {
     listAllTicket() {
       commonQueryTicket({}).then(res=>{
         if (res&&res.body&&res.body.data) {
-          this.tableColumons[2].options = res.body.data
+          this.tableColumons[1].options = res.body.data
         }
       })
     },
     /**
-     * 查询该印刷厂的所有印刷订单
+     * 查询该印刷厂的所有未完工印刷订单
      */
     listPrintOrder() {
-      commonQueryPrintOrder({printUnitId:this.$store.getters.unitId}).then(res=>{
+      commonQueryPrintOrder({printUnitId:this.$store.getters.unitId,status:1}).then(res=>{
         if (res&&res.body&&res.body.data) {
-          this.tableColumons[1].options = res.body.data
+          this.tableColumons[0].options = res.body.data
         }
       })
     },
@@ -128,6 +119,8 @@ export default {
             }
           });
         }
+      } else {
+        this.getTableData();
       }
     },
     handleDelete(index, row) {

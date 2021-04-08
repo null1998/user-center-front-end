@@ -135,32 +135,91 @@ export const asyncRoutes = [
   {
     path: '/nontax/printing/plan',
     component: Layout,
-    meta: { title: '票据印制计划', icon: 'el-icon-date', roles: ['财政票据系统路由角色'] },
+    meta: { title: '年度计划', icon: 'el-icon-date', roles: ['财政票据系统路由角色'] },
     children: [
       {
         path: 'limit-date',
         name: 'limit-date',
         component: () => import('@/views/nontax/printing-plan/limit-date/index'),
-        meta: { title: '印制计划上报设置', icon: 'el-icon-upload', roles: ['印制计划时间限制-查询与编辑'] }
+        meta: { title: '上报日期', roles: ['印制计划时间限制-查询与编辑'] }
       },
       {
         path: 'subordinate-review',
         name: 'subordinate-review',
         component: () => import('@/views/nontax/printing-plan/subordinate-review/index'),
-        meta: { title: '下级印制计划审核', icon: 'el-icon-s-check', roles: ['印制计划-查询与审核'] }
+        meta: { title: '计划审核', roles: ['印制计划-查询与审核'] }
       },
       {
         path: 'printing-plan',
         name: 'printing-plan',
         component: () => import('@/views/nontax/printing-plan/index'),
-        meta: { title: '本级印制计划维护', icon: 'el-icon-edit', roles: ['印制计划-查询与编辑'] }
-      },
+        meta: { title: '计划上报', roles: ['印制计划-查询与编辑'] }
+      },     
+    ]
+  },
+  {
+    path: '/nontax/order',
+    component: Layout,
+    meta: { title: '订单管理', icon: 'el-icon-document', roles: ['财政票据系统路由角色'] },
+    children: [
       {
         path: 'printing-order',
         name: 'printing-order',
         component: () => import('@/views/nontax/printing-order/index'),
-        meta: { title: '省级财政印制订单', icon: 'el-icon-s-order', roles: ['印制订单-查询与编辑'] }
+        meta: { title: '印制订单', roles: ['印制订单-查询与编辑'] }
+      },
+      {
+        path: 'ticket-claim',
+        name: 'ticket-claim',
+        component: () => import('@/views/nontax/ticket-claim/index'),
+        meta: {
+          title: '申领订单',
+          roles: ['票据申领-查询与编辑']
+        }
+      },
+      {
+        path: 'ticket-claim-review',
+        name: 'ticket-claim-review',
+        component: () => import('@/views/nontax/ticket-claim/ticket-claim-review/index'),
+        meta: {
+          title: '下级申领',
+          roles: ['票据申领-查询与编辑']
+        }
       }
+    ]
+  },
+  {
+    path: '/nontax/storage',
+    component: Layout,
+    meta: { title: '库存管理', icon: 'el-icon-house', roles: ['财政票据系统路由角色'] },
+    children: [
+      {
+        path: 'ticket-store-record',
+        name: 'ticket-store-record',
+        component: () => import('@/views/nontax/ticket-store-record/index'),
+        meta: {
+          title: '入库记录',
+          roles: ['票据入库记录-编辑与查询']
+        }
+      },
+      {
+        path: 'ticket-out-record',
+        name: 'ticket-out-record',
+        component: () => import('@/views/nontax/ticket-out-record/index'),
+        meta: {
+          title: '出库记录',
+          roles: ['票据出库记录-查询与编辑']
+        }
+      },
+      {
+        path: 'ticket-storage',
+        name: 'ticket-storage',
+        component: () => import('@/views/nontax/ticket-storage/index'),
+        meta: {
+          title: '库存查看',
+          roles: ['票据库存-查询与编辑']
+        }
+      },
     ]
   },
   {
@@ -172,7 +231,7 @@ export const asyncRoutes = [
         name: 'order-progress',
         component: () => import('@/views/nontax/order-progress/index'),
         meta: {
-          title: '印制订单进度',
+          title: '印制订单',
           icon: 'form',
           roles: ['订单进度-查询与编辑']
         }
@@ -188,89 +247,9 @@ export const asyncRoutes = [
         name: 'ticket-product-record',
         component: () => import('@/views/nontax/ticket-product-record/index'),
         meta: {
-          title: '票据生产记录',
+          title: '票号分配',
           icon: 'form',
           roles: ['票据生产记录-查询与编辑']
-        }
-      }
-    ]
-  },
-  {
-    path: '/nontax/ticket/store/record',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: 'ticket-store-record',
-        component: () => import('@/views/nontax/ticket-store-record/index'),
-        meta: {
-          title: '票据入库记录',
-          icon: 'form',
-          roles: ['票据入库记录-编辑与查询']
-        }
-      }
-    ]
-  },
-  {
-    path: '/nontax/ticket/out/record',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: 'ticket-out-record',
-        component: () => import('@/views/nontax/ticket-out-record/index'),
-        meta: {
-          title: '票据出库记录',
-          icon: 'form',
-          roles: ['票据出库记录-查询与编辑']
-        }
-      }
-    ]
-  },
-  {
-    path: '/nontax/ticket/storage',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: 'ticket-storage',
-        component: () => import('@/views/nontax/ticket-storage/index'),
-        meta: {
-          title: '票据库存管理',
-          icon: 'form',
-          roles: ['票据库存-查询与编辑']
-        }
-      }
-    ]
-  },
-  {
-    path: '/nontax/ticket/claim',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: 'ticket-claim',
-        component: () => import('@/views/nontax/ticket-claim/index'),
-        meta: {
-          title: '票据申领订单',
-          icon: 'form',
-          roles: ['票据申领-查询与编辑']
-        }
-      }
-    ]
-  },
-  {
-    path: '/nontax/ticket/claim/review',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: 'ticket-claim-review',
-        component: () => import('@/views/nontax/ticket-claim/ticket-claim-review/index'),
-        meta: {
-          title: '下级申领管理',
-          icon: 'form',
-          roles: ['票据申领-查询与编辑']
         }
       }
     ]
@@ -284,8 +263,8 @@ export const asyncRoutes = [
         name: 'payment',
         component: () => import('@/views/nontax/payment/index'),
         meta: {
-          title: '支付结算管理',
-          icon: 'form',
+          title: '支付结算',
+          icon: 'el-icon-money',
           roles: ['票据结算-查询与编辑']
         }
       }

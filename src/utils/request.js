@@ -27,6 +27,8 @@ service.interceptors.request.use(
   error => {
     // do something with request error
     console.log(error) // for debug
+    this.$message.error('服务器出错')
+    debugger
     return Promise.reject(error)
   }
 )
@@ -59,10 +61,12 @@ service.interceptors.response.use(
       }
       return res
     } else {
+      
       this.$message.error('服务器出错')
       return null
     }
-  }
+  },
+  
 )
 // response interceptor
 // service.interceptors.response.use(

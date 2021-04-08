@@ -34,8 +34,12 @@ export default {
       tableData: [],
       tableColumons: [
         {
-          prop: "ordernumber",
-          label: "单号",
+          prop: "orderNumber",
+          label: "印制单号",
+        },
+        {
+          prop: "unitName",
+          label: "收货单位",
         },
         {
           prop: "warehouseName",
@@ -43,12 +47,11 @@ export default {
         },
         {
           prop: "start",
-          label: "通知日期",
-          sortable: true,
+          label: "下单日期",
         },
         {
           prop: "end",
-          label: "交货日期",
+          label: "完工日期",
         },
         {
           prop: "status",
@@ -63,10 +66,8 @@ export default {
       statusMap: [
         "待下单",
         "已下单",
-        "已付款",
         "已完工",
-        "已发货",
-        "已入库",
+        "已入库"
       ],
     };
   },
@@ -76,7 +77,7 @@ export default {
   methods: {
     getTableData() {
       this.tableLoading = true
-      commonQuery({ printUnitId: this.$store.getters.unitId }).then((res) => {
+      commonQuery({ printUnitId: this.$store.getters.unitId,status:1 }).then((res) => {
         if (res && res.body && res.body.data) {
           this.tableData = res.body.data;
           for (let i = 0; i < this.tableData.length; i++) {

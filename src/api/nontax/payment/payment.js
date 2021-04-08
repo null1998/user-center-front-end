@@ -25,6 +25,12 @@ export function getById(id) {
     method: 'get'
   })
 }
+
+/**
+ * 通用查询，支持字段id,srcUnitId
+ * @param payment 票据结算
+ * @return 票据结算列表
+ */
 export function commonQuery(params) {
   return request({
     url: '/nontax/financial/payment/common/query',

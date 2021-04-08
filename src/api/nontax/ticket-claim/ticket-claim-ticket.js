@@ -25,6 +25,11 @@ export function getById(id) {
     method: 'get'
   })
 }
+/**
+ * 通用查询，支持字段id,ticketClaimId
+ * @param ticketClaimTicketQO 票据申领票据
+ * @return 票据申领票据列表
+ */
 export function commonQuery(params) {
   return request({
     url: '/nontax/financial/ticket/claim/ticket/common/query',

@@ -81,7 +81,7 @@ export default {
   methods:{
    getTableData(){
      this.tableLoading=true
-     commonQuery({unitId:this.$store.getters.unitId}).then((res) => {
+     commonQuery({ unitId: this.$store.getters.unitId }).then((res) => {
        if (res && res.body && res.body.data) {
          this.tableData = res.body.data
          this.annulurPieData = []
@@ -107,11 +107,12 @@ export default {
    },
    handleEdit(index,row) {
      if(row&&row.id){
+       
        getById(row.id).then((res)=>{
          if(res&&res.body&&res.body.data){
            this.dialogData = res.body.data
            
-           getDialogTableData(this.dialogData.id).then(resp=>{
+           getDialogTableData({ticketClaimId:this.dialogData.id}).then(resp=>{
              if (resp && resp.body && resp.body.data) {
                this.dialogTableData = resp.body.data
                this.dialogVisible = true

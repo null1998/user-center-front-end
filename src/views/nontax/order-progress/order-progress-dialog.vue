@@ -45,6 +45,7 @@
 <script>
 import { listByPrintingOrderId as commonQuery } from "@/api/nontax/printing-order/printing-order-ticket";
 import { update } from "@/api/nontax/printing-order/printing-order-index";
+import { getDate } from '@/utils/date';
 export default {
   name: "",
   props: {
@@ -77,12 +78,8 @@ export default {
       statusList: [
         {
           label: "已完工",
-          value: "3",
-        },
-        {
-          label: "已发货",
-          value: "4",
-        },
+          value: "2",
+        }
       ],
       status:""
     };
@@ -106,6 +103,7 @@ export default {
     },
     handleSaveDialog() {
       this.data.status = this.status
+      this.data.end = getDate()
       update(this.data).then(res=>{
         if (res&&res.body&&res.body.data) {
           this.success()
