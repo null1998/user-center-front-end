@@ -2,7 +2,7 @@
 <template>
   <div>
     <el-dialog
-      width="65%"
+      width="75%"
       :visible.sync="visible"
       :show-close="false"
       :before-close="close"
@@ -98,6 +98,16 @@ export default {
           label: "数量",
           type: "input",
         },
+        {
+          prop:"startNumber",
+          label:"起始号",
+          type:"show"
+        },
+        {
+          prop:"endNumber",
+          label:"终止号",
+          type:"show"
+        }
       ],
       tableLoading: false,
       rule: {
@@ -209,6 +219,7 @@ export default {
       }
     },
     dataValid(row) {
+      debugger
       if (row && row.ticketId && row.number) {
         let s = /^[1-9]?[0-9]{0,9}$/;
         return s.test(row.number);

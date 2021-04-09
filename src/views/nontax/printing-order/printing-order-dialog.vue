@@ -5,7 +5,7 @@
       :visible.sync="visible"
       :show-close="false"
       :before-close="close"
-      width="65%"
+      width="90%"
     >
       <div slot="title" class="header-title">
         <i class="el-icon-s-data" style="font-family: 'PingFang SC'">{{
@@ -82,13 +82,15 @@
         </div>
       </div>
       </el-row>
-      <el-tabs v-model="active" type="border-card" v-if="data.status === 0">
+      <el-tabs v-model="active" type="border-card">
         <el-tab-pane label="下级需求汇总参考" name="subordinate">
+          <el-button type="primary" size="mini" v-if="data.status == 0" @click="importData()">一键导入</el-button>
           <hyd-table
             :tableKey="subordinateTableKey"
             :tableData="subordinateTableData"
             :tableColumns="subordinateTableColumns"
             :loading="subordinateTableLoading"
+            @handleSelectionChange="handleSelect"
           />
         </el-tab-pane>
       </el-tabs>
@@ -113,9 +115,6 @@ import {
 } from "@/api/nontax/printing-order/printing-order-ticket";
 import { save as savePayment } from "@/api/nontax/payment/payment";
 import { getDate } from '@/utils/date';
-import { save as saveStoreRecord } from "@/api/nontax/ticket-store-record/ticket-store-record-index";
-import { save as saveStoreRecordTicket } from "@/api/nontax/ticket-store-record/ticket-store-record-ticket";
-import { save as saveStorage } from "@/api/nontax/ticket-storage/ticket-storage-index";
 export default {
   components: { countTo },
   name: "",
@@ -173,6 +172,16 @@ export default {
           label: "单价",
           type: "show",
         },
+        {
+          prop:"startNumber",
+          label:"起始号",
+          type:"show"
+        },
+        {
+          prop:"endNumber",
+          label:"终止号",
+          type:"show"
+        }
       ],
       tableLoading: false,
       subordinateTableKey: 0,
@@ -190,6 +199,7 @@ export default {
       subordinateTableLoading: false,
       active: "subordinate",
       amount: 0,
+      array:[]
     };
   },
   created() {
@@ -217,6 +227,21 @@ export default {
     },
   },
   methods: {
+    importData(){
+      for (let index = 0; index < this.array.length; index++) {
+        let row = {...this.array[index]}  
+        this.helper(row)
+      }
+      this.getTableData()
+      this.success()
+    },
+    async helper(row){
+      row.printingOrderId = this.data.id;
+      save(row)
+    },
+    handleSelect(rows){
+      this.array = rows
+    },
     handleSaveDialog() {
       this.$refs["data"].validate((valid) => {
         if (valid) {

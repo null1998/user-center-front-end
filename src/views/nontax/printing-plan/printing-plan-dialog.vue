@@ -3,7 +3,7 @@
   <div>
     <el-dialog
       :visible.sync="visible"
-      width="75%"
+      width="90%"
       :show-close="false"
       :before-close="close"
     >
@@ -15,6 +15,7 @@
           >退出</i
         >
         <i
+          v-if="data.status == 0 || data.status == 3"
           class="el-icon-circle-check"
           style="float: right"
           @click="handleSaveDialog"
@@ -26,6 +27,7 @@
         :tableData="myTableData"
         :tableColumns="tableColumons"
         :loading="tableLoading"
+        :showButton="data.status == 0 || data.status == 3"
         @handleSave="handleSave"
         @handleDelete="handleDelete"
       />
@@ -39,11 +41,13 @@
           />
         </el-tab-pane>
         <el-tab-pane label="下级上报汇总参考" name="subordinate">
+          <el-button type="primary" size="mini" v-if="data.status == 0 || data.status == 3" @click="importData()">一键导入</el-button>
           <hyd-table
             :tableKey="subordinateTableKey"
             :tableData="subordinateTableData"
             :tableColumns="subordinateTableColumns"
             :loading="subordinateTableLoading"
+            @handleSelectionChange="handleSelect"
           />
         </el-tab-pane>
       </el-tabs>
@@ -141,6 +145,7 @@ export default {
       subordinateTableLoading: false,
       ticketList: [],
       myTableData: this.tableData,
+      array:[]
     };
   },
   watch: {
@@ -161,32 +166,47 @@ export default {
     this.listSubordinatePrintingPlanTicket(this.$store.getters.unitId);
   },
   methods: {
+    importData(){
+      new Promise(() => {
+        for (let index = 0; index < this.array.length; index++) {
+          const row = {...this.array[index]};
+          row.id = undefined;
+          this.handleSave(undefined, row);
+        }
+      }).then(()=>{
+        this.getTableData()
+      });
+    },
+    handleSelect(rows){
+      this.array = rows
+    },
     handleSave(index, row) {
       // 数据不合法，返回
       if (!this.dataValid(row)) {
+        this.error()
         this.getTableData()
         return;
       }
-      if (this.data.status === 0 || this.data.status === 3) {
-        this.data.person = this.$store.getters.nickname;
-        if (row.id) {
-          updatePrintingPlanTicket(row).then((res) => {
-            if (res && res.body) {
-              this.success();
-              this.getTableData();
-            }
-          });
-        } else {
-          row.printingPlanId = this.data.id;
+      
+      this.data.person = this.$store.getters.nickname;
+      if (row.id) {
+        updatePrintingPlanTicket(row).then((res) => {
+          if (res && res.body) {
+            this.success();
+            this.getTableData();
+          }
+        });
+      } else {
+        row.printingPlanId = this.data.id;
 
-          savePrintingPlanTicket(row).then((res) => {
-            if (res && res.body) {
-              this.success();
-              this.getTableData();
-            }
-          });
-        }
+        savePrintingPlanTicket(row).then((res) => {
+          if (res && res.body) {
+            this.success();
+            this.getTableData();
+          }
+        });
       }
+      
     },
     handleDelete(index, row) {
       if ((this.data.status === 0 || this.data.status === 3) && row.id) {
@@ -289,6 +309,14 @@ export default {
         title: "success",
         message: "操作成功",
         type: "success",
+        duration: 2000,
+      });
+    },
+    error() {
+      this.$notify({
+        title: "error",
+        message: "数据格式错误！",
+        type: "error",
         duration: 2000,
       });
     },

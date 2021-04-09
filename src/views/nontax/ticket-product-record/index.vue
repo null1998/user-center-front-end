@@ -1,6 +1,7 @@
 <!-- 票号分配 -->
 <template>
   <div>
+    <el-button type="danger" size="mini" @click="deleteAll()">批量删除</el-button>
     <hyd-editable-table
       :tableKey="tableKey"
       :tableData="tableData"
@@ -8,6 +9,7 @@
       :loading="tableLoading"
       @handleSave="handleSave"
       @handleDelete="handleDelete"
+      @handleSelectionChange="handleSelect"
     />
   </div>
 </template>
@@ -62,15 +64,35 @@ export default {
         
       ],
       tableLoading: false,
+      array:[]
     };
   },
   watch: {},
+  activated() {
+    this.getTableData()
+  },
   created() {
     this.listAllTicket()
     this.listPrintOrder()
     this.getTableData();
   },
   methods: {
+    async deleteAll(){
+      for (let index = 0; index < this.array.length; index++) {
+        const row = this.array[index];
+        if (row.id) {
+          await this.helper(row)
+        }
+      }
+      this.getTableData()
+      this.success()
+    },
+    async helper(row){
+      await deleteById(row.id)
+    },
+    handleSelect(rows){
+      this.array = rows
+    },
     /**
      * 查询所有票据
      */

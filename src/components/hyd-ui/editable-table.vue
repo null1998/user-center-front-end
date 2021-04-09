@@ -167,14 +167,18 @@ export default {
     };
   },
   watch: {
-      tableData (val) {
-        this.myTableData = val
-      },
-      myTableData(val) {
+    tableData (val) {
+      this.myTableData = val
+    },
+    myTableData(val) {
 
-      }
+    }
     },
   created() {
+    // 监听父组件传进来的数据
+    if (this.$listeners["handleSelectionChange"]) {
+      this.selector = true;
+    }
     this.sumRow = this.myTableData.length;
   },
   methods: {

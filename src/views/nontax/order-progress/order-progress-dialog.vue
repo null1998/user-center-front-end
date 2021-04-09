@@ -2,6 +2,7 @@
 <template>
   <div>
     <el-dialog
+      width="75%"
       :visible.sync="visible"
       :show-close="false"
       :before-close="close"
@@ -32,20 +33,26 @@
           </el-select>
         </el-form-item>
       </el-form>
+      <el-button type="primary" size="mini" @click="generate()">自动分配票号</el-button>
       <hyd-table
         :tableKey="tableKey"
         :tableData="tableData"
         :tableColumns="tableColumons"
         :loading="tableLoading"
+        @handleSelectionChange="handleSelect"
       />
     </el-dialog>
   </div>
 </template>
 
 <script>
-import { listByPrintingOrderId as commonQuery } from "@/api/nontax/printing-order/printing-order-ticket";
+import { listByPrintingOrderId as commonQuery,update as updatePrintOrderTicket } from "@/api/nontax/printing-order/printing-order-ticket";
 import { update } from "@/api/nontax/printing-order/printing-order-index";
 import { getDate } from '@/utils/date';
+import {
+  save as saveProductRecord,
+  getById as getProductRecord
+} from "@/api/nontax/ticket-product-record/ticket-product-record-index";
 export default {
   name: "",
   props: {
@@ -73,6 +80,14 @@ export default {
           prop: "number",
           label: "数量",
         },
+        {
+          prop:"startNumber",
+          label:"起始号"
+        },
+        {
+          prop: "endNumber",
+          label:"终止号"
+        }
       ],
       tableLoading: false,
       statusList: [
@@ -81,7 +96,8 @@ export default {
           value: "2",
         }
       ],
-      status:""
+      status:"",
+      array:[]
     };
   },
   watch: {
@@ -94,6 +110,40 @@ export default {
   },
   created() {},
   methods: {
+    async generate(){
+      for (let index = 0; index < this.array.length; index++) {
+        const row = {...this.array[index]};
+        let dto = {
+          printUnitId: this.$store.getters.unitId,
+          ticketId: row.ticketId,
+          number: row.number,
+          printOrderNumber: this.data.orderNumber,
+          createdDate:getDate(),
+        }
+        await this.helper(dto,row)
+      }
+      this.getTableData()
+      this.success()
+    },
+    handleSelect(rows){
+      this.array = rows
+    },
+    async helper(dto,row){
+      await saveProductRecord(dto).then(res=>{
+        // 票号分配
+        if (res&&res.body&&res.body.data) {
+          getProductRecord(res.body.data).then(res=>{
+            // 得到生成的票号
+            if (res&&res.body&&res.body.data) {
+              row.startNumber = res.body.data.startNumber
+              row.endNumber = res.body.data.endNumber
+              // 给印制订单附上票号
+              updatePrintOrderTicket(row)
+            }
+          })
+        }
+      })
+    },
     getTableData() {
       commonQuery(this.data.id).then((res) => {
         if (res && res.body && res.body.data) {
