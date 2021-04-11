@@ -1,7 +1,7 @@
 <!-- 票号分配 -->
 <template>
   <div>
-    <el-button type="danger" size="mini" @click="deleteAll()">批量删除</el-button>
+    <el-button type="danger" size="mini" @click="deleteAll()" :disabled="deleteButtonDisable" >批量删除</el-button>
     <hyd-editable-table
       :tableKey="tableKey"
       :tableData="tableData"
@@ -64,7 +64,8 @@ export default {
         
       ],
       tableLoading: false,
-      array:[]
+      array:[],
+      deleteButtonDisable:false
     };
   },
   watch: {},
@@ -77,7 +78,11 @@ export default {
     this.getTableData();
   },
   methods: {
+    /**
+     * 简单使用下，不应该这样批量删除
+     */
     async deleteAll(){
+      this.deleteButtonDisable = true
       for (let index = 0; index < this.array.length; index++) {
         const row = this.array[index];
         if (row.id) {
@@ -86,6 +91,7 @@ export default {
       }
       this.getTableData()
       this.success()
+      this.deleteButtonDisable = false
     },
     async helper(row){
       await deleteById(row.id)
@@ -115,7 +121,7 @@ export default {
     },
     getTableData() {
       this.tableLoading = true;
-      commonQuery({}).then((res) => {
+      commonQuery({printUnitId:this.$store.getters.unitId}).then((res) => {
         if (res && res.body && res.body.data) {
           this.tableData = res.body.data;
           this.tableLoading = false;

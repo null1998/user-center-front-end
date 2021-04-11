@@ -113,15 +113,25 @@ export default {
           unitId: this.$store.getters.unitId,
           ticketId: element.ticketId,
         }).then((res) => {
+          // 得到该票据所有票段，按number升序
           if (res && res.body && res.body.data) {
-            let storage = { ticketName: element.ticketName, number: 0 };
+            let storage = { ticketClaimId: this.data.id,
+                            ticketClaimTicketId: element.id, 
+                            needNumber: element.number,
+                            ticketName: element.ticketName, 
+                            number: 0 };
             for (let i = 0; i < res.body.data.length; i++) {
               const e = res.body.data[i];
-              storage.number = parseInt(storage.number) + parseInt(e.number);
+              // 找到最小的满足要求的号段
+              if (parseInt(e.number) >= element.number) {
+                storage.number = parseInt(e.number);
+                storage.status = "库存充足";
+                storage.storeId = e.id
+                break;
+              }
             }
-            if (storage.number >= element.number) {
-              storage.status = "库存充足";
-            } else {
+            // 没找到合适号段
+            if (storage.number == 0) {
               storage.status = "库存不足";
               this.storageEnough = false;
             }

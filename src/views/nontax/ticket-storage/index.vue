@@ -68,6 +68,9 @@ export default {
      ngrData:[],
     }
   },
+  activated(){
+    this.getTableData()
+  },
   created(){
     this.getTableData()
     this.getWarehouseList()
@@ -141,6 +144,7 @@ export default {
      if (row && row.id) {
        deleteById(row.id).then((res) => {
          if (res && res.body && res.body.data) {
+           this.ngrData = []
            this.success()
            this.getTableData()
          }

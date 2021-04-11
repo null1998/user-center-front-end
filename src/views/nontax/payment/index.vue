@@ -29,10 +29,6 @@ export default {
      tableData: [],
      tableColumons: [
        {
-         prop:'orderNumber',
-         label: '结算单号'
-       },
-       {
          prop:'status',
          label:'结算状态'
        },   
@@ -43,10 +39,6 @@ export default {
        {
          prop:'sourceOrderNumber',
          label:'业务单号'
-       },
-       {
-         prop:'srcUnitName',
-         label:'付款单位'
        },
        {
          prop:'desUnitName',

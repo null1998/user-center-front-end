@@ -49,7 +49,7 @@ export default {
          label:'来源单位'
        },
        {
-         prop:'theWay',
+         prop:'storeType',
          label:'入库方式'
        },
        {
@@ -64,6 +64,9 @@ export default {
      dialogTableData: [],
      linkAgeData:[]
     }
+  },
+  activated(){
+    this.getTableData()
   },
   created(){
     this.getTableData()
@@ -126,6 +129,7 @@ export default {
      if (row && row.id) {
        deleteById(row.id).then((res) => {
          if (res && res.body && res.body.data) {
+           this.linkAgeData = []
            this.success()
            this.getTableData()
          }

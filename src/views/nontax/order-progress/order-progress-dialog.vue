@@ -110,6 +110,9 @@ export default {
   },
   created() {},
   methods: {
+    /**
+     * 不要这样在前端循环和异步，下次直接把列表传到后端
+     */
     async generate(){
       for (let index = 0; index < this.array.length; index++) {
         const row = {...this.array[index]};
@@ -122,23 +125,26 @@ export default {
         }
         await this.helper(dto,row)
       }
-      this.getTableData()
-      this.success()
+      
+      //this.success()
     },
     handleSelect(rows){
       this.array = rows
     },
     async helper(dto,row){
-      await saveProductRecord(dto).then(res=>{
+      saveProductRecord(dto).then(res=>{
         // 票号分配
         if (res&&res.body&&res.body.data) {
-          getProductRecord(res.body.data).then(res=>{
+          getProductRecord(res.body.data).then(resp=>{
             // 得到生成的票号
-            if (res&&res.body&&res.body.data) {
-              row.startNumber = res.body.data.startNumber
-              row.endNumber = res.body.data.endNumber
+            if (resp&&resp.body&&resp.body.data) {
+              row.startNumber = resp.body.data.startNumber
+              row.endNumber = resp.body.data.endNumber
+              console.log(row)
               // 给印制订单附上票号
-              updatePrintOrderTicket(row)
+              updatePrintOrderTicket({...row}).then(()=>{
+                this.getTableData()
+              })
             }
           })
         }

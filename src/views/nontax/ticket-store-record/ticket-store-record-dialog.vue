@@ -41,7 +41,7 @@
           <div>{{data.sourceUnitName}}</div>
         </el-form-item>
         <el-form-item label="入库方式" prop="dictionaryId">
-          <div>{{data.theWay}}</div>
+          <div>{{data.storeType}}</div>
         </el-form-item>
       </el-form>
       <hyd-editable-table

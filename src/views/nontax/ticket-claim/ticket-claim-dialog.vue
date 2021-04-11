@@ -2,7 +2,7 @@
 <template>
   <div>
     <el-dialog
-      width="75%"
+      width="90%"
       :visible.sync="visible"
       :show-close="false"
       :before-close="close"
@@ -14,14 +14,14 @@
         >
         <i
           v-if="data.status == 0 || data.status == 3"
-          class="el-icon-circle-check"
+          class="el-icon-shopping-cart-1"
           style="float: right"
           @click="handleSaveDialog"
-          >保存</i
+          >下单</i
         >
       </div>
       <el-form ref="data" inline :rules="rule" :model="data">
-        <el-form-item label="目标单位" prop="targetUnitId">
+        <el-form-item label="上级单位" prop="targetUnitId">
           <el-select v-model="data.targetUnitId" v-if="data.status == 0 || data.status == 3">
             <el-option
               v-for="item in superiorUnitList"
@@ -69,6 +69,7 @@ import { getSuperiorUnitList } from "@/api/basedata/unit";
 import { commonQuery as commonQueryWarehouse } from "@/api/basedata/warehouse";
 import { commonQuery as commonQueryTicket } from "@/api/basedata/ticket";
 import { getDate } from "@/utils/date";
+import { save as savePayment } from "@/api/nontax/payment/payment";
 export default {
   name: "ticket-claim-ticket",
   props: {
@@ -99,6 +100,11 @@ export default {
           type: "input",
         },
         {
+          prop: "price",
+          label: "单价",
+          type: "show",
+        },
+        {
           prop:"startNumber",
           label:"起始号",
           type:"show"
@@ -120,6 +126,7 @@ export default {
       },
       superiorUnitList: [],
       warehouseList: [],
+      amount: 0
     };
   },
   watch: {
@@ -166,7 +173,13 @@ export default {
       this.tableLoading = true;
       commonQuery({ ticketClaimId: this.data.id }).then((res) => {
         if (res && res.body && res.body.data) {
+          this.amount = 0
           this.tableData = res.body.data;
+          for (let index = 0; index < this.tableData.length; index++) {
+            const element = this.tableData[index];
+            this.amount += element.price * parseInt(element.number)
+          }
+          console.log(this.amount)
           this.tableLoading = false;
         }
       });
@@ -183,6 +196,17 @@ export default {
               this.close();
             }
           });
+          let payment = {
+            sourceOrderNumber : this.data.orderNumber,
+            srcUnitId: this.data.unitId,
+            desUnitId: this.data.targetUnitId,
+            orderType: '申领结算',
+            totalPrice: this.amount,
+            date: getDate(),
+            status: 0
+          }
+          // 最好使用消息队列重试
+          savePayment(payment);
         }
       });
     },
@@ -219,7 +243,6 @@ export default {
       }
     },
     dataValid(row) {
-      debugger
       if (row && row.ticketId && row.number) {
         let s = /^[1-9]?[0-9]{0,9}$/;
         return s.test(row.number);

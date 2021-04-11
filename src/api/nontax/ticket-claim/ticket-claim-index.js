@@ -37,3 +37,17 @@ export function commonQuery(params) {
     params: params
   })
 }
+export function autoOut(dto) {
+  return request({
+    url: '/nontax/financial/ticket/claim/auto/out',
+    method: 'post',
+    data: dto
+  })
+}
+export function autoStore(dto) {
+  return request({
+    url: '/nontax/financial/ticket/claim/auto/store',
+    method: 'post',
+    data: dto
+  })
+}
