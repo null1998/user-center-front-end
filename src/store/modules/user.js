@@ -65,6 +65,7 @@ const actions = {
         // 首次登录返回的token保存在本地
         if (response.head.accessToken) {
           commit('SET_TOKEN', response.head.accessToken)
+          
           setToken(response.head.accessToken)
         }
         resolve(response)
@@ -107,7 +108,7 @@ const actions = {
   // user logout
   logout({ commit, state }) {
     return new Promise((resolve, reject) => {
-      logout(state.token).then(() => {
+      logout().then(() => {
         removeToken() // must remove  token  first
         resetRouter()
         commit('RESET_STATE')

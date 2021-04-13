@@ -28,7 +28,6 @@ service.interceptors.request.use(
     // do something with request error
     console.log(error) // for debug
     this.$message.error('服务器出错')
-    debugger
     return Promise.reject(error)
   }
 )

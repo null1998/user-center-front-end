@@ -15,11 +15,10 @@ export function getInfo() {
   })
 }
 
-export function logout(token) {
+export function logout() {
   return request({
     url: '/user/op/logout',
-    method: 'delete',
-    params: { token }
+    method: 'delete'
   })
 }
 export function listAll() {

@@ -127,12 +127,14 @@ export default {
             .then((response) => {
               this.loading = false;
               if (response.head.code === "0") {
+                console.log(this.$route)
                 this.$router.push({ path: '/dashboard' || "/" });
               } else {
                 this.$message.error("账号密码错误");
               }
             })
-            .catch(() => {
+            .catch((error) => {
+              console.log(error)
               this.loading = false;
             });
         } else {
