@@ -45,8 +45,9 @@
 </template>
 
 <script>
-import { update } from "@/api/nontax/ticket-claim/ticket-claim-index";
+import { update,autoOut } from "@/api/nontax/ticket-claim/ticket-claim-index";
 import { commonQuery as commonQueryStorage } from "@/api/nontax/ticket-storage/ticket-storage-index";
+import { getDate } from '@/utils/date';
 export default {
   name: "",
   props: {
@@ -70,6 +71,14 @@ export default {
           prop: "number",
           label: "数量",
         },
+        {
+          prop: "startNumber",
+          label: "起始号"
+        },
+        {
+          prop: "endNumber",
+          label: "终止号"
+        }
       ],
       tableLoading: false,
       activeName: "storageTicket",
@@ -91,6 +100,7 @@ export default {
       ],
       storageTableLoading: false,
       storageEnough: true,
+      autoOutList:[]
     };
   },
   watch: {
@@ -107,8 +117,22 @@ export default {
   methods: {
     getTicketStorage() {
       this.storageTableData = [];
+      this.autoOutList = []
+      // 申领单票据列表
       for (let index = 0; index < this.tableData.length; index++) {
         const element = this.tableData[index];
+        let autoOut = {
+          ticketClaimTicketId:element.id,
+          needNumber:element.number,
+          ticketId:element.ticketId,
+          operateDate:getDate(),
+          userId:this.$store.getters.id,
+          targetOrderNumber: this.data.orderNumber,
+          unitId: this.data.targetUnitId,
+          targetUnitId:this.data.unitId,
+          outType:'申领出库',
+          outDate:getDate()
+        }
         commonQueryStorage({
           unitId: this.$store.getters.unitId,
           ticketId: element.ticketId,
@@ -126,7 +150,8 @@ export default {
               if (parseInt(e.number) >= element.number) {
                 storage.number = parseInt(e.number);
                 storage.status = "库存充足";
-                storage.storeId = e.id
+                storage.storeId = e.id,
+                autoOut.storeId = e.id
                 break;
               }
             }
@@ -136,18 +161,10 @@ export default {
               this.storageEnough = false;
             }
             this.storageTableData.push(storage);
+            this.autoOutList.push(autoOut)
           }
         });
       }
-    },
-    getTableData() {
-      this.tableLoading = true;
-      commonQuery({ ticketClaimId: this.data.id }).then((res) => {
-        if (res && res.body && res.body.data) {
-          this.tableData = res.body.data;
-          this.tableLoading = false;
-        }
-      });
     },
     handleCheck(result) {
       if (result) {
@@ -171,8 +188,12 @@ export default {
       }
       update(this.data).then((res) => {
         if (res && res.body && res.body.data) {
-          this.success();
-          this.close();
+          if(this.data.status == 2) {
+            this.success();
+            this.close();
+            // 自动出库
+            autoOut(this.autoOutList);
+          }   
         }
       });
     },

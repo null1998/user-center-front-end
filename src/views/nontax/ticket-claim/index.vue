@@ -10,9 +10,9 @@
        @handleDelete='handleDelete'
        @handleCreate='handleCreate'
      />
-     <div v-if="annulurPieData">
+     <!-- <div v-if="annulurPieData">
        <annulur-pie name='申领状态' :data='annulurPieData'/>
-     </div>
+     </div> -->
      
      <ticketClaimDialog
        :dialogData='dialogData'
@@ -84,22 +84,10 @@ export default {
      commonQuery({ unitId: this.$store.getters.unitId }).then((res) => {
        if (res && res.body && res.body.data) {
          this.tableData = res.body.data
-         this.annulurPieData = []
-         let map = new Map()
          for (let index = 0; index < this.tableData.length; index++) {
            const element = this.tableData[index];
            element.status = this.statusMap[element.status]
            element.payStatus = this.payStatusMap[element.payStatus]
-           if (map.get(element.status)) {
-              let tmp = map.get(element.status)
-              tmp.value = tmp.value + 1
-           } else {
-              let tmp = {value:1,name:element.status}
-              map.set(element.status,tmp)
-           }
-          }
-         for (let value of map.values()) {
-           this.annulurPieData.push(value)
          }
          this.tableLoading=false
        }

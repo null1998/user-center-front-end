@@ -19,6 +19,13 @@
           @click="handleSaveDialog"
           >下单</i
         >
+        <i
+          v-if="data.status == 2"
+          class="el-icon-circle-check"
+          style="float: right"
+          @click="autoStore()"
+          >入库</i
+        >
       </div>
       <el-form ref="data" inline :rules="rule" :model="data">
         <el-form-item label="上级单位" prop="targetUnitId">
@@ -58,7 +65,7 @@
 </template>
 
 <script>
-import { update } from "@/api/nontax/ticket-claim/ticket-claim-index";
+import { update,autoStore } from "@/api/nontax/ticket-claim/ticket-claim-index";
 import {
   save as saveRow,
   deleteById,
@@ -126,7 +133,8 @@ export default {
       },
       superiorUnitList: [],
       warehouseList: [],
-      amount: 0
+      amount: 0,
+      autoStoreList:[]
     };
   },
   watch: {
@@ -135,15 +143,42 @@ export default {
     },
     dialogTableData(val) {
       this.tableData = val;
+      this.autoStoreList = []
+      this.amount = 0
+      for (let index = 0; index < this.tableData.length; index++) {
+        const element = this.tableData[index];
+        let autoStore = {
+          ticketClaimTicketId:element.id,
+          needNumber:element.number,
+          ticketId:element.ticketId,
+          operateDate:getDate(),
+          userId:this.$store.getters.id,
+          warehouseId:this.warehouseList[0].id,
+          startNumber:element.startNumber,
+          endNumber:element.endNumber,
+          sourceOrderNumber: this.data.orderNumber,
+          unitId: this.data.unitId,
+          sourceUnitId:this.data.targetUnitId,
+          storeType:'申领入库',
+          storeDate:getDate()
+        }
+        this.autoStoreList.push(autoStore)
+        this.amount += element.price * parseInt(element.number)
+      }
     },
   },
   created() {
     this.getSuperiorUnit();
     this.getWarehouseList();
-    this.getTableData();
     this.getTicketList();
   },
   methods: {
+    autoStore(){
+      autoStore(this.autoStoreList).then(()=>{
+        this.success()
+        this.close()
+      })
+    },
     getTicketList() {
       commonQueryTicket({ zoneId: this.$store.getters.provinceZoneId }).then(
         (res) => {
@@ -168,21 +203,6 @@ export default {
           }
         }
       );
-    },
-    getTableData() {
-      this.tableLoading = true;
-      commonQuery({ ticketClaimId: this.data.id }).then((res) => {
-        if (res && res.body && res.body.data) {
-          this.amount = 0
-          this.tableData = res.body.data;
-          for (let index = 0; index < this.tableData.length; index++) {
-            const element = this.tableData[index];
-            this.amount += element.price * parseInt(element.number)
-          }
-          console.log(this.amount)
-          this.tableLoading = false;
-        }
-      });
     },
     handleSaveDialog() {
       this.$refs["data"].validate((valid) => {
