@@ -69,7 +69,7 @@ export default {
     }
   },
   activated(){
-    this.getTableData()
+    //this.getTableData()
   },
   created(){
     this.getTableData()

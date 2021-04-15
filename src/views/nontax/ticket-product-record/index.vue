@@ -70,7 +70,7 @@ export default {
   },
   watch: {},
   activated() {
-    this.getTableData()
+    //this.getTableData()
   },
   created() {
     this.listAllTicket()

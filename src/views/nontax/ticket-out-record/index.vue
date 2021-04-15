@@ -63,6 +63,9 @@ export default {
   watch:{
 
   },
+  activated() {
+    //this.getTableData()
+  },
   created(){
     this.getTableData()
   },
