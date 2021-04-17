@@ -13,17 +13,18 @@
       border
     >
       <el-table-column type="selection" v-if="selector"> </el-table-column>
-      <el-table-column label="ID" prop="id">
+      <el-table-column label="ID" prop="id" width="50">
         <template slot-scope="scope">
           <span>{{ scope.$index + 1 }}</span>
         </template>
       </el-table-column>
-      <af-table-column
+      <el-table-column
         v-for="(item, index) in tableColumns"
         :key="index"
         :prop="item.prop"
         :label="item.label"
         :sortable="item.sortable"
+        :width="item.width"
       >
         <template slot-scope="scope">
           <span v-if="editingRowIndex === scope.$index">
@@ -61,7 +62,7 @@
               : scope.row[item.prop]
           }}</span>
         </template>
-      </af-table-column>
+      </el-table-column>
 
       <el-table-column label="操作" fixed="right" width="200" v-if="showButton">
         <template slot-scope="scope">

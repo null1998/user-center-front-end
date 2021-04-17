@@ -1,16 +1,28 @@
 <!-- 印制订单 -->
 <template>
   <div>
-    <hyd-table
-      :tableKey="tableKey"
-      :tableData="tableData"
-      :tableColumns="tableColumons"
-      :loading="tableLoading"
-      @handleEdit="handleEdit"
-      @handleDelete="handleDelete"
-      @handleCreate="handleCreate"
-    >
-    </hyd-table>
+    <el-row>
+      <el-col :span="18">
+        <el-card class="box-card" style="width: 980px; height: 680px">
+          <el-row>
+            <hyd-table
+              :height="580"
+              :tableKey="tableKey"
+              :tableData="tableData"
+              :tableColumns="tableColumons"
+              :loading="tableLoading"
+              @handleEdit="handleEdit"
+              @handleDelete="handleDelete"
+              @handleCreate="handleCreate"
+            />
+          </el-row>
+        </el-card>
+      </el-col>
+      <el-col :span="6">
+        <div id="main" :style="{ width: '350px', height: '350px' }"></div>
+      </el-col>
+    </el-row>
+
     <printing-order-dialog
       :dialogData="dialogData"
       :dialogTableData="dialogTableData"
@@ -24,6 +36,7 @@
 </template>
 
 <script>
+import * as echarts from "echarts";
 import printingOrderDialog from "./printing-order-dialog.vue";
 import {
   save,
@@ -43,24 +56,29 @@ export default {
         {
           prop: "orderNumber",
           label: "单号",
+          width: "200",
         },
         {
-          prop:"printUnitName",
-          label:"印刷单位"
+          prop: "printUnitName",
+          label: "印刷单位",
+          width: "150",
         },
         {
           prop: "start",
           label: "下单日期",
           sortable: true,
+          width: "150",
         },
         {
           prop: "status",
           label: "订单状态",
+          width: "100",
         },
         {
-          prop: 'payStatus',
-          label: '结算状态'
-        }
+          prop: "payStatus",
+          label: "结算状态",
+          width: "100",
+        },
       ],
       tableLoading: false,
       dialogVisible: false,
@@ -69,16 +87,71 @@ export default {
       dialogAmount: undefined,
       dialogTableData: [],
       dialogClearValidate: false,
-      statusMap: ["待下单", "已下单","已完工","已入库"],
-      payStatusMap:['待下单','待付款','已付款']
+      statusMap: ["待下单", "已下单", "已完工", "已入库"],
+      payStatusMap: ["待下单", "待付款", "已付款"],
+      option: {
+        title: {
+          text: "印制订单状态",
+          left: "center",
+        },
+        tooltip: {
+          trigger: "item",
+        },
+        legend: {
+          orient: "vertical",
+          left: "left",
+        },
+        series: [
+          {
+            name: "订单状态",
+            type: "pie",
+            radius: "50%",
+            data: [
+              
+            ],
+            emphasis: {
+              itemStyle: {
+                shadowBlur: 10,
+                shadowOffsetX: 0,
+                shadowColor: "rgba(0, 0, 0, 0.5)",
+              },
+            },
+          },
+        ],
+      },
+      myChart:{}
     };
+  },
+  watch:{
+    tableData(val){
+      this.option.series[0].data = []
+      let map = new Map()
+      for (let index = 0; index < val.length; index++) {
+        const element = val[index];
+        if (map.get(element.status)) {
+          map.set(element.status,map.get(element.status)+1)
+        } else {
+          map.set(element.status,1)
+        }
+      }
+      for(let key of map.keys()) {
+        let e = {value: parseInt(map.get(key)), name: key}
+        this.option.series[0].data.push(e)
+      }
+      this.myChart.setOption(this.option)
+    }
   },
   created() {
     this.getTableData();
   },
+  mounted() {
+    var chartDom = document.getElementById("main");
+    this.myChart = echarts.init(chartDom);
+    this.option && this.myChart.setOption(this.option);
+  },
   methods: {
     getTableData() {
-      this.tableLoading = true
+      this.tableLoading = true;
       commonQuery({ unitId: this.$store.getters.unitId }).then((res) => {
         if (res && res.body && res.body.data) {
           this.tableData = res.body.data;
@@ -86,9 +159,11 @@ export default {
             this.tableData[i]["status"] = this.statusMap[
               this.tableData[i]["status"]
             ];
-            this.tableData[i]['payStatus'] = this.payStatusMap[this.tableData[i]['payStatus']]
+            this.tableData[i]["payStatus"] = this.payStatusMap[
+              this.tableData[i]["payStatus"]
+            ];
           }
-          this.tableLoading = false
+          this.tableLoading = false;
         }
       });
     },
@@ -102,7 +177,7 @@ export default {
         getById(row.id).then((res) => {
           if (res && res.body && res.body.data) {
             this.dialogData = res.body.data;
-            this.dialogAmount = 0
+            this.dialogAmount = 0;
             listByPrintingOrderId(this.dialogData.id).then((resp) => {
               if (resp && resp.body && resp.body.data) {
                 // 计算价格
@@ -153,7 +228,7 @@ export default {
       this.dialogVisible = false;
       this.dialogData = {};
       this.dialogTableData = [];
-      this.dialogAmount = undefined
+      this.dialogAmount = undefined;
     },
     success() {
       this.$notify({

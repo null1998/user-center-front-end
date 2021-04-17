@@ -7,6 +7,7 @@ import mallki from './TextHoverEffect/Mallki.vue'
 import nightingGaleRole from './echarts/nighting-gale-role.vue'
 import linkAge from './echarts/link-age.vue'
 import annulurPie from './echarts/annulur-pie.vue'
+import pie from './echarts/pie.vue'
 
 const hydui = {
   install: function(Vue) {
@@ -18,7 +19,8 @@ const hydui = {
     Vue.component('mallki', mallki)
     Vue.component('nighting-gale-role', nightingGaleRole)
     Vue.component('link-age', linkAge)
-    Vue.component('annulur-pie',annulurPie)
+    Vue.component('annulur-pie', annulurPie)
+    Vue.component('pie',pie)
   }
 }
 // 导出组件

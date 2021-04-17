@@ -3,7 +3,6 @@
   <div>
     <el-dialog
       :visible.sync="visible"
-      width="75%"
       :show-close="false"
       :before-close="close"
     >

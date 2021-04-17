@@ -5,23 +5,53 @@
       :visible.sync="visible"
       :show-close="false"
       :before-close="close"
-      width="95%"
     >
       <div slot="title" class="header-title">
         <i class="el-icon-s-data" style="font-family: 'PingFang SC'">{{
           title
         }}</i>
-        <i class="el-icon-circle-close" style="float: right" @click="close"
-          >退出</i
-        >
-        <i
-          v-if="data.status === 0"
-          class="el-icon-shopping-cart-1"
-          style="float: right"
-          @click="handleSaveDialog"
-          >下单</i
-        >
-        
+        <div style="float: right">
+          <el-popover placement="bottom" width="600" trigger="click">
+            <el-button
+              type="primary"
+              size="mini"
+              v-if="data.status == 0"
+              @click="importData()"
+              >一键导入</el-button
+            >
+            <hyd-table
+              :tableKey="subordinateTableKey"
+              :tableData="subordinateTableData"
+              :tableColumns="subordinateTableColumns"
+              :loading="subordinateTableLoading"
+              @handleSelectionChange="handleSelect"
+            />
+            <el-tooltip slot="reference" content="汇总参考" placement="bottom" effect="light">
+            <el-button
+              size="mini"
+              type="primary"
+              icon="el-icon-document"
+            />
+            </el-tooltip>
+          </el-popover>
+          <el-tooltip content="印制下单" placement="bottom" effect="light">
+            <el-button
+              :disabled="this.data.status != 0"
+              type="success"
+              icon="el-icon-shopping-cart-1"
+              size="mini"
+              @click="handleSaveDialog"
+            ></el-button>
+          </el-tooltip>
+          <el-tooltip content="返回主页" placement="bottom" effect="light">
+          <el-button
+            type="danger"
+            icon="el-icon-right"
+            size="mini"
+            @click="close"
+          ></el-button>
+          </el-tooltip>
+        </div>
       </div>
       <el-form
         ref="data"
@@ -64,9 +94,15 @@
           </el-select>
           <div v-else>{{ data.warehouseName }}</div>
         </el-form-item>
-        
       </el-form>
-      <el-button type="primary" size="mini" v-if="data.status == 2" @click="storeTicket()">一键入库</el-button>
+      <el-button
+        type="primary"
+        size="mini"
+        v-if="data.status == 2"
+        @click="storeTicket()"
+        >一键入库</el-button
+      >
+
       <hyd-editable-table
         :tableKey="tableKey"
         :tableData="tableData"
@@ -78,24 +114,16 @@
         @handleSelectionChange="handleSelectStore"
       />
       <el-row>
-      <div style="float: right">
-        <div class="example">
-          ￥<countTo :startVal="0" :endVal="amount" :duration="2000"></countTo>
+        <div style="float: right">
+          <div class="example">
+            ￥<countTo
+              :startVal="0"
+              :endVal="amount"
+              :duration="2000"
+            ></countTo>
+          </div>
         </div>
-      </div>
       </el-row>
-      <el-tabs v-model="active" type="border-card">
-        <el-tab-pane label="下级年度计划参考" name="subordinate">
-          <el-button type="primary" size="mini" v-if="data.status == 0" @click="importData()">一键导入</el-button>
-          <hyd-table
-            :tableKey="subordinateTableKey"
-            :tableData="subordinateTableData"
-            :tableColumns="subordinateTableColumns"
-            :loading="subordinateTableLoading"
-            @handleSelectionChange="handleSelect"
-          />
-        </el-tab-pane>
-      </el-tabs>
     </el-dialog>
   </div>
 </template>
@@ -116,7 +144,7 @@ import {
   deleteById,
 } from "@/api/nontax/printing-order/printing-order-ticket";
 import { save as savePayment } from "@/api/nontax/payment/payment";
-import { getDate } from '@/utils/date';
+import { getDate } from "@/utils/date";
 import { save as saveTicketStoreRecord } from "@/api/nontax/ticket-store-record/ticket-store-record-index";
 import { save as saveTicketStoreRecordTicket } from "@/api/nontax/ticket-store-record/ticket-store-record-ticket";
 import { save as saveStorage } from "@/api/nontax/ticket-storage/ticket-storage-index";
@@ -165,7 +193,7 @@ export default {
           options: [],
           optionLabel: "name",
           optionValue: "id",
-          placeholder: "请选择票据",
+          width: "260",
         },
         {
           prop: "number",
@@ -176,17 +204,18 @@ export default {
           prop: "price",
           label: "单价",
           type: "show",
+          width: "50",
         },
-        {
-          prop:"startNumber",
-          label:"起始号",
-          type:"show"
-        },
-        {
-          prop:"endNumber",
-          label:"终止号",
-          type:"show"
-        }
+        // {
+        //   prop:"startNumber",
+        //   label:"起始号",
+        //   type:"show"
+        // },
+        // {
+        //   prop:"endNumber",
+        //   label:"终止号",
+        //   type:"show"
+        // }
       ],
       tableLoading: false,
       subordinateTableKey: 0,
@@ -204,8 +233,8 @@ export default {
       subordinateTableLoading: false,
       active: "subordinate",
       amount: 0,
-      array:[],
-      arrayStore:[]
+      array: [],
+      arrayStore: [],
     };
   },
   created() {
@@ -233,61 +262,60 @@ export default {
     },
   },
   methods: {
-    storeTicket(){
+    storeTicket() {
       let dto = {
-        sourceOrderNumber:this.data.orderNumber,
-        unitId:this.data.unitId,
-        sourceUnitId:this.data.printUnitId,
-        storeType:'印制入库',
-        storeDate:getDate()
-      }
+        sourceOrderNumber: this.data.orderNumber,
+        unitId: this.data.unitId,
+        sourceUnitId: this.data.printUnitId,
+        storeType: "印制入库",
+        storeDate: getDate(),
+      };
       // 生成入库记录
-      saveTicketStoreRecord(dto).then(res=>{
+      saveTicketStoreRecord(dto).then((res) => {
         if (res && res.body && res.body.data) {
           for (let index = 0; index < this.arrayStore.length; index++) {
-            let row = {...this.arrayStore[index]}  
-            this.helperStore(row, res.body.data)
-            console.log(index)
+            let row = { ...this.arrayStore[index] };
+            this.helperStore(row, res.body.data);
+            console.log(index);
           }
         }
-        this.getTableData()
-        this.success()
-      })     
+        this.getTableData();
+        this.success();
+      });
     },
-    async helperStore(row,id){
+    async helperStore(row, id) {
       let dto = {
         ticketStoreRecordId: id,
         ticketId: row.ticketId,
         startNumber: row.startNumber,
         endNumber: row.endNumber,
-        number: row.number
-      }
-      await saveTicketStoreRecordTicket(dto)
-      dto.ticketStoreRecordId = undefined
-      dto.warehouseId = this.warehousetList[0].id
-      dto.userId = this.$store.getters.id
-      dto.unitId = this.$store.getters.unitId
-      dto.operateDate = getDate()
-      await saveStorage(dto)
-
+        number: row.number,
+      };
+      await saveTicketStoreRecordTicket(dto);
+      dto.ticketStoreRecordId = undefined;
+      dto.warehouseId = this.warehousetList[0].id;
+      dto.userId = this.$store.getters.id;
+      dto.unitId = this.$store.getters.unitId;
+      dto.operateDate = getDate();
+      await saveStorage(dto);
     },
-    handleSelectStore(rows){
-      this.arrayStore = rows
+    handleSelectStore(rows) {
+      this.arrayStore = rows;
     },
-    importData(){
+    importData() {
       for (let index = 0; index < this.array.length; index++) {
-        let row = {...this.array[index]}  
-        this.helper(row)
+        let row = { ...this.array[index] };
+        this.helper(row);
       }
-      this.getTableData()
-      this.success()
+      this.getTableData();
+      this.success();
     },
-    async helper(row){
+    async helper(row) {
       row.printingOrderId = this.data.id;
-      save(row)
+      save(row);
     },
-    handleSelect(rows){
-      this.array = rows
+    handleSelect(rows) {
+      this.array = rows;
     },
     handleSaveDialog() {
       this.$refs["data"].validate((valid) => {
@@ -309,14 +337,14 @@ export default {
             }
           });
           let payment = {
-            sourceOrderNumber : this.data.orderNumber,
+            sourceOrderNumber: this.data.orderNumber,
             srcUnitId: this.data.unitId,
             desUnitId: this.data.printUnitId,
-            orderType: '印制结算',
+            orderType: "印制结算",
             totalPrice: this.amount,
             date: getDate(),
-            status: 0
-          }
+            status: 0,
+          };
           // 最好使用消息队列重试
           savePayment(payment);
         }

@@ -3,11 +3,11 @@
   <div>
     <el-table
       v-if="show"
+      :height="height"
       :key="tableKey"
       :data="tableData"
       v-loading="loading"
       style="
-        width: 100%;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
       "
       @selection-change="handleSelectionChange"
@@ -16,23 +16,25 @@
       border
     >
       <el-table-column type="selection" v-if="selector"> </el-table-column>
-      <el-table-column label="ID" prop="id">
+      <el-table-column label="ID" prop="id" width="50">
         <template slot-scope="scope">
           <span>{{ scope.$index + 1 }}</span>
         </template>
       </el-table-column>
-      <af-table-column
+      <el-table-column
         v-for="(item, index) in tableColumns"
         :key="index"
         :prop="item.prop"
         :label="item.label"
         :sortable="item.sortable"
-      ></af-table-column>
+        :width="item.width"
+      ></el-table-column>
 
       <el-table-column
         label="操作"
         fixed="right"
-        width="260"
+        :width="operateColWidth"
+        
         v-if="edit || del || submit || check"
       >
         <template slot-scope="scope">
@@ -117,6 +119,7 @@
 export default {
   name: "",
   props: {
+    height: { type: Number, default: 250 },
     tableKey: { type: Number, required: true, default: "key" },
     // 表格数据
     tableData: {
@@ -158,6 +161,7 @@ export default {
       editBtnLoading: undefined,
       delBtnLoading: undefined,
       addBtnLoading: false,
+      operateColWidth:0
     };
   },
   created() {
@@ -166,18 +170,27 @@ export default {
       this.selector = true;
     }
     if (this.$listeners["handleCheck"]) {
+      this.operateColWidth += 90
       this.check = true;
     }
     if (this.$listeners["handleView"]) {
+      this.operateColWidth += 90
+
       this.view = true;
     }
     if (this.$listeners["handleSubmit"]) {
+      this.operateColWidth += 90
+
       this.submit = true;
     }
     if (this.$listeners["handleEdit"]) {
+      this.operateColWidth += 90
+
       this.edit = true;
     }
     if (this.$listeners["handleDelete"]) {
+      this.operateColWidth += 90
+
       this.del = true;
     }
     if (this.$listeners["handleCreate"]) {

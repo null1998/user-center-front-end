@@ -76,7 +76,7 @@ export default {
        getById(row.id).then((res)=>{
          if(res&&res.body&&res.body.data){
            this.dialogData = res.body.data
-           getDialogTableData(this.dialogData.id).then(resp=>{
+           getDialogTableData({ticketClaimId:this.dialogData.id}).then(resp=>{
              if (resp && resp.body && resp.body.data) {
                this.dialogTableData = resp.body.data
                this.dialogVisible = true
