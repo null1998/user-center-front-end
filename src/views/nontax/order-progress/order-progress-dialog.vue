@@ -7,33 +7,39 @@
       :before-close="close"
     >
       <div slot="title" class="header-title">
-        <i class="el-icon-s-data">{{ title }}</i>
-        <i class="el-icon-circle-close" style="float: right" @click="close"
-          >退出</i
-        >
-        <i
-          class="el-icon-circle-check"
-          style="float: right"
-          @click="handleSaveDialog"
-          >保存</i
-        >
+        <strong>{{ title }}</strong>
+        <div style="float: right">
+          <el-tooltip content="分配票号" placement="bottom" effect="light">
+            <el-button
+              :disabled="this.data.status != 1"
+              type="primary"
+              icon="el-icon-document"
+              size="mini"
+              @click="generate()"
+            ></el-button>
+          </el-tooltip>
+          <el-tooltip content="完工登记" placement="bottom" effect="light">
+            <el-button
+              :disabled="this.data.status != 1"
+              type="info"
+              icon="el-icon-edit"
+              size="mini"
+              @click="handleSaveDialog"
+            ></el-button>
+          </el-tooltip>
+          <el-tooltip content="返回主页" placement="bottom" effect="light">
+            <el-button
+              type="danger"
+              icon="el-icon-right"
+              size="mini"
+              @click="close"
+            ></el-button>
+          </el-tooltip>
+        </div>
       </div>
-      <el-form :model="data" label-width="80px" inline>
-        <el-form-item label="收货仓库">{{ data.warehouseName }}</el-form-item>
-        <el-form-item label="收货日期">{{ data.end }}</el-form-item>
-        <el-form-item label="订单状态">
-          <el-select v-model="status" size="mini" placeholder="">
-            <el-option
-              v-for="option in statusList"
-              :label="option.label"
-              :value="option.value"
-              :key="option.value"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-      </el-form>
-      <el-button type="primary" size="mini" @click="generate()">自动分配票号</el-button>
+
       <hyd-table
+        :height="350"
         :tableKey="tableKey"
         :tableData="tableData"
         :tableColumns="tableColumons"
@@ -45,12 +51,15 @@
 </template>
 
 <script>
-import { listByPrintingOrderId as commonQuery,update as updatePrintOrderTicket } from "@/api/nontax/printing-order/printing-order-ticket";
+import {
+  listByPrintingOrderId as commonQuery,
+  update as updatePrintOrderTicket,
+} from "@/api/nontax/printing-order/printing-order-ticket";
 import { update } from "@/api/nontax/printing-order/printing-order-index";
-import { getDate } from '@/utils/date';
+import { getDate } from "@/utils/date";
 import {
   save as saveProductRecord,
-  getById as getProductRecord
+  getById as getProductRecord,
 } from "@/api/nontax/ticket-product-record/ticket-product-record-index";
 export default {
   name: "",
@@ -70,33 +79,28 @@ export default {
         {
           prop: "ticketName",
           label: "财政票据名称",
+          width: "260",
         },
         {
           prop: "price",
           label: "单价",
+          width: "50",
         },
         {
           prop: "number",
           label: "数量",
         },
         {
-          prop:"startNumber",
-          label:"起始号"
+          prop: "startNumber",
+          label: "起始号",
         },
         {
           prop: "endNumber",
-          label:"终止号"
-        }
+          label: "终止号",
+        },
       ],
       tableLoading: false,
-      statusList: [
-        {
-          label: "已完工",
-          value: "2",
-        }
-      ],
-      status:"",
-      array:[]
+      array: [],
     };
   },
   watch: {
@@ -112,42 +116,45 @@ export default {
     /**
      * 不要这样在前端循环和异步，下次直接把列表传到后端
      */
-    async generate(){
+    async generate() {
+      if (this.array.length == 0) {
+        this.$message.info("请勾选票据")
+      }
       for (let index = 0; index < this.array.length; index++) {
-        const row = {...this.array[index]};
+        const row = { ...this.array[index] };
         let dto = {
           printUnitId: this.$store.getters.unitId,
           ticketId: row.ticketId,
           number: row.number,
           printOrderNumber: this.data.orderNumber,
-          createdDate:getDate(),
-        }
-        await this.helper(dto,row)
+          createdDate: getDate(),
+        };
+        await this.helper(dto, row);
       }
-      
+
       //this.success()
     },
-    handleSelect(rows){
-      this.array = rows
+    handleSelect(rows) {
+      this.array = rows;
     },
-    async helper(dto,row){
-      saveProductRecord(dto).then(res=>{
+    async helper(dto, row) {
+      saveProductRecord(dto).then((res) => {
         // 票号分配
-        if (res&&res.body&&res.body.data) {
-          getProductRecord(res.body.data).then(resp=>{
+        if (res && res.body && res.body.data) {
+          getProductRecord(res.body.data).then((resp) => {
             // 得到生成的票号
-            if (resp&&resp.body&&resp.body.data) {
-              row.startNumber = resp.body.data.startNumber
-              row.endNumber = resp.body.data.endNumber
-              console.log(row)
+            if (resp && resp.body && resp.body.data) {
+              row.startNumber = resp.body.data.startNumber;
+              row.endNumber = resp.body.data.endNumber;
+              console.log(row);
               // 给印制订单附上票号
-              updatePrintOrderTicket({...row}).then(()=>{
-                this.getTableData()
-              })
+              updatePrintOrderTicket({ ...row }).then(() => {
+                this.getTableData();
+              });
             }
-          })
+          });
         }
-      })
+      });
     },
     getTableData() {
       commonQuery(this.data.id).then((res) => {
@@ -157,14 +164,14 @@ export default {
       });
     },
     handleSaveDialog() {
-      this.data.status = this.status
-      this.data.end = getDate()
-      update(this.data).then(res=>{
-        if (res&&res.body&&res.body.data) {
-          this.success()
-          this.close()
+      this.data.status = 2;
+      this.data.end = getDate();
+      update(this.data).then((res) => {
+        if (res && res.body && res.body.data) {
+          this.success();
+          this.close();
         }
-      })
+      });
     },
     success() {
       this.$notify({

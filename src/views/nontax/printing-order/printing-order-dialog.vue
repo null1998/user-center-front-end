@@ -7,18 +7,18 @@
       :before-close="close"
     >
       <div slot="title" class="header-title">
-        <i class="el-icon-s-data" style="font-family: 'PingFang SC'">{{
-          title
-        }}</i>
+        <strong>{{ title }}</strong>
         <div style="float: right">
-          <el-popover placement="bottom" width="600" trigger="click">
-            <el-button
-              type="primary"
-              size="mini"
-              v-if="data.status == 0"
-              @click="importData()"
-              >一键导入</el-button
-            >
+          <el-popover placement="bottom" width="500" trigger="click">
+            <el-tooltip content="需求导入" placement="bottom" effect="light">
+              <el-button
+                type="success"
+                size="mini"
+                :disabled="data.status != 0"
+                icon="el-icon-back"
+                @click="importData()"
+              />
+            </el-tooltip>
             <hyd-table
               :tableKey="subordinateTableKey"
               :tableData="subordinateTableData"
@@ -26,30 +26,45 @@
               :loading="subordinateTableLoading"
               @handleSelectionChange="handleSelect"
             />
-            <el-tooltip slot="reference" content="汇总参考" placement="bottom" effect="light">
-            <el-button
-              size="mini"
-              type="primary"
-              icon="el-icon-document"
-            />
+            <el-tooltip
+              slot="reference"
+              content="汇总参考"
+              placement="bottom"
+              effect="light"
+            >
+              <el-button size="mini" type="primary" icon="el-icon-document" />
             </el-tooltip>
           </el-popover>
+          <el-tooltip
+            slot="reference"
+            content="自动入库"
+            placement="bottom"
+            effect="light"
+          >
+            <el-button
+              :disabled="this.data.status != 2"
+              size="mini"
+              type="success"
+              icon="el-icon-document"
+              @click="storeTicket()"
+            />
+          </el-tooltip>
           <el-tooltip content="印制下单" placement="bottom" effect="light">
             <el-button
               :disabled="this.data.status != 0"
-              type="success"
+              type="info"
               icon="el-icon-shopping-cart-1"
               size="mini"
               @click="handleSaveDialog"
             ></el-button>
           </el-tooltip>
           <el-tooltip content="返回主页" placement="bottom" effect="light">
-          <el-button
-            type="danger"
-            icon="el-icon-right"
-            size="mini"
-            @click="close"
-          ></el-button>
+            <el-button
+              type="danger"
+              icon="el-icon-right"
+              size="mini"
+              @click="close"
+            ></el-button>
           </el-tooltip>
         </div>
       </div>
@@ -75,7 +90,11 @@
               :key="option.id"
             ></el-option>
           </el-select>
-          <div v-else>{{ data.printUnitName }}</div>
+          <div v-else>
+            <strong
+              ><u>{{ data.printUnitName }}</u></strong
+            >
+          </div>
         </el-form-item>
         <el-form-item label="收货仓库" prop="warehouseId">
           <el-select
@@ -92,18 +111,15 @@
               :key="option.id"
             ></el-option>
           </el-select>
-          <div v-else>{{ data.warehouseName }}</div>
+          <div v-else>
+            <strong
+              ><u>{{ data.warehouseName }}</u></strong
+            >
+          </div>
         </el-form-item>
       </el-form>
-      <el-button
-        type="primary"
-        size="mini"
-        v-if="data.status == 2"
-        @click="storeTicket()"
-        >一键入库</el-button
-      >
-
       <hyd-editable-table
+        :height="350"
         :tableKey="tableKey"
         :tableData="tableData"
         :tableColumns="tableColumns"
@@ -206,16 +222,6 @@ export default {
           type: "show",
           width: "50",
         },
-        // {
-        //   prop:"startNumber",
-        //   label:"起始号",
-        //   type:"show"
-        // },
-        // {
-        //   prop:"endNumber",
-        //   label:"终止号",
-        //   type:"show"
-        // }
       ],
       tableLoading: false,
       subordinateTableKey: 0,
@@ -224,10 +230,12 @@ export default {
         {
           prop: "ticketName",
           label: "票据名称",
+          width: "260",
         },
         {
           prop: "number",
           label: "需求数量",
+          width: "",
         },
       ],
       subordinateTableLoading: false,

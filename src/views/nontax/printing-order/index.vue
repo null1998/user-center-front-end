@@ -187,7 +187,7 @@ export default {
                 }
                 this.dialogTableData = resp.body.data;
                 this.dialogVisible = true;
-                this.dialogTitle = "印制订单-编辑";
+                this.dialogTitle = "印制订单";
               }
             });
           }

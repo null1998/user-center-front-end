@@ -3,6 +3,7 @@
   <div>
     <el-table
       v-if="show"
+      :height="height"
       :key="tableKey"
       :data="myTableData"
       v-loading="loading"
@@ -127,6 +128,7 @@
 export default {
   name: "",
   props: {
+    height: { type: Number, default: 250 },
     tableKey: { type: Number, required: true, default: "key" },
     // 表格数据
     tableData: {

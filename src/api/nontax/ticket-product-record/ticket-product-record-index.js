@@ -37,3 +37,10 @@ export function commonQuery(params) {
     params: params
   })
 }
+export function sum(params) {
+  return request({
+    url: '/nontax/financial/ticket/product/record/sum',
+    method: 'get',
+    params: params
+  })
+}
