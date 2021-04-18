@@ -38,3 +38,10 @@ export function commonQuery(params) {
     params: params
   })
 }
+export function autoStore(dto) {
+  return request({
+    url: '/nontax/financial/printing/order/auto/store',
+    method: 'post',
+    data: dto
+  })
+}

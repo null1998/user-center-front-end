@@ -46,7 +46,7 @@
               size="mini"
               type="success"
               icon="el-icon-document"
-              @click="storeTicket()"
+              @click="autoStore()"
             />
           </el-tooltip>
           <el-tooltip content="印制下单" placement="bottom" effect="light">
@@ -105,7 +105,7 @@
             clearable
           >
             <el-option
-              v-for="option in warehousetList"
+              v-for="option in warehouseList"
               :label="option.name"
               :value="option.id"
               :key="option.id"
@@ -127,7 +127,6 @@
         :showButton="data.status === 0"
         @handleSave="handleSave"
         @handleDelete="handleDelete"
-        @handleSelectionChange="handleSelectStore"
       />
       <el-row>
         <div style="float: right">
@@ -152,7 +151,7 @@ import { commonQuery } from "@/api/basedata/unit";
 import { listByUnitId } from "@/api/basedata/warehouse";
 import { listByCategoryName } from "@/api/basedata/dictionary";
 import { commonQuery as listTicket } from "@/api/basedata/ticket";
-import { update } from "@/api/nontax/printing-order/printing-order-index";
+import { update,autoStore } from "@/api/nontax/printing-order/printing-order-index";
 import {
   save,
   update as updateTicket,
@@ -161,9 +160,6 @@ import {
 } from "@/api/nontax/printing-order/printing-order-ticket";
 import { save as savePayment } from "@/api/nontax/payment/payment";
 import { getDate } from "@/utils/date";
-import { save as saveTicketStoreRecord } from "@/api/nontax/ticket-store-record/ticket-store-record-index";
-import { save as saveTicketStoreRecordTicket } from "@/api/nontax/ticket-store-record/ticket-store-record-ticket";
-import { save as saveStorage } from "@/api/nontax/ticket-storage/ticket-storage-index";
 export default {
   components: { countTo },
   name: "",
@@ -198,7 +194,7 @@ export default {
       },
       form: {},
       printUnitList: [],
-      warehousetList: [],
+      warehouseList: [],
       tableKey: 0,
       tableData: [],
       tableColumns: [
@@ -209,18 +205,29 @@ export default {
           options: [],
           optionLabel: "name",
           optionValue: "id",
-          width: "260",
+          width: "240",
         },
         {
           prop: "number",
           label: "需求数量",
           type: "input",
+          width:"100"
         },
         {
           prop: "price",
           label: "单价",
           type: "show",
           width: "50",
+        },
+        {
+          prop: "startNumber",
+          label: "起始号",
+          type: "show",
+        },
+        {
+          prop: "endNumber",
+          label: "终止号",
+          type: "show",
         },
       ],
       tableLoading: false,
@@ -239,10 +246,9 @@ export default {
         },
       ],
       subordinateTableLoading: false,
-      active: "subordinate",
+      autoStoreList:[],
       amount: 0,
       array: [],
-      arrayStore: [],
     };
   },
   created() {
@@ -257,6 +263,28 @@ export default {
     },
     dialogTableData(val) {
       this.tableData = val;
+      this.autoStoreList = []
+      this.amount = 0
+      for (let index = 0; index < this.tableData.length; index++) {
+        const element = this.tableData[index];
+        let autoStore = {
+          printingOrderId:this.data.id,
+          needNumber:element.number,
+          ticketId:element.ticketId,
+          operateDate:getDate(),
+          userId:this.$store.getters.id,
+          warehouseId:this.warehouseList[0].id,
+          startNumber:element.startNumber,
+          endNumber:element.endNumber,
+          sourceOrderNumber: this.data.orderNumber,
+          unitId: this.data.unitId,
+          sourceUnitId:this.data.printUnitId,
+          storeType:'印制入库',
+          storeDate:getDate()
+        }
+        this.autoStoreList.push(autoStore)
+        this.amount += element.price * parseInt(element.number)
+      }
     },
     dialogAmount(val) {
       this.amount = val;
@@ -270,45 +298,11 @@ export default {
     },
   },
   methods: {
-    storeTicket() {
-      let dto = {
-        sourceOrderNumber: this.data.orderNumber,
-        unitId: this.data.unitId,
-        sourceUnitId: this.data.printUnitId,
-        storeType: "印制入库",
-        storeDate: getDate(),
-      };
-      // 生成入库记录
-      saveTicketStoreRecord(dto).then((res) => {
-        if (res && res.body && res.body.data) {
-          for (let index = 0; index < this.arrayStore.length; index++) {
-            let row = { ...this.arrayStore[index] };
-            this.helperStore(row, res.body.data);
-            console.log(index);
-          }
-        }
-        this.getTableData();
-        this.success();
-      });
-    },
-    async helperStore(row, id) {
-      let dto = {
-        ticketStoreRecordId: id,
-        ticketId: row.ticketId,
-        startNumber: row.startNumber,
-        endNumber: row.endNumber,
-        number: row.number,
-      };
-      await saveTicketStoreRecordTicket(dto);
-      dto.ticketStoreRecordId = undefined;
-      dto.warehouseId = this.warehousetList[0].id;
-      dto.userId = this.$store.getters.id;
-      dto.unitId = this.$store.getters.unitId;
-      dto.operateDate = getDate();
-      await saveStorage(dto);
-    },
-    handleSelectStore(rows) {
-      this.arrayStore = rows;
+    autoStore(){
+      autoStore(this.autoStoreList).then(()=>{
+        this.success()
+        this.close()
+      })
     },
     importData() {
       for (let index = 0; index < this.array.length; index++) {
@@ -448,7 +442,7 @@ export default {
     listMyWarehouseList() {
       listByUnitId(this.$store.getters.unitId).then((res) => {
         if (res && res.body && res.body.data) {
-          this.warehousetList = res.body.data;
+          this.warehouseList = res.body.data;
         }
       });
     },

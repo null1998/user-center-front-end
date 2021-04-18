@@ -7,24 +7,40 @@
       :before-close="close"
     >
       <div slot="title" class="header-title">
-        <i class="el-icon-s-data">{{ title }}</i>
-        <i class="el-icon-circle-close" style="float: right" @click="close"
-          >退出</i
-        >
-        <i
-          v-if="data.status == 0 || data.status == 3"
-          class="el-icon-shopping-cart-1"
-          style="float: right"
-          @click="handleSaveDialog"
-          >下单</i
-        >
-        <i
-          v-if="data.status == 2"
-          class="el-icon-circle-check"
-          style="float: right"
-          @click="autoStore()"
-          >入库</i
-        >
+        <strong>{{ title }}</strong>
+        <div style="float: right">
+          <el-tooltip
+            slot="reference"
+            content="自动入库"
+            placement="bottom"
+            effect="light"
+          >
+            <el-button
+              :disabled="this.data.status != 2"
+              size="mini"
+              type="success"
+              icon="el-icon-document"
+              @click="autoStore()"
+            />
+          </el-tooltip>
+          <el-tooltip content="申领提交" placement="bottom" effect="light">
+            <el-button
+              :disabled="this.data.status != 0 && data.status != 3"
+              type="info"
+              icon="el-icon-shopping-cart-1"
+              size="mini"
+              @click="handleSaveDialog"
+            ></el-button>
+          </el-tooltip>
+          <el-tooltip content="返回主页" placement="bottom" effect="light">
+            <el-button
+              type="danger"
+              icon="el-icon-right"
+              size="mini"
+              @click="close"
+            ></el-button>
+          </el-tooltip>
+        </div>
       </div>
       <el-form ref="data" inline :rules="rule" :model="data">
         <el-form-item label="上级单位" prop="targetUnitId">
@@ -36,7 +52,7 @@
               :key="item.id"
             ></el-option>
           </el-select>
-          <div v-else>{{data.targetUnitName}}</div>
+          <div v-else><strong><u>{{data.targetUnitName}}</u></strong></div>
         </el-form-item>
         <el-form-item label="收货仓库" prop="warehouseId">
           <el-select v-model="data.warehouseId" v-if="data.status == 0 || data.status == 3">
@@ -47,10 +63,11 @@
               :key="item.id"
             ></el-option>
           </el-select>
-          <div v-else>{{data.warehouseName}}</div>
+          <div v-else><strong><u>{{data.warehouseName}}</u></strong></div>
         </el-form-item>
       </el-form>
       <hyd-editable-table
+        :height="350"
         :tableKey="tableKey"
         :tableData="tableData"
         :tableColumns="tableColumons"
@@ -99,16 +116,19 @@ export default {
           optionLabel: "name",
           optionValue: "id",
           placeholder: "请选择财政票据",
+          width: "240",
         },
         {
           prop: "number",
           label: "数量",
           type: "input",
+          width:"100"
         },
         {
           prop: "price",
           label: "单价",
           type: "show",
+          width: "50",
         },
         {
           prop:"startNumber",
@@ -172,6 +192,13 @@ export default {
     this.getTicketList();
   },
   methods: {
+    getTableData(){
+      commonQuery({ticketClaimId:this.data.id}).then(res=>{
+        if (res&&res.body&&res.body.data) {
+          this.tableData = res.body.data
+        }
+      })
+    },
     autoStore(){
       autoStore(this.autoStoreList).then(()=>{
         this.success()
