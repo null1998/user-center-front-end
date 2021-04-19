@@ -7,16 +7,25 @@
       :before-close="close"
     >
       <div slot="title" class="header-title">
-        <i class="el-icon-s-data">{{ title }}</i>
-        <i class="el-icon-circle-close" style="float: right" @click="close"
-          >退出</i
-        >
-        <i
-          class="el-icon-circle-check"
-          style="float: right"
-          @click="handleSaveDialog"
-          >保存</i
-        >
+        <strong>{{ title }}</strong>
+        <div style="float: right">
+          <el-tooltip content="保存提交" placement="bottom" effect="light">
+            <el-button
+              type="success"
+              icon="el-icon-document"
+              size="mini"
+              @click="handleSaveDialog"
+            ></el-button>
+          </el-tooltip>
+          <el-tooltip content="返回主页" placement="bottom" effect="light">
+            <el-button
+              type="danger"
+              icon="el-icon-right"
+              size="mini"
+              @click="close"
+            ></el-button>
+          </el-tooltip>
+        </div>
       </div>
       <el-form ref="data" v-model="data" :rules="rules" inline>
         <el-form-item label="来源单号" prop="sourceOrderNumber">
@@ -37,10 +46,10 @@
           </el-select>
         </el-form-item>
         <el-form-item label="来源单位" prop="sourceUnitId">
-          <div>{{data.sourceUnitName}}</div>
+          <strong><u>{{data.sourceUnitName}}</u></strong>
         </el-form-item>
         <el-form-item label="入库方式" prop="dictionaryId">
-          <div>{{data.storeType}}</div>
+          <strong><u>{{data.storeType}}</u></strong>
         </el-form-item>
       </el-form>
       <hyd-editable-table
@@ -88,22 +97,20 @@ export default {
           type:"select",
           options:[],
           optionLabel:"name",
-          optionValue:"id"
+          optionValue:"id",
+          width: "240",
         },
         {
           prop: "startNumber",
           label: "起始号",
-          type:"input"
+          type:"input",
+          width:"100"
         },
         {
           prop: "endNumber",
           label: "终止号",
-          type:"input"
-        },
-        {
-          prop: "number",
-          label: "数量",
-          type:"show"
+          type:"input",
+          width:"100"
         },
       ],
       tableLoading: false,

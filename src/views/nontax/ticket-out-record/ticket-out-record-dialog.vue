@@ -7,16 +7,25 @@
       :before-close="close"
     >
       <div slot="title" class="header-title">
-        <i class="el-icon-s-data">{{ title }}</i>
-        <i class="el-icon-circle-close" style="float: right" @click="close"
-          >退出</i
-        >
-        <i
-          class="el-icon-circle-check"
-          style="float: right"
-          @click="handleSaveDialog"
-          >保存</i
-        >
+        <strong>{{ title }}</strong>
+        <div style="float: right">
+          <el-tooltip content="保存提交" placement="bottom" effect="light">
+            <el-button
+              type="success"
+              icon="el-icon-document"
+              size="mini"
+              @click="handleSaveDialog"
+            ></el-button>
+          </el-tooltip>
+          <el-tooltip content="返回主页" placement="bottom" effect="light">
+            <el-button
+              type="danger"
+              icon="el-icon-right"
+              size="mini"
+              @click="close"
+            ></el-button>
+          </el-tooltip>
+        </div>
       </div>
       <el-form ref="data" :model="data" :rules="rules" inline>
         <el-form-item label="目标单号" prop="targetOrderNumber">
@@ -37,10 +46,10 @@
           </el-select>
         </el-form-item>
         <el-form-item label="目标单位" prop="targetUnitName">
-          <div>{{ data.targetUnitName }}</div>
+          <strong><u>{{ data.targetUnitName }}</u></strong>
         </el-form-item>
         <el-form-item label="出库方式" prop="outType">
-          <div>{{ data.outType }}</div>
+          <strong><u>{{ data.outType }}</u></strong>
         </el-form-item>
       </el-form>
       <hyd-editable-table
@@ -88,22 +97,20 @@ export default {
           options: [],
           optionLabel: "name",
           optionValue: "id",
+          width: "240",
         },
         {
           prop: "startNumber",
           label: "起始号",
           type: "input",
+          width:"100"
         },
         {
           prop: "endNumber",
           label: "终止号",
           type: "input",
-        },
-        {
-          prop: "number",
-          label: "数量",
-          type: "show",
-        },
+          width:"100"
+        }
       ],
       tableLoading: false,
       rules: {
