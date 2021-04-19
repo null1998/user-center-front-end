@@ -322,14 +322,7 @@ export default {
     handleSaveDialog() {
       this.$refs["data"].validate((valid) => {
         if (valid) {
-          let now = new Date();
-          this.data.start =
-            now.getFullYear() +
-            "年" +
-            parseInt(now.getMonth() + 1) +
-            "月" +
-            now.getDate() +
-            "日";
+          this.data.start = new Date();
           this.data.status = 1;
           this.data.payStatus = 1;
           update(this.data).then((res) => {
@@ -344,7 +337,6 @@ export default {
             desUnitId: this.data.printUnitId,
             orderType: "印制结算",
             totalPrice: this.amount,
-            date: getDate(),
             status: 0,
           };
           // 最好使用消息队列重试

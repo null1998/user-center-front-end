@@ -191,7 +191,7 @@ export default {
     },
     handleSaveDialog() {
       this.data.unitId = this.$store.getters.unitId
-      this.data.storeDate = getDate()
+      this.data.storeDate = new Date()
       update(this.data).then((res) => {
         if (res && res.body && res.body.data) {
           this.success();

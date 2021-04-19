@@ -66,7 +66,7 @@ export default {
           type: "input",
         },
         {
-          prop: "operateDate",
+          prop: "operateDateShow",
           label: "操作日期",
           type: "show",
         },
@@ -145,6 +145,12 @@ export default {
         if (res && res.body && res.body.data) {
           this.tableData = res.body.data;
           this.tableLoading = false;
+          for (let index = 0; index < this.tableData.length; index++) {
+            const element = this.tableData[index];
+            if (element.operateDate) {
+              element.operateDateShow = element.operateDate.year + '-' + element.operateDate.monthValue + '-' + element.operateDate.dayOfMonth
+            }
+          }
         }
       });
     },
@@ -155,7 +161,7 @@ export default {
       }
       row.unitId = this.$store.getters.unitId;
       row.userId = this.$store.getters.id;
-      row.operateDate = getDate();
+      row.operateDate = new Date();
       if (!row.id) {
         saveRow(row).then((res) => {
           if (res && res.body && res.body.data) {

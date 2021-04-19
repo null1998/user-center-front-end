@@ -70,7 +70,7 @@ export default {
           width: "90",
         },
         {
-          prop: "outDate",
+          prop: "outDateShow",
           label: "出库日期",
         },
       ],
@@ -118,6 +118,12 @@ export default {
       commonQuery({ unitId: this.$store.getters.unitId }).then((res) => {
         if (res && res.body && res.body.data) {
           this.tableData = res.body.data;
+          for (let index = 0; index < this.tableData.length; index++) {
+            const element = this.tableData[index];
+            if (element.outDate) {
+              element.outDateShow = element.outDate.year + '-' + element.outDate.monthValue + '-' + element.outDate.dayOfMonth
+            }
+          }
           this.tableLoading = false;
         }
       });

@@ -62,7 +62,7 @@ export default {
           width: "150",
         },
         {
-          prop: "date",
+          prop: "claimDateShow",
           label: "申领日期",
           width: "150",
         },
@@ -152,6 +152,9 @@ export default {
             const element = this.tableData[index];
             element.status = this.statusMap[element.status];
             element.payStatus = this.payStatusMap[element.payStatus];
+            if (element.claimDate) {
+              element.claimDateShow = element.claimDate.year + '-' + element.claimDate.monthValue + '-' + element.claimDate.dayOfMonth
+            }
           }
           this.tableLoading = false;
         }

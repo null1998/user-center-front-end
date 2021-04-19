@@ -170,7 +170,7 @@ export default {
           ticketClaimTicketId:element.id,
           needNumber:element.number,
           ticketId:element.ticketId,
-          operateDate:getDate(),
+          operateDate:new Date(),
           userId:this.$store.getters.id,
           warehouseId:this.warehouseList[0].id,
           startNumber:element.startNumber,
@@ -179,7 +179,7 @@ export default {
           unitId: this.data.unitId,
           sourceUnitId:this.data.targetUnitId,
           storeType:'申领入库',
-          storeDate:getDate()
+          storeDate:new Date()
         }
         this.autoStoreList.push(autoStore)
         this.amount += element.price * parseInt(element.number)
@@ -233,7 +233,7 @@ export default {
     handleSaveDialog() {
       this.$refs["data"].validate((valid) => {
         if (valid) {
-          this.data.date = getDate();
+          this.data.date = new Date();
           this.data.status = 1;
           this.data.payStatus = 1
           update(this.data).then((res) => {
@@ -248,7 +248,7 @@ export default {
             desUnitId: this.data.targetUnitId,
             orderType: '申领结算',
             totalPrice: this.amount,
-            date: getDate(),
+            date: new Date(),
             status: 0
           }
           // 最好使用消息队列重试

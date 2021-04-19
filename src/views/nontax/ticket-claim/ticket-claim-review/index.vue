@@ -52,7 +52,7 @@ export default {
           label:"申领状态"
         },
         {
-          prop: "date",
+          prop: "claimDateShow",
           label: "申领日期",
         },
       ],
@@ -78,6 +78,9 @@ export default {
           for (let index = 0; index < this.tableData.length; index++) {
             const element = this.tableData[index];
             element.status = this.statusMap[element.status]
+            if (element.claimDate) {
+              element.claimDateShow = element.claimDate.year + '-' + element.claimDate.monthValue + '-' + element.claimDate.dayOfMonth
+            }
           }
           this.tableLoading = false;
         }

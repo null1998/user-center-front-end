@@ -62,12 +62,12 @@ export default {
           width: "150",
         },
         {
-          prop: "start",
+          prop: "startShow",
           label: "下单日期",
           width: "130",
         },
         {
-          prop: "end",
+          prop: "endShow",
           label: "完工日期",
           width: "130",
         },
@@ -85,7 +85,7 @@ export default {
       statusMap: ["待下单", "已下单", "已完工", "已入库"],
       option: {
         title: {
-          text: '近一周订单数量'
+          text: "近一周订单数量",
         },
         xAxis: {
           type: "category",
@@ -115,19 +115,32 @@ export default {
   methods: {
     getTableData() {
       this.tableLoading = true;
-      commonQuery({ printUnitId: this.$store.getters.unitId}).then(
-        (res) => {
-          if (res && res.body && res.body.data) {
-            this.tableData = res.body.data;
-            for (let i = 0; i < this.tableData.length; i++) {
-              this.tableData[i]["status"] = this.statusMap[
-                this.tableData[i]["status"]
-              ];
+      commonQuery({ printUnitId: this.$store.getters.unitId }).then((res) => {
+        if (res && res.body && res.body.data) {
+          this.tableData = res.body.data;
+          for (let i = 0; i < this.tableData.length; i++) {
+            let element = this.tableData[i];
+            element["status"] = this.statusMap[element["status"]];
+            if (element.start) {
+              element.startShow =
+                element.start.year +
+                "-" +
+                element.start.monthValue +
+                "-" +
+                element.start.dayOfMonth;
             }
-            this.tableLoading = false;
+            if (element.end) {
+              element.endShow =
+                element.end.year +
+                "-" +
+                element.end.monthValue +
+                "-" +
+                element.end.dayOfMonth;
+            }
           }
+          this.tableLoading = false;
         }
-      );
+      });
     },
     handleEdit(index, row) {
       if (row && row.id) {

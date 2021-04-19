@@ -64,7 +64,7 @@ export default {
           width: "150",
         },
         {
-          prop: "start",
+          prop: "startShow",
           label: "下单日期",
           sortable: true,
           width: "150",
@@ -156,14 +156,24 @@ export default {
         if (res && res.body && res.body.data) {
           this.tableData = res.body.data;
           for (let i = 0; i < this.tableData.length; i++) {
-            this.tableData[i]["status"] = this.statusMap[
-              this.tableData[i]["status"]
+            let element = this.tableData[i]
+            element["status"] = this.statusMap[
+              element["status"]
             ];
-            this.tableData[i]["payStatus"] = this.payStatusMap[
-              this.tableData[i]["payStatus"]
+            element["payStatus"] = this.payStatusMap[
+              element["payStatus"]
             ];
+            if (element.start) {
+            element.startShow = element.start.year + '-' + element.start.monthValue + '-' + element.start.dayOfMonth
+
+            }
+            if (element.end) {
+            element.endShow = element.end.year + '-' + element.end.monthValue + '-' + element.end.dayOfMonth
+              
+            }
           }
           this.tableLoading = false;
+          
         }
       });
     },
@@ -216,9 +226,7 @@ export default {
       save(this.dialogData).then((res) => {
         if (res && res.body && res.body.data) {
           this.success();
-          this.dialogData.id = res.body.data;
-          this.dialogVisible = true;
-          this.dialogTitle = "印制订单-新增";
+          this.handleEdit(undefined,{id:res.body.data})
         }
       });
     },

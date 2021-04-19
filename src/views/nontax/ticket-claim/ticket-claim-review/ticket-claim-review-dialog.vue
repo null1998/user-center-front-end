@@ -140,13 +140,13 @@ export default {
           ticketClaimTicketId: element.id,
           needNumber: element.number,
           ticketId: element.ticketId,
-          operateDate: getDate(),
+          operateDate: new Date(),
           userId: this.$store.getters.id,
           targetOrderNumber: this.data.orderNumber,
           unitId: this.data.targetUnitId,
           targetUnitId: this.data.unitId,
           outType: "申领出库",
-          outDate: getDate(),
+          outDate: new Date(),
         };
         commonQueryStorage({
           unitId: this.$store.getters.unitId,

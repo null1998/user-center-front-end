@@ -182,7 +182,7 @@ export default {
     handleSaveDialog() {
       this.$refs["data"].validate((valid) => {
         if (valid) {
-          this.data.outDate = getDate()
+          this.data.outDate = new Date()
           update(this.data).then((res) => {
             if (res && res.body && res.body.data) {
               this.success();

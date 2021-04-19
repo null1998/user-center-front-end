@@ -127,7 +127,7 @@ export default {
           ticketId: row.ticketId,
           number: row.number,
           printOrderNumber: this.data.orderNumber,
-          createdDate: getDate(),
+          createdDate: new Date(),
         };
         await this.helper(dto, row);
       }
@@ -165,7 +165,7 @@ export default {
     },
     handleSaveDialog() {
       this.data.status = 2;
-      this.data.end = getDate();
+      this.data.end = new Date();
       update(this.data).then((res) => {
         if (res && res.body && res.body.data) {
           this.success();

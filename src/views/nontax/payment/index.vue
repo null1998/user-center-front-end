@@ -50,26 +50,22 @@ export default {
          prop:'desUnitName',
          label:'收款单位',
          width: "150",
-       },    
-       {
-         prop:'date',
-         label:'下单日期',
-         width: "150",
-       },
+       },  
        {
          prop:'totalPrice',
          label:'金额'
-       },
+       },  
        {
-         prop:'payDate',
-         label:'结算日期',
-         width: "150",
-       },
-       {
-         prop:'payType',
-         label:'支付方式'
+         prop:'orderDateShow',
+         label:'下单日期',
+         width: "170",
        },
        
+       {
+         prop:'payDateShow',
+         label:'结算日期',
+         width: "170",
+       }
      ],
      tableLoading: false,
      dialogVisible: false,
@@ -99,6 +95,14 @@ export default {
           for (let index = 0; index < this.tableData.length; index++) {
             const element = this.tableData[index];
             element['status'] = this.statusMap[element['status']]
+            if (element.orderDate) {
+            element.orderDateShow = element.orderDate.year + '-' + element.orderDate.monthValue + '-' + element.orderDate.dayOfMonth
+
+            }
+            if (element.payDate) {
+            element.payDateShow = element.payDate.year + '-' + element.payDate.monthValue + '-' + element.payDate.dayOfMonth
+
+            }
           }
           this.tableLoading=false
         }

@@ -74,7 +74,7 @@ export default {
           width: "90",
         },
         {
-          prop: "storeDate",
+          prop: "storeDateShow",
           label: "入库日期",
         },
       ],
@@ -146,6 +146,12 @@ export default {
         this.linkAgeData.push({});
         if (res && res.body && res.body.data) {
           this.tableData = res.body.data;
+          for (let index = 0; index < this.tableData.length; index++) {
+            const element = this.tableData[index];
+            if (element.storeDate) {
+              element.storeDateShow = element.storeDate.year + '-' + element.storeDate.monthValue + '-' + element.storeDate.dayOfMonth
+            }
+          }
           this.tableLoading = false;
           this.getNumberPerMonth();
         }
