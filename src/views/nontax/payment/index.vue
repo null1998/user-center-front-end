@@ -1,12 +1,15 @@
 <!-- 结算管理 -->
 <template>
   <div>
+      <el-button type="danger" size="mini" @click="handleDeleteAll()" icon="el-icon-delete"/>
      <hyd-table
+     :height="580"
       :tableKey="tableKey"
       :tableData="tableData"
       :tableColumns="tableColumons"
       :loading="tableLoading"
       @handleEdit="handleEdit"
+      @handleSelectionChange="handleSelect"
     />
      <payment-dialog
        :dialogData='dialogData'
@@ -19,7 +22,7 @@
 
 <script>
 import paymentDialog from './payment-dialog'
-import { commonQuery,getById } from '@/api/nontax/payment/payment'
+import { commonQuery,getById,deleteAll } from '@/api/nontax/payment/payment'
 export default {
   components: {paymentDialog},
   name: 'payment',
@@ -30,23 +33,28 @@ export default {
      tableColumons: [
        {
          prop:'status',
-         label:'结算状态'
+         label:'结算状态',
+         width: "100",
        },   
        {
          prop:'orderType',
-         label:'业务类型'
+         label:'业务类型',
+         width: "100",
        }, 
        {
          prop:'sourceOrderNumber',
-         label:'业务单号'
+         label:'业务单号',
+         width: "200",
        },
        {
          prop:'desUnitName',
-         label:'收款单位'
+         label:'收款单位',
+         width: "150",
        },    
        {
          prop:'date',
-         label:'下单日期'
+         label:'下单日期',
+         width: "150",
        },
        {
          prop:'totalPrice',
@@ -54,7 +62,8 @@ export default {
        },
        {
          prop:'payDate',
-         label:'结算日期'
+         label:'结算日期',
+         width: "150",
        },
        {
          prop:'payType',
@@ -67,7 +76,9 @@ export default {
      dialogTitle: '',
      dialogData: {},
      dialogTableData: [],
-     statusMap:['待付款','已付款']
+     statusMap:['待付款','已付款'],
+     deleteAllBtnLoading: false,
+     selectList:[]
     }
   },
   watch:{
@@ -104,6 +115,25 @@ export default {
         })
       }
 
+    },
+    handleSelect(val){
+      this.selectList = val;
+    },
+    handleDeleteAll(){
+      this.deleteAllBtnLoading = true
+      let dtoList = []
+      for (let index = 0; index < this.selectList.length; index++) {
+        const element = this.selectList[index];
+        dtoList.push(element.id)
+      }
+      deleteAll(dtoList).then(res=>{
+        this.deleteAllBtnLoading = false;
+        this.success()
+        this.getTableData()
+      }).catch((err)=>{
+        console.log(err)
+        this.deleteAllBtnLoading = false;
+      })
     },
     dialogClose() {
       this.getTableData()

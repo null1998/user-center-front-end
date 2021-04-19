@@ -4,6 +4,7 @@
     <!-- 编辑印制计划 -->
     <div v-if="showTable">
       <hyd-table
+      :height="580"
         :tableKey="tableKey"
         :tableData="tableData"
         :tableColumns="tableColumons"
@@ -55,12 +56,13 @@ export default {
       tableColumons: [
         {
           prop: "orderNumber",
-          label:"单号"
+          label:"单号",
+          width:"200"
         },
         {
           prop: "year",
           label: "计划年度",
-          sortable: true,
+          width:"100"
         },
         {
           prop: "person",

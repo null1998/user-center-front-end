@@ -12,6 +12,7 @@
     </div>
     <!-- 用户列表 -->
     <hyd-table
+    :height="580"
       :tableKey="tableKey"
       :tableData="userList"
       :tableColumns="userTableColumons"

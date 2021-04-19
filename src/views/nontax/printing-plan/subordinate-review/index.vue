@@ -3,6 +3,7 @@
   <div class="app-container">
     <div v-if="showTable">
       <hyd-table
+      :height="580"
         :tableKey="tableKey"
         :tableData="tableData"
         :tableColumns="tableColumons"

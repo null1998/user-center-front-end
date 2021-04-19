@@ -13,6 +13,7 @@
       ></hyd-form>
     </div>
     <hyd-table
+    :height="580"
       :tableKey="tableKey"
       :tableData="roleList"
       :tableColumns="roleTableColumons"
@@ -100,6 +101,7 @@
       </div>
       <!-- 创建基础角色 -->
       <hyd-table
+      :height="400"
         :show="roleData.type == '基础角色'"
         :loading="permissionListLoading"
         :tableKey="permissionTableKey"
@@ -120,6 +122,7 @@
       />
       <!-- 选择基础角色，创建高级角色 -->
       <hyd-table
+      :height="400"
         :show="roleData.type == '高级角色'"
         :loading="roleListLoading"
         :tableKey="tableKey"

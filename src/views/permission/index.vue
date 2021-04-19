@@ -14,6 +14,7 @@
     </div>
     <!-- 主表单显示权限列表 -->
     <hyd-table
+    :height="580"
       :tableKey="tableKey"
       :tableData="permissionList"
       :tableColumns="permissionTableColumons"

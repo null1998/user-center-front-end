@@ -12,6 +12,13 @@ export function deleteById(id) {
     method: 'delete'
   })
 }
+export function deleteAll(dtoList) {
+  return request({
+    url: '/nontax/financial/payment/all',
+    method: 'delete',
+    data: dtoList
+  })
+}
 export function update(dto) {
   return request({
     url: '/nontax/financial/payment',

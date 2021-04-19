@@ -4,6 +4,7 @@
     <el-row>
       <el-col :span="18">
         <el-card class="box-card" style="width: 980px; height: 680px">
+          <el-button type="danger" size="mini" @click="handleDeleteAll()" icon="el-icon-delete"/>
           <el-row>
             <hyd-table
             :height="580"
@@ -11,6 +12,7 @@
               :tableData="tableData"
               :tableColumns="tableColumons"
               :loading="tableLoading"
+              @handleSelectionChange="handleSelect"
             />
           </el-row>
         </el-card>
@@ -29,6 +31,7 @@ import {
   deleteById,
   update as updateRow,
   commonQuery,
+  deleteAll
 } from "@/api/nontax/ticket-storage/ticket-storage-index";
 import { getDate } from "@/utils/date";
 import { commonQuery as commonQueryWarehouse } from "@/api/basedata/warehouse";
@@ -99,7 +102,9 @@ export default {
           },
         ],
       },
-      myChart:{}
+      myChart:{},
+      selectList:[],
+      deleteAllBtnLoading:false
     };
   },
   activated() {
@@ -177,6 +182,25 @@ export default {
           }
         });
       }
+    },
+    handleSelect(val){
+      this.selectList = val;
+    },
+    handleDeleteAll(){
+      this.deleteAllBtnLoading = true;
+      let dtoList = []
+      for (let index = 0; index < this.selectList.length; index++) {
+        const element = this.selectList[index];
+        dtoList.push(element.id)
+      }
+      deleteAll(dtoList).then(res=>{
+        this.deleteAllBtnLoading = false;
+        this.success()
+        this.getTableData()
+      }).catch((err)=>{
+        console.log(err)
+        this.deleteAllBtnLoading = false;
+      })
     },
     dataValid(row) {
       if (

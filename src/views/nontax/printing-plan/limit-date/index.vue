@@ -2,6 +2,7 @@
 <template>
   <div class="app-container">
     <hyd-table
+    :height="580"
       :tableKey="tableKey"
       :tableData="tableData"
       :tableColumns="tableColumons"
