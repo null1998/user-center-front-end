@@ -2,8 +2,8 @@
 <template>
   <div>
     <el-row>
-      <el-col :span="18">
-        <el-card class="box-card" style="width: 980px; height: 680px">
+      <el-col :span="17">
+        <el-card class="box-card" style="width: 920px; height: 680px">
           <el-row>
             <hyd-table
               :height="580"
@@ -18,8 +18,8 @@
           </el-row>
         </el-card>
       </el-col>
-      <el-col :span="6">
-        <div id="main" :style="{ width: '350px', height: '350px' }"></div>
+      <el-col :span="7">
+        <div id="main" :style="{ width: '400px', height: '350px' }"></div>
       </el-col>
     </el-row>
 
@@ -41,6 +41,7 @@ import {
   deleteById,
   commonQuery,
   getById,
+  recent
 } from "@/api/nontax/ticket-store-record/ticket-store-record-index";
 import {
   commonQuery as getDialogTableData,
@@ -55,14 +56,9 @@ export default {
       tableData: [],
       tableColumons: [
         {
-          prop: "orderNumber",
-          label: "入库单号",
-          width: "170",
-        },
-        {
           prop: "sourceOrderNumber",
           label: "来源单号",
-          width: "170",
+          width: "200",
         },
         {
           prop: "sourceUnitName",
@@ -71,7 +67,7 @@ export default {
         {
           prop: "storeType",
           label: "入库方式",
-          width: "90",
+          
         },
         {
           prop: "storeDateShow",
@@ -90,14 +86,14 @@ export default {
         },
         xAxis: {
           type: "category",
-          data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+          data: [],
         },
         yAxis: {
           type: "value",
         },
         series: [
           {
-            data: [150, 230, 224, 218, 135, 147, 260],
+            data: [],
             type: "line",
           },
         ],
@@ -114,9 +110,18 @@ export default {
    mounted() {
     var chartDom = document.getElementById("main");
     this.myChart = echarts.init(chartDom);
-    this.option && this.myChart.setOption(this.option);
+    
   },
   methods: {
+    getLineChart() {
+      recent(this.$store.getters.unitId).then(res=>{
+        if (res && res.body && res.body.data) {
+          this.option.series[0].data = res.body.data.numbers
+          this.option.xAxis.data = res.body.data.duration
+          this.myChart.setOption(this.option);
+        }
+      })
+    },
     getNumberPerMonth() {
       numberPerMonth(this.$store.getters.unitId).then((res) => {
         if (res && res.body && res.body.data) {
@@ -152,8 +157,8 @@ export default {
               element.storeDateShow = element.storeDate.year + '-' + element.storeDate.monthValue + '-' + element.storeDate.dayOfMonth
             }
           }
+          this.getLineChart()
           this.tableLoading = false;
-          this.getNumberPerMonth();
         }
       });
     },

@@ -32,6 +32,12 @@ export function getById(id) {
     method: 'get'
   })
 }
+export function sum(unitId) {
+  return request({
+    url: '/nontax/financial/ticket/store/sum/' + unitId,
+    method: 'get'
+  })
+}
 /**
  * 通用查询，支持字段id，unitId，ticketId
  * @param ticketStoreQO 票据库存

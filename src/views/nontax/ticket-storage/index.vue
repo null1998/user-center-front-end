@@ -4,10 +4,15 @@
     <el-row>
       <el-col :span="18">
         <el-card class="box-card" style="width: 980px; height: 680px">
-          <el-button type="danger" size="mini" @click="handleDeleteAll()" icon="el-icon-delete"/>
+          <el-button
+            type="danger"
+            size="mini"
+            @click="handleDeleteAll()"
+            icon="el-icon-delete"
+          />
           <el-row>
             <hyd-table
-            :height="580"
+              :height="580"
               :tableKey="tableKey"
               :tableData="tableData"
               :tableColumns="tableColumons"
@@ -18,7 +23,7 @@
         </el-card>
       </el-col>
       <el-col :span="6">
-        <div id="main" :style="{ width: '350px', height: '350px' }"></div>
+        <div id="main" :style="{ width: '350px', height: '900px' }"></div>
       </el-col>
     </el-row>
   </div>
@@ -31,7 +36,8 @@ import {
   deleteById,
   update as updateRow,
   commonQuery,
-  deleteAll
+  deleteAll,
+  sum,
 } from "@/api/nontax/ticket-storage/ticket-storage-index";
 import { getDate } from "@/utils/date";
 import { commonQuery as commonQueryWarehouse } from "@/api/basedata/warehouse";
@@ -46,13 +52,13 @@ export default {
         {
           prop: "warehouseName",
           label: "仓库名",
-          
+
           width: "160",
         },
         {
           prop: "ticketName",
           label: "财政票据名称",
-          
+
           width: "230",
         },
         {
@@ -74,7 +80,7 @@ export default {
       tableLoading: false,
       option: {
         title: {
-          text: "票据库存",
+          text: "",
           left: "center",
         },
         tooltip: {
@@ -89,9 +95,7 @@ export default {
             name: "票据种类",
             type: "pie",
             radius: "50%",
-            data: [
-              
-            ],
+            data: [],
             emphasis: {
               itemStyle: {
                 shadowBlur: 10,
@@ -102,9 +106,9 @@ export default {
           },
         ],
       },
-      myChart:{},
-      selectList:[],
-      deleteAllBtnLoading:false
+      myChart: {},
+      selectList: [],
+      deleteAllBtnLoading: false,
     };
   },
   activated() {
@@ -118,9 +122,24 @@ export default {
   mounted() {
     var chartDom = document.getElementById("main");
     this.myChart = echarts.init(chartDom);
-    this.option && this.myChart.setOption(this.option);
   },
   methods: {
+    getSum() {
+      sum(this.$store.getters.unitId).then((res) => {
+        if (res && res.body && res.body.data) {
+          this.option.series[0].data = [];
+          for (let index = 0; index < res.body.data.length; index++) {
+            const element = res.body.data[index];
+            let e = {
+              value: parseInt(element.number),
+              name: element.ticketName,
+            };
+            this.option.series[0].data.push(e);
+          }
+          this.myChart.setOption(this.option);
+        }
+      });
+    },
     getWarehouseList() {
       commonQueryWarehouse({ unitId: this.$store.getters.unitId }).then(
         (res) => {
@@ -144,13 +163,19 @@ export default {
       commonQuery({ unitId: this.$store.getters.unitId }).then((res) => {
         if (res && res.body && res.body.data) {
           this.tableData = res.body.data;
-          this.tableLoading = false;
           for (let index = 0; index < this.tableData.length; index++) {
             const element = this.tableData[index];
             if (element.operateDate) {
-              element.operateDateShow = element.operateDate.year + '-' + element.operateDate.monthValue + '-' + element.operateDate.dayOfMonth
+              element.operateDateShow =
+                element.operateDate.year +
+                "-" +
+                element.operateDate.monthValue +
+                "-" +
+                element.operateDate.dayOfMonth;
             }
           }
+          this.getSum()
+          this.tableLoading = false;
         }
       });
     },
@@ -189,24 +214,26 @@ export default {
         });
       }
     },
-    handleSelect(val){
+    handleSelect(val) {
       this.selectList = val;
     },
-    handleDeleteAll(){
+    handleDeleteAll() {
       this.deleteAllBtnLoading = true;
-      let dtoList = []
+      let dtoList = [];
       for (let index = 0; index < this.selectList.length; index++) {
         const element = this.selectList[index];
-        dtoList.push(element.id)
+        dtoList.push(element.id);
       }
-      deleteAll(dtoList).then(res=>{
-        this.deleteAllBtnLoading = false;
-        this.success()
-        this.getTableData()
-      }).catch((err)=>{
-        console.log(err)
-        this.deleteAllBtnLoading = false;
-      })
+      deleteAll(dtoList)
+        .then((res) => {
+          this.deleteAllBtnLoading = false;
+          this.success();
+          this.getTableData();
+        })
+        .catch((err) => {
+          console.log(err);
+          this.deleteAllBtnLoading = false;
+        });
     },
     dataValid(row) {
       if (

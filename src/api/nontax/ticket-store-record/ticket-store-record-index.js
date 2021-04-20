@@ -37,3 +37,9 @@ export function commonQuery(params) {
     params: params
   })
 }
+export function recent(unitId) {
+  return request({
+    url: '/nontax/financial/ticket/store/record/recent/' + unitId,
+    method: 'get'
+  })
+}

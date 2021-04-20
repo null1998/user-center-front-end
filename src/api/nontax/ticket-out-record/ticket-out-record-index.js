@@ -25,6 +25,12 @@ export function getById(id) {
     method: 'get'
   })
 }
+export function recent(unitId) {
+  return request({
+    url: '/nontax/financial/ticket/out/record/recent/'+unitId,
+    method: 'get'
+  })
+}
 export function commonQuery(params) {
   return request({
     url: '/nontax/financial/ticket/out/record/common/query',
