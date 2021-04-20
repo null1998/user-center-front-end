@@ -167,6 +167,7 @@ export default {
       for (let index = 0; index < this.tableData.length; index++) {
         const element = this.tableData[index];
         let autoStore = {
+          ticketClaimId:this.data.id,
           ticketClaimTicketId:element.id,
           needNumber:element.number,
           ticketId:element.ticketId,
@@ -233,7 +234,7 @@ export default {
     handleSaveDialog() {
       this.$refs["data"].validate((valid) => {
         if (valid) {
-          this.data.date = new Date();
+          this.data.claimDate = new Date();
           this.data.status = 1;
           this.data.payStatus = 1
           update(this.data).then((res) => {
@@ -248,7 +249,7 @@ export default {
             desUnitId: this.data.targetUnitId,
             orderType: '申领结算',
             totalPrice: this.amount,
-            date: new Date(),
+            orderDate: new Date(),
             status: 0
           }
           // 最好使用消息队列重试

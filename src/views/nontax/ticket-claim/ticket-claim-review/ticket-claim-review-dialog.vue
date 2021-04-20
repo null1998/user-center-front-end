@@ -202,6 +202,7 @@ export default {
         // 审核退回
         this.data.status = 3;
       }
+      this.data.claimDate = undefined
       update(this.data).then((res) => {
         if (res && res.body && res.body.data) {
           if (this.data.status == 2) {

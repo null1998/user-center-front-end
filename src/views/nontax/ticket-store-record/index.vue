@@ -168,7 +168,7 @@ export default {
               if (resp && resp.body && resp.body.data) {
                 this.dialogTableData = resp.body.data;
                 this.dialogVisible = true;
-                this.dialogTitle = "票据入库编辑";
+                this.dialogTitle = "票据入库";
               }
             });
           }

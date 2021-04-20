@@ -166,6 +166,7 @@ export default {
     handleSaveDialog() {
       this.data.status = 2;
       this.data.end = new Date();
+      this.data.start = undefined
       update(this.data).then((res) => {
         if (res && res.body && res.body.data) {
           this.success();

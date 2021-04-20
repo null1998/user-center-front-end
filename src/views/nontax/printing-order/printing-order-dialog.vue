@@ -271,7 +271,7 @@ export default {
           printingOrderId:this.data.id,
           needNumber:element.number,
           ticketId:element.ticketId,
-          operateDate:getDate(),
+          operateDate:new Date(),
           userId:this.$store.getters.id,
           warehouseId:this.warehouseList[0].id,
           startNumber:element.startNumber,
@@ -280,7 +280,7 @@ export default {
           unitId: this.data.unitId,
           sourceUnitId:this.data.printUnitId,
           storeType:'印制入库',
-          storeDate:getDate()
+          storeDate:new Date()
         }
         this.autoStoreList.push(autoStore)
         this.amount += element.price * parseInt(element.number)
