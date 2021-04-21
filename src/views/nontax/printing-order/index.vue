@@ -4,18 +4,26 @@
     <el-row>
       <el-col :span="18">
         <el-card class="box-card" style="width: 980px; height: 680px">
-          <el-row>
-            <hyd-table
-              :height="580"
-              :tableKey="tableKey"
-              :tableData="tableData"
-              :tableColumns="tableColumons"
-              :loading="tableLoading"
-              @handleEdit="handleEdit"
-              @handleDelete="handleDelete"
-              @handleCreate="handleCreate"
-            />
-          </el-row>
+          <search-page
+            ref="searchPage"
+            :searchConfig="searchConfig"
+            :searchBaseModel="searchBaseModel"
+            :handleSearch="commonQuery"
+            @showSearchData="showSearchData"
+          >
+            <el-row>
+              <hyd-table
+                :height="490"
+                :tableKey="tableKey"
+                :tableData="tableData"
+                :tableColumns="tableColumons"
+                :loading="tableLoading"
+                @handleEdit="handleEdit"
+                @handleDelete="handleDelete"
+                @handleCreate="handleCreate"
+              />
+            </el-row>
+          </search-page>
         </el-card>
       </el-col>
       <el-col :span="6">
@@ -45,8 +53,9 @@ import {
   getById,
 } from "@/api/nontax/printing-order/printing-order-index";
 import { listByPrintingOrderId } from "@/api/nontax/printing-order/printing-order-ticket";
+import SearchPage from "@/components/hyd-ui/search-page.vue";
 export default {
-  components: { printingOrderDialog },
+  components: { printingOrderDialog, SearchPage },
   name: "printing-order",
   data() {
     return {
@@ -106,9 +115,7 @@ export default {
             name: "订单状态",
             type: "pie",
             radius: "50%",
-            data: [
-              
-            ],
+            data: [],
             emphasis: {
               itemStyle: {
                 shadowBlur: 10,
@@ -119,63 +126,98 @@ export default {
           },
         ],
       },
-      myChart:{}
+      myChart: {},
+      searchConfig: [
+        {
+          prop: "printUnitName",
+          label: "印刷单位",
+          type: "input",
+        },
+        {
+          prop: "status",
+          label: "订单状态",
+          type: "select",
+          options: [
+            {
+              label: "待下单",
+              value: "0",
+            },
+            {
+              label: "已下单",
+              value: "1",
+            },
+            {
+              label: "已完工",
+              value: "2",
+            },
+            {
+              label: "已入库",
+              value: "3",
+            },
+          ],
+        },
+      ],
+      searchBaseModel: { unitId: this.$store.getters.unitId },
     };
   },
-  watch:{
-    tableData(val){
-      this.option.series[0].data = []
-      let map = new Map()
+  watch: {
+    tableData(val) {
+      this.option.series[0].data = [];
+      let map = new Map();
       for (let index = 0; index < val.length; index++) {
         const element = val[index];
         if (map.get(element.status)) {
-          map.set(element.status,map.get(element.status)+1)
+          map.set(element.status, map.get(element.status) + 1);
         } else {
-          map.set(element.status,1)
+          map.set(element.status, 1);
         }
       }
-      for(let key of map.keys()) {
-        let e = {value: parseInt(map.get(key)), name: key}
-        this.option.series[0].data.push(e)
+      for (let key of map.keys()) {
+        let e = { value: parseInt(map.get(key)), name: key };
+        this.option.series[0].data.push(e);
       }
-      this.myChart.setOption(this.option)
-    }
+      this.myChart.setOption(this.option);
+    },
   },
   created() {
-    this.getTableData();
   },
   mounted() {
+    this.getTableData();
     var chartDom = document.getElementById("main");
     this.myChart = echarts.init(chartDom);
     this.option && this.myChart.setOption(this.option);
+     
   },
   methods: {
-    getTableData() {
-      this.tableLoading = true;
-      commonQuery({ unitId: this.$store.getters.unitId }).then((res) => {
-        if (res && res.body && res.body.data) {
-          this.tableData = res.body.data;
-          for (let i = 0; i < this.tableData.length; i++) {
-            let element = this.tableData[i]
-            element["status"] = this.statusMap[
-              element["status"]
-            ];
-            element["payStatus"] = this.payStatusMap[
-              element["payStatus"]
-            ];
-            if (element.start) {
-            element.startShow = element.start.year + '-' + element.start.monthValue + '-' + element.start.dayOfMonth
-
-            }
-            if (element.end) {
-            element.endShow = element.end.year + '-' + element.end.monthValue + '-' + element.end.dayOfMonth
-              
-            }
-          }
-          this.tableLoading = false;
-          
+    showSearchData(data) {
+      for (let i = 0; i < data.length; i++) {
+        let element = data[i];
+        element["status"] = this.statusMap[element["status"]];
+        element["payStatus"] = this.payStatusMap[element["payStatus"]];
+        if (element.start) {
+          element.startShow =
+            element.start.year +
+            "-" +
+            element.start.monthValue +
+            "-" +
+            element.start.dayOfMonth;
         }
-      });
+        if (element.end) {
+          element.endShow =
+            element.end.year +
+            "-" +
+            element.end.monthValue +
+            "-" +
+            element.end.dayOfMonth;
+        }
+      }
+      this.tableData = data;
+    },
+    commonQuery(searchModel) {
+      return commonQuery(searchModel);
+    },
+    getTableData() {
+      this.$refs['searchPage'].searchBtnClick()
     },
     handleView(index, row) {
       this.dialogVisible = true;
@@ -226,7 +268,7 @@ export default {
       save(this.dialogData).then((res) => {
         if (res && res.body && res.body.data) {
           this.success();
-          this.handleEdit(undefined,{id:res.body.data})
+          this.handleEdit(undefined, { id: res.body.data });
         }
       });
     },

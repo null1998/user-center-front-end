@@ -34,14 +34,6 @@
       @current-change="handleCurrentPageChange"
     />
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <!-- <hyd-form
-        ref="dataForm"
-        formRef="dataForm"
-        :editCfg="dialogEditCfg"
-        :editData="permissionData"
-        :editRules="rules"
-        size="medium"
-      ></hyd-form> -->
       <el-form
         ref="dataForm"
         :rules="rules"

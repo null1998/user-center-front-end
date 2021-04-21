@@ -8,6 +8,7 @@ import nightingGaleRole from './echarts/nighting-gale-role.vue'
 import linkAge from './echarts/link-age.vue'
 import annulurPie from './echarts/annulur-pie.vue'
 import pie from './echarts/pie.vue'
+import searchPage from './search-page.vue'
 
 const hydui = {
   install: function(Vue) {
@@ -20,7 +21,8 @@ const hydui = {
     Vue.component('nighting-gale-role', nightingGaleRole)
     Vue.component('link-age', linkAge)
     Vue.component('annulur-pie', annulurPie)
-    Vue.component('pie',pie)
+    Vue.component('pie', pie)
+    Vue.component('search-page', searchPage)
   }
 }
 // 导出组件
