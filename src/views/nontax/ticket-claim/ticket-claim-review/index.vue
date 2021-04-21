@@ -1,15 +1,21 @@
 <!-- 下级票据申领审核 -->
 <template>
   <div>
+    <search-page
+            ref="searchPage"
+            :searchBaseModel="searchBaseModel"
+            :handleSearch="commonQuery"
+            @showSearchData="showSearchData"
+          >
     <hyd-table
-      :height="630"
+      :height="540"
       :tableKey="tableKey"
       :tableData="tableData"
       :tableColumns="tableColumons"
       :loading="tableLoading"
       @handleEdit="handleEdit"
     />
-
+    </search-page>
     <ticket-claim-review-dialog
       :dialogData="dialogData"
       :dialogTableData="dialogTableData"
@@ -63,28 +69,32 @@ export default {
       dialogTableData: [],
       statusMap: ["待下单", "已下单", "已出库", "已退回", "已入库"],
       payStatusMap: ["待下单", "待付款", "已付款"],
+      searchBaseModel: { targetUnitId: this.$store.getters.unitId }
     };
   },
   watch: {},
+  mounted(){this.getTableData();},
   created() {
-    this.getTableData();
+    
   },
   methods: {
+    showSearchData(data) {
+      for (let i = 0; i < data.length; i++) {
+        const element = this.data[index];
+        element.status = this.statusMap[element.status]
+        if (element.claimDate) {
+          element.claimDateShow = element.claimDate.year + '-' + element.claimDate.monthValue + '-' + element.claimDate.dayOfMonth
+        }
+      }
+      this.tableData = data;
+    },
+    commonQuery(searchModel) {
+      return commonQuery(searchModel);
+    },
     getTableData() {
       this.tableLoading = true;
-      commonQuery({ targetUnitId: this.$store.getters.unitId }).then((res) => {
-        if (res && res.body && res.body.data) {
-          this.tableData = res.body.data;
-          for (let index = 0; index < this.tableData.length; index++) {
-            const element = this.tableData[index];
-            element.status = this.statusMap[element.status]
-            if (element.claimDate) {
-              element.claimDateShow = element.claimDate.year + '-' + element.claimDate.monthValue + '-' + element.claimDate.dayOfMonth
-            }
-          }
-          this.tableLoading = false;
-        }
-      });
+      this.$refs['searchPage'].searchBtnClick()
+      this.tableLoading = false;
     },
     handleEdit(index, row) {
       if (row && row.id) {

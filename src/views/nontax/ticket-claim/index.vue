@@ -4,9 +4,16 @@
     <el-row>
       <el-col :span="18">
         <el-card class="box-card" style="width: 980px; height: 680px">
+          <search-page
+            ref="searchPage"
+            :searchConfig="searchConfig"
+            :searchBaseModel="searchBaseModel"
+            :handleSearch="commonQuery"
+            @showSearchData="showSearchData"
+          >
           <el-row>
             <hyd-table
-              :height="580"
+              :height="490"
               :tableKey="tableKey"
               :tableData="tableData"
               :tableColumns="tableColumons"
@@ -16,6 +23,7 @@
               @handleCreate="handleCreate"
             />
           </el-row>
+          </search-page>
         </el-card>
       </el-col>
       <el-col :span="6">
@@ -113,6 +121,41 @@ export default {
         ],
       },
       myChart: {},
+      searchConfig: [
+        {
+          prop: "targetUnitName",
+          label: "目标单位",
+          type: "input",
+        },
+        {
+          prop: "status",
+          label: "订单状态",
+          type: "select",
+          options: [
+            {
+              label: "待下单",
+              value: "0",
+            },
+            {
+              label: "已下单",
+              value: "1",
+            },
+            {
+              label: "已发货",
+              value: "2",
+            },
+            {
+              label: "已退回",
+              value: "3"
+            },
+            {
+              label: "已入库",
+              value: "4",
+            },
+          ],
+        },
+      ],
+      searchBaseModel: { unitId: this.$store.getters.unitId },
     };
   },
   watch: {
@@ -135,30 +178,33 @@ export default {
     },
   },
   created() {
-    this.getTableData();
+    
   },
   mounted() {
+    this.getTableData();
     var chartDom = document.getElementById("main");
     this.myChart = echarts.init(chartDom);
     this.option && this.myChart.setOption(this.option);
   },
   methods: {
+    showSearchData(data) {
+      for (let index = 0; index < data.length; index++) {
+        const element = data[index];
+        element.status = this.statusMap[element.status];
+        element.payStatus = this.payStatusMap[element.payStatus];
+        if (element.claimDate) {
+          element.claimDateShow = element.claimDate.year + '-' + element.claimDate.monthValue + '-' + element.claimDate.dayOfMonth
+        }
+      }
+      this.tableData = data;
+    },
+    commonQuery(searchModel) {
+      return commonQuery(searchModel);
+    },
     getTableData() {
       this.tableLoading = true;
-      commonQuery({ unitId: this.$store.getters.unitId }).then((res) => {
-        if (res && res.body && res.body.data) {
-          this.tableData = res.body.data;
-          for (let index = 0; index < this.tableData.length; index++) {
-            const element = this.tableData[index];
-            element.status = this.statusMap[element.status];
-            element.payStatus = this.payStatusMap[element.payStatus];
-            if (element.claimDate) {
-              element.claimDateShow = element.claimDate.year + '-' + element.claimDate.monthValue + '-' + element.claimDate.dayOfMonth
-            }
-          }
-          this.tableLoading = false;
-        }
-      });
+      this.$refs['searchPage'].searchBtnClick()
+      this.tableLoading = false;
     },
     handleEdit(index, row) {
       if (row && row.id) {

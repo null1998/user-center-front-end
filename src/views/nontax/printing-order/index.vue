@@ -217,7 +217,9 @@ export default {
       return commonQuery(searchModel);
     },
     getTableData() {
+      this.tableLoading = true;
       this.$refs['searchPage'].searchBtnClick()
+      this.tableLoading = false;
     },
     handleView(index, row) {
       this.dialogVisible = true;

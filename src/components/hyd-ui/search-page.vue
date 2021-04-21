@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-form :inline="true" :model="formModel">
+    <el-form :inline="true" :model="formModel" v-if="searchConfig">
       <el-form-item
         v-for="(item, index) in searchConfig"
         :key="index"
@@ -57,9 +57,6 @@ export default {
   props: {
     searchConfig: {
       type: Array,
-      default: function () {
-        return [];
-      },
     },
     searchBaseModel: { type: Object },
     handleSearch: { type: Function },

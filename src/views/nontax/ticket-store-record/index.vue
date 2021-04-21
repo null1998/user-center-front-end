@@ -4,9 +4,16 @@
     <el-row>
       <el-col :span="17">
         <el-card class="box-card" style="width: 920px; height: 680px">
+          <search-page
+            ref="searchPage"
+            :searchConfig="searchConfig"
+            :searchBaseModel="searchBaseModel"
+            :handleSearch="commonQuery"
+            @showSearchData="showSearchData"
+          >
           <el-row>
             <hyd-table
-              :height="580"
+              :height="490"
               :tableKey="tableKey"
               :tableData="tableData"
               :tableColumns="tableColumons"
@@ -16,6 +23,7 @@
               @handleCreate="handleCreate"
             />
           </el-row>
+          </search-page>
         </el-card>
       </el-col>
       <el-col :span="7">
@@ -79,7 +87,6 @@ export default {
       dialogTitle: "",
       dialogData: {},
       dialogTableData: [],
-      linkAgeData: [],
       option: {
         title: {
           text: '近一周入库记录'
@@ -99,20 +106,56 @@ export default {
         ],
       },
       myChart: {},
+      searchConfig: [
+        {
+          prop: "sourceUnitName",
+          label: "来源单位",
+          type: "input",
+        },
+        {
+          prop: "storeType",
+          label: "入库方式",
+          type: "select",
+          options: [
+            {
+              label: "印制入库",
+              value: "印制入库",
+            },
+            {
+              label: "申领入库",
+              value: "申领入库",
+            },
+          ],
+        },
+      ],
+      searchBaseModel: { unitId: this.$store.getters.unitId },
     };
   },
   activated() {
     //this.getTableData()
   },
   created() {
-    this.getTableData();
+    
   },
-   mounted() {
+  mounted() {
+    this.getTableData();
     var chartDom = document.getElementById("main");
     this.myChart = echarts.init(chartDom);
     
   },
   methods: {
+    showSearchData(data) {
+      for (let index = 0; index < data.length; index++) {
+        const element = data[index];
+        if (element.storeDate) {
+          element.storeDateShow = element.storeDate.year + '-' + element.storeDate.monthValue + '-' + element.storeDate.dayOfMonth
+        }
+      }
+      this.tableData = data;
+    },
+    commonQuery(searchModel) {
+      return commonQuery(searchModel);
+    },
     getLineChart() {
       recent(this.$store.getters.unitId).then(res=>{
         if (res && res.body && res.body.data) {
@@ -122,45 +165,11 @@ export default {
         }
       })
     },
-    getNumberPerMonth() {
-      numberPerMonth(this.$store.getters.unitId).then((res) => {
-        if (res && res.body && res.body.data) {
-          let tmp = [];
-          let month = new Date().getMonth() + 1;
-          let product = ["product"];
-          for (let index = 1; index <= month; index++) {
-            product.push(index + "");
-          }
-          tmp.push(product);
-          for (let index = 0; index < res.body.data.length; index++) {
-            const record = res.body.data[index];
-            let item = [record.ticketName];
-            for (let i = 1; i <= month; i++) {
-              item.push(!record.number[i] ? 0 : parseInt(record.number[i]));
-            }
-            tmp.push(item);
-          }
-          this.linkAgeData = [];
-          this.linkAgeData = tmp;
-        }
-      });
-    },
     getTableData() {
       this.tableLoading = true;
-      commonQuery({ unitId: this.$store.getters.unitId }).then((res) => {
-        this.linkAgeData.push({});
-        if (res && res.body && res.body.data) {
-          this.tableData = res.body.data;
-          for (let index = 0; index < this.tableData.length; index++) {
-            const element = this.tableData[index];
-            if (element.storeDate) {
-              element.storeDateShow = element.storeDate.year + '-' + element.storeDate.monthValue + '-' + element.storeDate.dayOfMonth
-            }
-          }
-          this.getLineChart()
-          this.tableLoading = false;
-        }
-      });
+      this.$refs['searchPage'].searchBtnClick()
+      this.getLineChart()
+      this.tableLoading = false;
     },
     handleEdit(index, row) {
       if (row && row.id) {
@@ -184,7 +193,6 @@ export default {
       if (row && row.id) {
         deleteById(row.id).then((res) => {
           if (res && res.body && res.body.data) {
-            this.linkAgeData = [];
             this.success();
             this.getTableData();
           }
