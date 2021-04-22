@@ -9,12 +9,12 @@
         :editCfg="editCfg"
         :editData="permissionListQuery"
         inline
-        size="medium"
+        size="mini"
       ></hyd-form>
     </div>
     <!-- 主表单显示权限列表 -->
     <hyd-table
-    :height="580"
+    :height="490"
       :tableKey="tableKey"
       :tableData="permissionList"
       :tableColumns="permissionTableColumons"
@@ -26,7 +26,7 @@
     <el-pagination
       layout="total, sizes, prev, pager, next, jumper"
       :current-page.sync="pageInfo.pageNum"
-      :page-sizes="[10, 30, 50]"
+      :page-sizes="[10, 20, 50,100]"
       :page-size="pageInfo.pageSize"
       :total="pageInfo.total"
       style="margin-top: 10px; margin-bottom: 10px; margin-right: 20px"
@@ -108,7 +108,7 @@ export default {
       dialogEditCfg:[
         {
           prop: "action",
-          label: "动作",
+          label: "资源操作",
           type: "select",
           placeholder: "",
           width:"200px",
@@ -137,7 +137,7 @@ export default {
         },
         {
           prop: "name",
-          label: "资源名",
+          label: "资源类型",
           type: "input",
           width:"200px"
         },
@@ -182,13 +182,13 @@ export default {
       editCfg: [
         {
           prop: "name",
-          label: "资源名",
+          label: "资源类型",
           type: "input",
           width: "200px",
         },
         {
           prop: "action",
-          label: "动作",
+          label: "资源操作",
           type: "select",
           width: "130px",
           placeholder: "",
@@ -231,12 +231,13 @@ export default {
       permissionTableColumons: [
         {
           prop: "name",
-          label: "资源名",
-          sortable: true,
+          label: "资源类型",
+          width: "200",
         },
         {
           prop: "action",
-          label: "动作",
+          label: "资源操作",
+          width:"100"
         },
         {
           prop: "remark",
@@ -245,11 +246,12 @@ export default {
         {
           prop: "method",
           label: "method",
+          width:"100"
         },
         {
           prop: "url",
           label: "url",
-          sortable: false,
+
         },
       ],
       /**

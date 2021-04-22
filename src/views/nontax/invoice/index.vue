@@ -1,8 +1,7 @@
-<!-- 单位管理 -->
+<!-- 开票管理 -->
 <template>
   <div>
      <hyd-editable-table
-       :height="580"
        :tableKey='tableKey'
        :tableData='tableData'
        :tableColumns='tableColumons'
@@ -14,7 +13,7 @@
 </template>
 
 <script>
-import { save,deleteById,commonQuery,getById } from '@/api/basedata/unit'
+import { save,deleteById,commonQuery,getById } from '@/api/nontax/invoice/invoice-index'
 export default {
   components: {},
   name: '',
@@ -40,7 +39,7 @@ export default {
   methods:{
     getTableData(){
       this.tableLoading=true
-      commonQuery().then((res) => {
+      commonQuery({unitId:this.$store.getters.unitId}).then((res) => {
         if (res && res.body && res.body.data) {
           this.tableData = res.body.data
           this.tableLoading=false
@@ -58,6 +57,7 @@ export default {
         })
       }
     },
+    
     success() {
       this.$notify({
       title: 'success',
@@ -80,4 +80,3 @@ export default {
 </script>
 <style>
 </style>
-

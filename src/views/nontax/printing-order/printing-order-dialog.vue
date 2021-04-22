@@ -219,16 +219,16 @@ export default {
           type: "show",
           width: "50",
         },
-        {
-          prop: "startNumber",
-          label: "起始号",
-          type: "show",
-        },
-        {
-          prop: "endNumber",
-          label: "终止号",
-          type: "show",
-        },
+        // {
+        //   prop: "startNumber",
+        //   label: "起始号",
+        //   type: "show",
+        // },
+        // {
+        //   prop: "endNumber",
+        //   label: "终止号",
+        //   type: "show",
+        // },
       ],
       tableLoading: false,
       subordinateTableKey: 0,
@@ -283,7 +283,9 @@ export default {
           storeDate:new Date()
         }
         this.autoStoreList.push(autoStore)
+        if (element.price && element.number) {
         this.amount += element.price * parseInt(element.number)
+        }
       }
     },
     dialogAmount(val) {

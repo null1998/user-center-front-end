@@ -19,7 +19,7 @@ export const constantRoutes = [
       path: 'dashboard',
       name: 'Dashboard',
       component: () => import('@/views/dashboard/index'),
-      meta: { title: '系统主页', icon: 'el-icon-house' }
+      meta: { title: '系统主页', icon: 'el-icon-pie-chart' }
     }]
   }
 ]
@@ -36,17 +36,42 @@ export const asyncRoutes = [
       path: 'ticket',
       name: 'ticket',
       component: () => import('@/views/basedata/ticket/index'),
-      meta: { title: '票据管理', icon: 'el-icon-s-management', roles: ['票据-查询与编辑'] }
+      meta: { title: '票据管理', icon: 'el-icon-tickets', roles: ['票据-查询与编辑'] }
+    }]
+  },
+  {
+    path: '/basedata/unit',
+    component: Layout,
+    children: [{
+      path: 'unit',
+      name: 'unit',
+      component: () => import('@/views/basedata/unit/index'),
+      meta: { title: '单位管理', icon: 'el-icon-office-building', roles: ['单位-查询与编辑'] }
+    }]
+  },
+  {
+    path: '/basedata/zone',
+    component: Layout,
+    children: [{
+      path: 'zone',
+      name: 'zone',
+      component: () => import('@/views/basedata/zone/index'),
+      meta: { title: '区划管理', icon: 'el-icon-map-location', roles: ['行政区划-查询与编辑'] }
+    }]
+  },
+  {
+    path: '/basedata/warehouse',
+    component: Layout,
+    children: [{
+      path: 'warehouse',
+      name: 'warehouse',
+      component: () => import('@/views/basedata/warehouse/index'),
+      meta: { title: '仓库管理', icon: 'el-icon-document-copy', roles: ['仓库-查询与编辑'] }
     }]
   },
   {
     path: '/permission',
     component: Layout,
-    meta: {
-      title: '权限管理',
-      icon: 'form',
-      roles: ['权限编辑者', '用户中心超级管理员']
-    },
     children: [
       {
         path: 'index',
@@ -54,7 +79,7 @@ export const asyncRoutes = [
         component: () => import('@/views/permission/index'),
         meta: {
           title: '权限管理',
-          icon: 'form',
+          icon: 'el-icon-setting',
           roles: ['权限编辑者', '用户中心超级管理员']
         }
       }
@@ -63,11 +88,6 @@ export const asyncRoutes = [
   {
     path: '/role',
     component: Layout,
-    meta: {
-      title: '角色管理',
-      icon: 'form',
-      roles: ['角色编辑者', '用户中心超级管理员']
-    },
     children: [
       {
         path: 'index',
@@ -75,7 +95,7 @@ export const asyncRoutes = [
         component: () => import('@/views/role/index'),
         meta: {
           title: '角色管理',
-          icon: 'form',
+          icon: 'el-icon-star-off',
           roles: ['角色编辑者', '用户中心超级管理员']
         }
       }
@@ -84,11 +104,6 @@ export const asyncRoutes = [
   {
     path: '/user',
     component: Layout,
-    meta: {
-      title: '用户管理',
-      icon: 'form',
-      roles: ['用户编辑者', '用户中心超级管理员']
-    },
     children: [
       {
         path: 'index',
@@ -96,7 +111,7 @@ export const asyncRoutes = [
         component: () => import('@/views/user/index'),
         meta: {
           title: '用户管理',
-          icon: 'form',
+          icon: 'el-icon-user',
           roles: ['用户编辑者', '用户中心超级管理员']
         }
       }
@@ -130,7 +145,7 @@ export const asyncRoutes = [
   {
     path: '/nontax/order',
     component: Layout,
-    meta: { title: '订单管理', icon: 'el-icon-document', roles: ['财政票据系统路由角色'] },
+    meta: { title: '订单管理', icon: 'el-icon-document-copy', roles: ['财政票据系统路由角色'] },
     children: [
       {
         path: 'printing-order',
@@ -161,7 +176,7 @@ export const asyncRoutes = [
   {
     path: '/nontax/storage',
     component: Layout,
-    meta: { title: '库存管理', icon: 'el-icon-house', roles: ['财政票据系统路由角色'] },
+    meta: { title: '库存管理', icon: 'el-icon-files', roles: ['财政票据系统路由角色'] },
     children: [
       {
         path: 'ticket-store-record',
@@ -225,6 +240,22 @@ export const asyncRoutes = [
     ]
   },
   {
+    path: '/nontax/invoice',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'invoice',
+        component: () => import('@/views/nontax/invoice/index'),
+        meta: {
+          title: '开票管理',
+          icon: 'el-icon-tickets',
+          roles: ['开票管理-查询与编辑']
+        }
+      }
+    ]
+  },
+  {
     path: '/nontax/payment',
     component: Layout,
     children: [
@@ -233,13 +264,30 @@ export const asyncRoutes = [
         name: 'payment',
         component: () => import('@/views/nontax/payment/index'),
         meta: {
-          title: '支付结算',
+          title: '工本费用',
           icon: 'el-icon-money',
           roles: ['票据结算-查询与编辑']
         }
       }
     ]
   },
+  {
+    path: '/nontax/treasury',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'treasury',
+        component: () => import('@/views/nontax/treasury/index'),
+        meta: {
+          title: '财政金库',
+          icon: 'el-icon-coin',
+          roles: ['财政金库-查询与编辑']
+        }
+      }
+    ]
+  },
+
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }
 ]

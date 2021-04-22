@@ -1,20 +1,19 @@
-<!-- 单位管理 -->
+<!-- 财政金库 -->
 <template>
   <div>
      <hyd-editable-table
-       :height="580"
        :tableKey='tableKey'
        :tableData='tableData'
        :tableColumns='tableColumons'
        :loading='tableLoading'
        @handleSave="handleSave"
-       @handleDelete="handleDelete"
+      @handleDelete="handleDelete"
      />
    </div>
 </template>
 
 <script>
-import { save,deleteById,commonQuery,getById } from '@/api/basedata/unit'
+import { save,deleteById,commonQuery,getById } from '@/api/nontax/treasury/treasury-index'
 export default {
   components: {},
   name: '',
@@ -29,6 +28,10 @@ export default {
        },
      ],
      tableLoading: false,
+     dialogVisible: false,
+     dialogTitle: '',
+     dialogData: {},
+     dialogTableData: [],
     }
   },
   watch:{
@@ -40,7 +43,7 @@ export default {
   methods:{
     getTableData(){
       this.tableLoading=true
-      commonQuery().then((res) => {
+      commonQuery({unitId:this.$store.getters.unitId}).then((res) => {
         if (res && res.body && res.body.data) {
           this.tableData = res.body.data
           this.tableLoading=false
@@ -80,4 +83,3 @@ export default {
 </script>
 <style>
 </style>
-

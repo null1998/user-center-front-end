@@ -79,8 +79,8 @@ export default {
   },
   methods: {
     showSearchData(data) {
-      for (let i = 0; i < data.length; i++) {
-        const element = this.data[index];
+      for (let i = 0; i < data.length; i++) {i
+        const element = data[i];
         element.status = this.statusMap[element.status]
         if (element.claimDate) {
           element.claimDateShow = element.claimDate.year + '-' + element.claimDate.monthValue + '-' + element.claimDate.dayOfMonth

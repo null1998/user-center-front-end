@@ -2,6 +2,7 @@
 <template>
   <div>
     <hyd-editable-table
+      :height="580"
       :tableKey="tableKey"
       :tableData="tableData"
       :tableColumns="tableColumons"
@@ -34,6 +35,7 @@ export default {
           prop: "name",
           label: "名称",
           type: "show",
+          width:"250"
         },
         {
           prop: "code",
@@ -53,6 +55,7 @@ export default {
           optionLabel: "name",
           optionValue: "id",
           placeholder: "请选择地区",
+          width:"100"
         },
         {
           prop: "dictionaryId",
@@ -67,11 +70,13 @@ export default {
           prop: "year",
           label: "年度",
           type: "input",
+          width:"100"
         },
         {
           prop: "price",
           label: "价格",
           type: "input",
+          width:"100"
         },
       ],
       tableLoading: false,
