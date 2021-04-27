@@ -91,7 +91,7 @@ export default {
     };
   },
   watch: {},
-  created() {
+  mounted() {
     this.getProvinceZone();
     this.getTicketDictionary({ categoryName: "票据分类" });
     this.getTableData();

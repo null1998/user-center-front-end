@@ -29,9 +29,21 @@ export default {
      tableData: [],
      tableColumons: [
        {
-         prop:'',
-         label:''
+         prop:'name',
+         label:'地区'
        },
+       {
+         prop:'code',
+         label:'编码'
+       },
+       {
+         prop:'hierarchy',
+         label:'级别'
+       },
+       {
+         prop:'parentZoneName',
+         label:'上级地区名'
+       }
      ],
      tableLoading: false,
      searchBaseModel:{}

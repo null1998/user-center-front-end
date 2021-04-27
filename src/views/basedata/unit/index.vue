@@ -7,7 +7,7 @@
       :handleSearch="commonQuery"
       @showSearchData="showSearchData"
     >
-     <hyd-editable-table
+     <hyd-table
        :height="580"
        :tableKey='tableKey'
        :tableData='tableData'
@@ -29,8 +29,24 @@ export default {
      tableData: [],
      tableColumons: [
        {
-         prop:'',
-         label:''
+         prop:'name',
+         label:'单位名'
+       },
+       {
+         prop:'code',
+         label:'编码'
+       },
+       {
+         prop:'mnemonic',
+         label:'助记码'
+       },
+       {
+         prop:'zoneName',
+         label:'地区'
+       },
+       {
+         prop:'parentUnitName',
+         label:'上级单位名'
        },
      ],
      tableLoading: false,
@@ -40,7 +56,7 @@ export default {
   watch:{
 
   },
-  created(){
+  mounted(){
     this.getTableData()
   },
   methods:{
