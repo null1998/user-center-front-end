@@ -27,8 +27,8 @@ export function getById(id) {
 }
 /**
  * 通用查询，支持字段id,unitId,targetUnitId，status
- * @param {*} params 
- * @returns 
+ * @param {*} params
+ * @returns
  */
 export function commonQuery(params) {
   return request({

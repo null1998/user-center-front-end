@@ -1,7 +1,6 @@
 import axios from 'axios'
-import { MessageBox, Message } from 'element-ui'
 import store from '@/store'
-import { getToken, setToken } from '@/utils/auth'
+import { getToken} from '@/utils/auth'
 
 // create an axios instance
 const service = axios.create({
@@ -57,12 +56,11 @@ service.interceptors.response.use(
       }
       return res
     } else {
-      
       this.$message.error('服务器出错')
       return null
     }
-  },
-  
+  }
+
 )
 // response interceptor
 // service.interceptors.response.use(

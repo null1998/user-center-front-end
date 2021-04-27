@@ -19,12 +19,12 @@ export function commonQuery(params) {
 }
 /**
  * 获取该单位的所有上级单位（包括上级的上级）
- * @param {id} id 
- * @returns 
+ * @param {id} id
+ * @returns
  */
 export function getSuperiorUnitList(id) {
   return request({
     url: '/nontax/basedata/unit/superior/' + id,
-    method: 'get',
+    method: 'get'
   })
 }

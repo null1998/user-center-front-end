@@ -1,10 +1,10 @@
-import Cookies from 'js-cookie'
+
 
 const TokenKey = 'financial_bill_management_token'
 
 export function getToken() {
   return localStorage.getItem(TokenKey)
-  //return Cookies.get(TokenKey)
+  // return Cookies.get(TokenKey)
 }
 
 export function setToken(token) {
@@ -14,5 +14,5 @@ export function setToken(token) {
 
 export function removeToken() {
   return localStorage.removeItem(TokenKey)
-  //return Cookies.remove(TokenKey)
+  // return Cookies.remove(TokenKey)
 }

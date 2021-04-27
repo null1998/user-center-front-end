@@ -1,7 +1,6 @@
 import { login, logout, getInfo } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { resetRouter } from '@/router'
-import { commonQuery } from '@/api/basedata/ticket'
 
 const getDefaultState = () => {
   return {
@@ -14,7 +13,7 @@ const getDefaultState = () => {
     nickname: '',
     zoneId: '',
     provinceZoneId: '',
-    unitLevel: '',
+    unitLevel: ''
   }
 }
 
@@ -65,7 +64,7 @@ const actions = {
         // 首次登录返回的token保存在本地
         if (response.head.accessToken) {
           commit('SET_TOKEN', response.head.accessToken)
-          
+
           setToken(response.head.accessToken)
         }
         resolve(response)
@@ -84,7 +83,7 @@ const actions = {
         if (!body) {
           return reject('获取用户信息失败，重新登录')
         }
-        const { username, avatar, roleNameList, unitId, nickname, zoneId, provinceZoneId, id,unitLevel } = body.data
+        const { username, avatar, roleNameList, unitId, nickname, zoneId, provinceZoneId, id, unitLevel } = body.data
 
         if (roleNameList.length === 0) {
           roleNameList.push('tourist')
@@ -97,7 +96,7 @@ const actions = {
         commit('SET_NICKNAME', nickname)
         commit('SET_ZONE_ID', zoneId)
         commit('SET_PROVINCE_ZONE_ID', provinceZoneId)
-        commit('SET_UNIT_LEVEL',unitLevel)
+        commit('SET_UNIT_LEVEL', unitLevel)
         resolve(body.data)
       }).catch(error => {
         reject(error)

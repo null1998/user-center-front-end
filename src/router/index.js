@@ -139,7 +139,7 @@ export const asyncRoutes = [
         name: 'printing-plan',
         component: () => import('@/views/nontax/printing-plan/index'),
         meta: { title: '计划上报', roles: ['印制计划-查询与编辑'] }
-      },     
+      }
     ]
   },
   {
@@ -204,7 +204,7 @@ export const asyncRoutes = [
           title: '库存查看',
           roles: ['票据库存-查询与编辑']
         }
-      },
+      }
     ]
   },
   {
