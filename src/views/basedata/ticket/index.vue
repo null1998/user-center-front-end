@@ -1,6 +1,12 @@
 <!-- 票据管理 -->
 <template>
   <div>
+    <search-page
+      ref="searchPage"
+      :searchBaseModel="searchBaseModel"
+      :handleSearch="commonQuery"
+      @showSearchData="showSearchData"
+    >
     <hyd-editable-table
       :height="580"
       :tableKey="tableKey"
@@ -11,6 +17,7 @@
       @handleDelete="handleDelete"
     >
     </hyd-editable-table>
+    </search-page>
   </div>
 </template>
 
@@ -18,7 +25,7 @@
 import { listProvinceZone } from "@/api/basedata/zone";
 import { listByCategoryName } from "@/api/basedata/dictionary";
 import {
-  listAll as listTicket,
+  commonQuery,
   save,
   update,
   deleteById,
@@ -80,6 +87,7 @@ export default {
         },
       ],
       tableLoading: false,
+      searchBaseModel:{}
     };
   },
   watch: {},
@@ -89,6 +97,7 @@ export default {
     this.getTableData();
   },
   methods: {
+    
     handleSave(index, row) {
       // 保存时必须校验数据的合法性
       if (
@@ -146,17 +155,16 @@ export default {
         });
       }
     },
+    showSearchData(data){
+      this.tableData = data
+    },
+    commonQuery(searchModel) {
+      return commonQuery(searchModel);
+    },
     getTableData() {
       this.tableLoading = true;
-      listTicket()
-        .then((res) => {
-          if (res && res.body && res.body.data) {
-            this.tableData = res.body.data;
-          }
-        })
-        .finally(() => {
-          this.tableLoading = false;
-        });
+      this.$refs['searchPage'].searchBtnClick()
+      this.tableLoading = false;
     },
     /**
      * 查询省级行政区划

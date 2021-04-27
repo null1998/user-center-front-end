@@ -11,3 +11,10 @@ export function getById(id) {
     method: 'get'
   })
 }
+export function commonQuery(query) {
+  return request({
+    url: '/nontax/basedata/zone/common/query',
+    method: 'get',
+    data: query
+  })
+}

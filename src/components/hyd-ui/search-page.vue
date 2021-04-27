@@ -56,12 +56,12 @@ export default {
   name: "search-page",
   props: {
     searchConfig: {
-      type: Array,
+      type: Array,require:false
     },
-    searchBaseModel: { type: Object },
-    handleSearch: { type: Function },
+    searchBaseModel: { type: Object,require:true },
+    handleSearch: { type: Function,require:true },
     pageSizes: {
-      type: Array,
+      type: Array,require:false,
       default: function () {
         return [10, 20, 50, 100];
       },

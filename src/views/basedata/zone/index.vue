@@ -1,20 +1,25 @@
 <!-- 行政区划管理 -->
 <template>
   <div>
+    <search-page
+      ref="searchPage"
+      :searchBaseModel="searchBaseModel"
+      :handleSearch="commonQuery"
+      @showSearchData="showSearchData"
+    >
      <hyd-table
+       :height="580"
        :tableKey='tableKey'
        :tableData='tableData'
        :tableColumns='tableColumons'
        :loading='tableLoading'
-       @handleSave="handleSave"
-       @handleDelete='handleDelete'
      />
-     
+    </search-page>
    </div>
 </template>
 
 <script>
-import { save,deleteById,commonQuery,getById } from '@/api/basedata/zone'
+import { commonQuery} from '@/api/basedata/zone'
 export default {
   components: {},
   name: '',
@@ -29,36 +34,28 @@ export default {
        },
      ],
      tableLoading: false,
-     
+     searchBaseModel:{}
     }
   },
   watch:{
 
   },
-  created(){
+  mounted(){
     this.getTableData()
   },
   methods:{
+    showSearchData(data) {
+      this.tableData = data
+    },
+    commonQuery(searchModel) {
+      return commonQuery(searchModel);
+    },
     getTableData(){
       this.tableLoading=true
-      commonQuery({unitId:this.$store.getters.unitId}).then((res) => {
-        if (res && res.body && res.body.data) {
-          this.tableData = res.body.data
-          this.tableLoading=false
-        }
-      })
+      this.$refs['searchPage'].searchBtnClick()
+      this.tableLoading=false
     },
     handleSave(){},
-    handleDelete(index,row){
-      if (row && row.id) {
-        deleteById(row.id).then((res) => {
-          if (res && res.body && res.body.data) {
-            this.success()
-            this.getTableData()
-          }
-        })
-      }
-    },
     success() {
       this.$notify({
       title: 'success',

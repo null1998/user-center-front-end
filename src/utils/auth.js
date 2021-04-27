@@ -1,5 +1,4 @@
 
-
 const TokenKey = 'financial_bill_management_token'
 
 export function getToken() {
