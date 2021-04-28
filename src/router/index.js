@@ -217,7 +217,7 @@ export const asyncRoutes = [
         component: () => import('@/views/nontax/order-progress/index'),
         meta: {
           title: '印制订单',
-          icon: 'form',
+          icon: 'el-icon-document-copy',
           roles: ['订单进度-查询与编辑']
         }
       }
@@ -233,7 +233,7 @@ export const asyncRoutes = [
         component: () => import('@/views/nontax/ticket-product-record/index'),
         meta: {
           title: '票号分配',
-          icon: 'form',
+          icon: 'el-icon-data-board',
           roles: ['票据生产记录-查询与编辑']
         }
       }

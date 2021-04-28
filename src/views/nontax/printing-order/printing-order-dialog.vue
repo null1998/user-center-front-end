@@ -5,11 +5,12 @@
       :visible.sync="visible"
       :show-close="false"
       :before-close="close"
+      width="58%"
     >
       <div slot="title" class="header-title">
         <strong>{{ title }}</strong>
         <div style="float: right">
-          <el-popover placement="bottom" width="500" trigger="click">
+          <el-popover placement="bottom" width="500" trigger="manual" v-model="popoverVisible">
             <el-tooltip content="需求导入" placement="bottom" effect="light">
               <el-button
                 type="success"
@@ -32,7 +33,7 @@
               placement="bottom"
               effect="light"
             >
-              <el-button size="mini" type="primary" icon="el-icon-document" />
+              <el-button size="mini" type="primary" icon="el-icon-document" @click="popoverVisible = !popoverVisible"/>
             </el-tooltip>
           </el-popover>
           <el-tooltip
@@ -154,12 +155,12 @@ import { commonQuery as listTicket } from "@/api/basedata/ticket";
 import { update,autoStore } from "@/api/nontax/printing-order/printing-order-index";
 import {
   save,
+  saveList,
   update as updateTicket,
   listByPrintingOrderId,
   deleteById,
 } from "@/api/nontax/printing-order/printing-order-ticket";
 import { save as savePayment } from "@/api/nontax/payment/payment";
-import { getDate } from "@/utils/date";
 export default {
   components: { countTo },
   name: "",
@@ -219,16 +220,16 @@ export default {
           type: "show",
           width: "50",
         },
-        // {
-        //   prop: "startNumber",
-        //   label: "起始号",
-        //   type: "show",
-        // },
-        // {
-        //   prop: "endNumber",
-        //   label: "终止号",
-        //   type: "show",
-        // },
+        {
+          prop: "startNumber",
+          label: "起始号",
+          type: "show",
+        },
+        {
+          prop: "endNumber",
+          label: "终止号",
+          type: "show",
+        },
       ],
       tableLoading: false,
       subordinateTableKey: 0,
@@ -249,6 +250,7 @@ export default {
       autoStoreList:[],
       amount: 0,
       array: [],
+      popoverVisible: false
     };
   },
   created() {
@@ -308,15 +310,14 @@ export default {
     },
     importData() {
       for (let index = 0; index < this.array.length; index++) {
-        let row = { ...this.array[index] };
-        this.helper(row);
+        const element = this.array[index];
+        element.printingOrderId = this.data.id
       }
-      this.getTableData();
-      this.success();
-    },
-    async helper(row) {
-      row.printingOrderId = this.data.id;
-      save(row);
+      saveList(this.array).then(()=>{
+        this.getTableData();
+        this.success();
+        this.popoverVisible = !this.popoverVisible
+      })
     },
     handleSelect(rows) {
       this.array = rows;

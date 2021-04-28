@@ -18,8 +18,6 @@
               :tableData="tableData"
               :tableColumns="tableColumons"
               :loading="tableLoading"
-              @handleSave="handleSave"
-              @handleDelete="handleDelete"
               @handleSelectionChange="handleSelect"
             />
           </el-row>
@@ -75,6 +73,10 @@ export default {
           label: "终止号",
           width: "100",
         },
+        {
+          prop: "createdDateShow",
+          label: "分配日期"
+        }
       ],
       tableLoading: false,
       array: [],
@@ -188,6 +190,14 @@ export default {
       commonQuery({ printUnitId: this.$store.getters.unitId }).then((res) => {
         if (res && res.body && res.body.data) {
           this.tableData = res.body.data;
+          for (let index = 0; index < this.tableData.length; index++) {
+            const element = this.tableData[index];
+            if (element.createdDate) {
+              element.createdDateShow = element.createdDate.year+'-'
+              +element.createdDate.monthValue+'-'
+              +element.createdDate.dayOfMonth
+            }
+          }
           this.tableLoading = false;
         }
       });
