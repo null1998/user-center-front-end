@@ -72,7 +72,7 @@ import {
   update as updateRow,
   commonQuery,
 } from "@/api/nontax/ticket-out-record/ticket-out-record-ticket";
-import { commonQuery as commonQueryTicket } from "@/api/basedata/ticket";
+import { listByZoneId as commonQueryTicket } from "@/api/basedata/ticket";
 import { commonQuery as commonQueryTicketClaim } from "@/api/nontax/ticket-claim/ticket-claim-index";
 import { getDate } from "@/utils/date";
 export default {
@@ -152,7 +152,7 @@ export default {
       );
     },
     getTicketList() {
-      commonQueryTicket({ zoneId: this.$store.getters.provinceZoneId }).then(
+      commonQueryTicket(this.$store.getters.provinceZoneId ).then(
         (res) => {
           if (res && res.body && res.body.data) {
             this.tableColumons[0].options = res.body.data;

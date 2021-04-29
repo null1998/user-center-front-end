@@ -57,7 +57,6 @@
 
 <script>
 import { commonQuery } from "@/api/basedata/ticket";
-import { listProvinceZone, getById } from "@/api/basedata/zone";
 import {
   update,
   listByParentUnitIdAndStatusAndYear,

@@ -67,7 +67,7 @@ export default {
       dialogTitle: "",
       dialogData: {},
       dialogTableData: [],
-      statusMap: ["待下单", "已下单", "已出库", "已退回", "已入库"],
+      statusMap: ["待下单", "下级已下单", "本级已出库", "订单已退回", "下级已入库"],
       payStatusMap: ["待下单", "待付款", "已付款"],
       searchBaseModel: { targetUnitId: this.$store.getters.unitId }
     };

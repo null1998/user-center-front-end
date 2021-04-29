@@ -41,7 +41,7 @@ import {
 } from "@/api/nontax/ticket-storage/ticket-storage-index";
 import { getDate } from "@/utils/date";
 import { commonQuery as commonQueryWarehouse } from "@/api/basedata/warehouse";
-import { commonQuery as commonQueryTicket } from "@/api/basedata/ticket";
+import { listByZoneId as commonQueryTicket } from "@/api/basedata/ticket";
 export default {
   name: "ticket-storage",
   data() {
@@ -150,7 +150,7 @@ export default {
       );
     },
     getTicketList() {
-      commonQueryTicket({ zoneId: this.$store.getters.provinceZoneId }).then(
+      commonQueryTicket(this.$store.getters.provinceZoneId).then(
         (res) => {
           if (res && res.body && res.body.data) {
             this.tableColumons[1].options = res.body.data;

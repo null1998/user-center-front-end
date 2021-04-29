@@ -5,6 +5,7 @@
       :visible.sync="visible"
       :show-close="false"
       :before-close="close"
+      width="58%"
     >
       <div slot="title" class="header-title">
         <strong>{{ title }}</strong>
@@ -90,8 +91,7 @@ import {
 } from "@/api/nontax/ticket-claim/ticket-claim-ticket";
 import { getSuperiorUnitList } from "@/api/basedata/unit";
 import { commonQuery as commonQueryWarehouse } from "@/api/basedata/warehouse";
-import { commonQuery as commonQueryTicket } from "@/api/basedata/ticket";
-import { getDate } from "@/utils/date";
+import { listByZoneId as commonQueryTicket } from "@/api/basedata/ticket";
 import { save as savePayment } from "@/api/nontax/payment/payment";
 export default {
   name: "ticket-claim-ticket",
@@ -207,7 +207,7 @@ export default {
       })
     },
     getTicketList() {
-      commonQueryTicket({ zoneId: this.$store.getters.provinceZoneId }).then(
+      commonQueryTicket(this.$store.getters.provinceZoneId ).then(
         (res) => {
           if (res && res.body && res.body.data) {
             this.tableColumons[0].options = res.body.data;

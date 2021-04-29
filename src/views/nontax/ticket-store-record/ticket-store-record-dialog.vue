@@ -74,7 +74,7 @@ import {
 } from "@/api/nontax/ticket-store-record/ticket-store-record-ticket";
 import { commonQuery as commonQueryPrintOrder } from "@/api/nontax/printing-order/printing-order-index";
 import { listByCategoryName } from "@/api/basedata/dictionary";
-import { commonQuery as commonQueryTicket } from "@/api/basedata/ticket";
+import { listByZoneId as commonQueryTicket } from "@/api/basedata/ticket";
 import { getDate } from "@/utils/date";
 export default {
   name: "ticket-store-record-dialog",
@@ -174,7 +174,7 @@ export default {
       })
     },
     getTicketList() {
-      commonQueryTicket({zoneId:this.$store.getters.provinceZoneId}).then(res=>{
+      commonQueryTicket(this.$store.getters.provinceZoneId).then(res=>{
         if (res&&res.body&&res.body.data) {
           this.tableColumons[0].options = res.body.data
         }

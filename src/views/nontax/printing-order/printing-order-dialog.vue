@@ -151,7 +151,7 @@ import { listByParentUnitIdAndStatusAndYear } from "@/api/nontax/printing-plan/p
 import { commonQuery } from "@/api/basedata/unit";
 import { listByUnitId } from "@/api/basedata/warehouse";
 import { listByCategoryName } from "@/api/basedata/dictionary";
-import { commonQuery as listTicket } from "@/api/basedata/ticket";
+import { listByZoneId as listTicket } from "@/api/basedata/ticket";
 import { update,autoStore } from "@/api/nontax/printing-order/printing-order-index";
 import {
   save,
@@ -402,9 +402,8 @@ export default {
      * 查询本省的所有票据
      */
     listTicket() {
-      let params = {};
-      params.zoneId = this.$store.getters.provinceZoneId;
-      listTicket(params).then((res) => {
+      
+      listTicket(this.$store.getters.provinceZoneId).then((res) => {
         if (res && res.body && res.body.data) {
           this.tableColumns[0].options = res.body.data;
         }

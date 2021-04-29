@@ -60,7 +60,6 @@
 <script>
 import { update, autoOut } from "@/api/nontax/ticket-claim/ticket-claim-index";
 import { commonQuery as commonQueryStorage } from "@/api/nontax/ticket-storage/ticket-storage-index";
-import { getDate } from "@/utils/date";
 export default {
   name: "",
   props: {
@@ -206,11 +205,12 @@ export default {
       update(this.data).then((res) => {
         if (res && res.body && res.body.data) {
           if (this.data.status == 2) {
-            this.success();
-            this.close();
+            
             // 自动出库
             autoOut(this.autoOutList);
           }
+          this.success();
+          this.close();
         }
       });
     },
