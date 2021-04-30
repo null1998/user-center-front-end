@@ -18,20 +18,22 @@
         </el-card>
       </el-col>
       <el-col :span="6">
-        <div id="main" :style="{ width: '350px', height: '600px' }"></div>
+        <el-row><div id="main" :style="{ width: '350px', height: '350px' }"></div></el-row>
+        <el-row><div id="price" :style="{ width: '350px', height: '350px' }"></div></el-row>
       </el-col>
     </el-row>
   </div>
 </template>
 
 <script>
-import * as echarts from 'echarts';
+import * as echarts from "echarts";
 import {
   save,
   deleteById,
   commonQuery,
   getById,
   analysisTicketNumber,
+  analysisTicketPrice,
 } from "@/api/nontax/invoice/invoice-index";
 import { listByZoneId as listTicket } from "@/api/basedata/ticket";
 export default {
@@ -74,7 +76,9 @@ export default {
       ],
       tableLoading: false,
       invoicePieData: [],
+      invoicePiePriceData: [],
       option: {
+        
         tooltip: {
           trigger: "item",
         },
@@ -84,9 +88,9 @@ export default {
         },
         series: [
           {
-            name: "开票情况",
+            name: "开票数量",
             type: "pie",
-            radius: ["40%", "70%"],
+            radius: ["20%", "50%"],
             avoidLabelOverlap: false,
             itemStyle: {
               borderRadius: 10,
@@ -111,24 +115,76 @@ export default {
           },
         ],
       },
-      myChart:{}
+      myChart: {},
+      priceChart:{},
+      priceOption: {
+        
+        tooltip: {
+          trigger: "item",
+        },
+        legend: {
+          top: "5%",
+          left: "center",
+        },
+        series: [
+          {
+            name: "开票金额",
+            type: "pie",
+            radius: ["20%", "50%"],
+            avoidLabelOverlap: false,
+            itemStyle: {
+              borderRadius: 10,
+              borderColor: "#fff",
+              borderWidth: 2,
+            },
+            label: {
+              show: false,
+              position: "center",
+            },
+            emphasis: {
+              label: {
+                show: true,
+                fontSize: "10",
+                fontWeight: "bold",
+              },
+            },
+            labelLine: {
+              show: false,
+            },
+            data: [],
+          },
+        ],
+      },
     };
   },
   watch: {
     invoicePieData(val) {
-      let tmpList = []
+      let tmpList = [];
       for (let index = 0; index < val.length; index++) {
         const element = val[index];
-        const tmp = {name:element.ticketName,value:element.number}
-        tmpList.push(tmp)
+        const tmp = { name: element.ticketName, value: element.number };
+        tmpList.push(tmp);
       }
-      this.option.series[0].data = tmpList
-      this.myChart.setOption(this.option)
-    }
+      this.option.series[0].data = tmpList;
+      this.myChart.setOption(this.option);
+    },
+    invoicePiePriceData(val) {
+      let tmpList = [];
+      for (let index = 0; index < val.length; index++) {
+        const element = val[index];
+        const tmp = { name: element.ticketName, value: element.price };
+        tmpList.push(tmp);
+      }
+      
+      this.priceOption.series[0].data = tmpList;
+      this.priceChart.setOption(this.priceOption);
+    },
   },
   mounted() {
-    var chartDom = document.getElementById('main');
+    var chartDom = document.getElementById("main");
+    var priceDom = document.getElementById("price");
     this.myChart = echarts.init(chartDom);
+    this.priceChart = echarts.init(priceDom);
     this.getTableData();
     this.listTicket();
   },
@@ -146,7 +202,7 @@ export default {
                 "-" +
                 element.invoiceDate.monthValue +
                 "-" +
-                (element.invoiceDate.dayOfMonth+1);
+                (element.invoiceDate.dayOfMonth + 1);
             }
           }
           this.tableLoading = false;
@@ -155,6 +211,11 @@ export default {
       analysisTicketNumber(this.$store.getters.unitId).then((res) => {
         if (res && res.body && res.body.data) {
           this.invoicePieData = res.body.data;
+        }
+      });
+      analysisTicketPrice(this.$store.getters.unitId).then((res) => {
+        if (res && res.body && res.body.data) {
+          this.invoicePiePriceData = res.body.data;
         }
       });
     },

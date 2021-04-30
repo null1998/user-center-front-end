@@ -271,22 +271,22 @@ export const asyncRoutes = [
       }
     ]
   },
-  {
-    path: '/nontax/treasury',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: 'treasury',
-        component: () => import('@/views/nontax/treasury/index'),
-        meta: {
-          title: '财政金库',
-          icon: 'el-icon-coin',
-          roles: ['财政金库-查询与编辑']
-        }
-      }
-    ]
-  },
+  // {
+  //   path: '/nontax/treasury',
+  //   component: Layout,
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       name: 'treasury',
+  //       component: () => import('@/views/nontax/treasury/index'),
+  //       meta: {
+  //         title: '财政金库',
+  //         icon: 'el-icon-coin',
+  //         roles: ['财政金库-查询与编辑']
+  //       }
+  //     }
+  //   ]
+  // },
 
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }

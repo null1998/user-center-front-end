@@ -38,3 +38,9 @@ export function analysisTicketNumber(unitId) {
     method: 'get',
   })
 }
+export function analysisTicketPrice(unitId) {
+  return request({
+    url: '/nontax/financial/invoice/analysis/price/'+unitId,
+    method: 'get',
+  })
+}
