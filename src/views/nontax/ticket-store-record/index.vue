@@ -148,7 +148,7 @@ export default {
       for (let index = 0; index < data.length; index++) {
         const element = data[index];
         if (element.storeDate) {
-          element.storeDateShow = element.storeDate.year + '-' + element.storeDate.monthValue + '-' + element.storeDate.dayOfMonth
+          element.storeDateShow = element.storeDate.year + '-' + element.storeDate.monthValue + '-' + (element.storeDate.dayOfMonth+1)
         }
       }
       this.tableData = data;

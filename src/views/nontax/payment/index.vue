@@ -8,23 +8,16 @@
       :tableData="tableData"
       :tableColumns="tableColumons"
       :loading="tableLoading"
-      @handleEdit="handleEdit"
+      @handlePay="handlePay"
       @handleSelectionChange="handleSelect"
     />
-     <payment-dialog
-       :dialogData='dialogData'
-       :visible='dialogVisible'
-       :close='dialogClose'
-       :title='dialogTitle'
-     />
+     
    </div>
 </template>
 
 <script>
-import paymentDialog from './payment-dialog'
-import { commonQuery,getById,deleteAll } from '@/api/nontax/payment/payment'
+import { commonQuery,getById,deleteAll,update } from '@/api/nontax/payment/payment'
 export default {
-  components: {paymentDialog},
   name: 'payment',
   data () {
     return {
@@ -44,17 +37,14 @@ export default {
        {
          prop:'sourceOrderNumber',
          label:'业务单号',
-         width: "200",
+         width: "250",
        },
        {
          prop:'desUnitName',
          label:'收款单位',
-         width: "150",
+         width: "200",
        },  
-       {
-         prop:'totalPrice',
-         label:'金额'
-       },  
+         
        {
          prop:'orderDateShow',
          label:'下单日期',
@@ -65,13 +55,13 @@ export default {
          prop:'payDateShow',
          label:'结算日期',
          width: "170",
-       }
+       },
+       {
+         prop:'totalPrice',
+         label:'金额'
+       },
      ],
      tableLoading: false,
-     dialogVisible: false,
-     dialogTitle: '',
-     dialogData: {},
-     dialogTableData: [],
      statusMap:['待付款','已付款'],
      deleteAllBtnLoading: false,
      selectList:[]
@@ -96,26 +86,27 @@ export default {
             const element = this.tableData[index];
             element['status'] = this.statusMap[element['status']]
             if (element.orderDate) {
-            element.orderDateShow = element.orderDate.year + '-' + element.orderDate.monthValue + '-' + element.orderDate.dayOfMonth
+            element.orderDateShow = element.orderDate.year + '-' + element.orderDate.monthValue + '-' + (element.orderDate.dayOfMonth+1)
 
             }
             if (element.payDate) {
-            element.payDateShow = element.payDate.year + '-' + element.payDate.monthValue + '-' + element.payDate.dayOfMonth
-
+            element.payDateShow = element.payDate.year + '-' + element.payDate.monthValue + '-' + (element.payDate.dayOfMonth
+            +1)
             }
           }
           this.tableLoading=false
         }
       })
     },
-    handleEdit(index,row) {
-      if(row&&row.id){
-        getById(row.id).then((res)=>{
-          if(res&&res.body&&res.body.data){
-            this.dialogData = res.body.data
-            this.dialogVisible = true
-            this.dialogTitle = '支付结算'
-          }
+    handlePay(index,row) {
+      if(row&&row.id&&row.status == '待付款'){
+        row.status = 1
+        row.payDate = new Date()
+        row.orderDate = undefined
+        row.orderDateShow = undefined
+        update(row).then(res=>{
+          this.success()
+          this.getTableData()
         })
       }
 

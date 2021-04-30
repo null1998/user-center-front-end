@@ -35,7 +35,7 @@
         fixed="right"
         :width="operateColWidth"
         
-        v-if="edit || del || submit || check"
+        v-if="edit || del || submit || check || pay"
       >
         <template slot-scope="scope">
           <el-button
@@ -49,6 +49,18 @@
               box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12),0 0 6px rgba(0, 0, 0, 0.04);
             "
             >审核</el-button
+          >
+          <el-button
+            size="mini"
+            icon="el-icon-s-shop"
+            v-if="pay"
+            :loading="payBtnLoading"
+            @click="handlePay(scope.$index, scope.row)"
+            class="pan-btn light-blue-btn"
+            style="
+              box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12),0 0 6px rgba(0, 0, 0, 0.04);
+            "
+            >支付</el-button
           >
           <el-button
             size="mini"
@@ -155,6 +167,8 @@ export default {
       edit: false,
       del: false,
       add: false,
+      pay: false,
+      payBtnLoading:undefined,
       checkBtnLoading: undefined,
       submitBtnLoading: undefined,
       viewBtnLoading: undefined,
@@ -192,6 +206,11 @@ export default {
       this.operateColWidth += 90
 
       this.del = true;
+    }
+    if (this.$listeners["handlePay"]) {
+      this.operateColWidth += 90
+
+      this.pay = true;
     }
     if (this.$listeners["handleCreate"]) {
       this.add = true;
@@ -257,6 +276,14 @@ export default {
       this.addBtnLoading = false;
       
     },
+    /**
+     * 支付按钮
+     */
+    handlePay(index, row) {
+      this.payBtnLoading = true;
+      this.$emit("handlePay", index, row)
+      this.payBtnLoading = false
+    }
   },
 };
 </script>

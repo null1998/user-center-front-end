@@ -195,7 +195,7 @@ export default {
             if (element.createdDate) {
               element.createdDateShow = element.createdDate.year+'-'
               +element.createdDate.monthValue+'-'
-              +element.createdDate.dayOfMonth
+              +(element.createdDate.dayOfMonth+1)
             }
           }
           this.tableLoading = false;

@@ -127,7 +127,7 @@ export default {
                 "-" +
                 element.start.monthValue +
                 "-" +
-                element.start.dayOfMonth;
+                (element.start.dayOfMonth+1);
             }
             if (element.end) {
               element.endShow =
@@ -135,7 +135,7 @@ export default {
                 "-" +
                 element.end.monthValue +
                 "-" +
-                element.end.dayOfMonth;
+                (element.end.dayOfMonth+1);
             }
           }
           this.tableLoading = false;

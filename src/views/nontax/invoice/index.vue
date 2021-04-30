@@ -18,18 +18,20 @@
         </el-card>
       </el-col>
       <el-col :span="6">
-        <div id="main" :style="{ width: '350px', height: '900px' }"></div>
+        <div id="main" :style="{ width: '350px', height: '600px' }"></div>
       </el-col>
     </el-row>
   </div>
 </template>
 
 <script>
+import * as echarts from 'echarts';
 import {
   save,
   deleteById,
   commonQuery,
   getById,
+  analysisTicketNumber,
 } from "@/api/nontax/invoice/invoice-index";
 import { listByZoneId as listTicket } from "@/api/basedata/ticket";
 export default {
@@ -71,10 +73,62 @@ export default {
         },
       ],
       tableLoading: false,
+      invoicePieData: [],
+      option: {
+        tooltip: {
+          trigger: "item",
+        },
+        legend: {
+          top: "5%",
+          left: "center",
+        },
+        series: [
+          {
+            name: "开票情况",
+            type: "pie",
+            radius: ["40%", "70%"],
+            avoidLabelOverlap: false,
+            itemStyle: {
+              borderRadius: 10,
+              borderColor: "#fff",
+              borderWidth: 2,
+            },
+            label: {
+              show: false,
+              position: "center",
+            },
+            emphasis: {
+              label: {
+                show: true,
+                fontSize: "10",
+                fontWeight: "bold",
+              },
+            },
+            labelLine: {
+              show: false,
+            },
+            data: [],
+          },
+        ],
+      },
+      myChart:{}
     };
   },
-  watch: {},
-  created() {
+  watch: {
+    invoicePieData(val) {
+      let tmpList = []
+      for (let index = 0; index < val.length; index++) {
+        const element = val[index];
+        const tmp = {name:element.ticketName,value:element.number}
+        tmpList.push(tmp)
+      }
+      this.option.series[0].data = tmpList
+      this.myChart.setOption(this.option)
+    }
+  },
+  mounted() {
+    var chartDom = document.getElementById('main');
+    this.myChart = echarts.init(chartDom);
     this.getTableData();
     this.listTicket();
   },
@@ -92,10 +146,15 @@ export default {
                 "-" +
                 element.invoiceDate.monthValue +
                 "-" +
-                element.invoiceDate.dayOfMonth;
+                (element.invoiceDate.dayOfMonth+1);
             }
           }
           this.tableLoading = false;
+        }
+      });
+      analysisTicketNumber(this.$store.getters.unitId).then((res) => {
+        if (res && res.body && res.body.data) {
+          this.invoicePieData = res.body.data;
         }
       });
     },

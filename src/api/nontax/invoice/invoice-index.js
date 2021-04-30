@@ -32,3 +32,9 @@ export function commonQuery(params) {
     params: params
   })
 }
+export function analysisTicketNumber(unitId) {
+  return request({
+    url: '/nontax/financial/invoice/analysis/number/'+unitId,
+    method: 'get',
+  })
+}
