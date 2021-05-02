@@ -6,6 +6,7 @@
       :before-close="close"
     >
     <hyd-table
+      :height="580"
       :tableKey="tableKey"
       :tableData="tableData"
       :tableColumns="tableColumons"
@@ -37,19 +38,22 @@ export default {
       tableColumons: [
         {
           prop:'name',
-          label:'资源名'
+          label:'资源类型'
         },
         {
           prop:'action',
-          label:'动作'
+          label:'资源操作',
+          width:'100'
         },
         {
           prop:'url',
-          label:'路径'
+          label:'路径',
+          width:'250'
         },
         {
           prop:'method',
-          label:'方法'
+          label:'方法',
+          width:'100'
         },
       ],
       tableLoading:false
@@ -58,14 +62,17 @@ export default {
   methods:{
     getPermission(rolePermissionList){
       return new Promise(async(resolve,reject)=>{
+        let tmp = []
         for (let i = 0; i < rolePermissionList.length; i++) {
           const element = rolePermissionList[i];
           await getById(element.permissionId).then(res=>{
             if (res&&res.body&&res.body.data) {
-              this.tableData = this.tableData.concat(res.body.data)
+              tmp = tmp.concat(res.body.data)
+              //this.tableData = this.tableData.concat(res.body.data)
             }
           })
         }
+        this.tableData = tmp
       })
     }
   }

@@ -36,6 +36,7 @@ import orderProgressDialog from "./order-progress-dialog.vue";
 import {
   commonQuery,
   getById,
+  analysisOrderNumber
 } from "@/api/nontax/printing-order/printing-order-index";
 import { listByPrintingOrderId as getDialogTableData } from "@/api/nontax/printing-order/printing-order-ticket";
 export default {
@@ -104,15 +105,21 @@ export default {
       myChart: {},
     };
   },
-  created() {
-    this.getTableData();
-  },
   mounted() {
+    this.getTableData();
     var chartDom = document.getElementById("main");
     this.myChart = echarts.init(chartDom);
-    this.option && this.myChart.setOption(this.option);
   },
   methods: {
+    getLineChart(){
+      analysisOrderNumber(this.$store.getters.unitId).then(res=>{
+        if (res&&res.body&&res.body.data) {
+          this.option.series[0].data = res.body.data.numbers
+          this.option.xAxis.data = res.body.data.duration
+          this.myChart.setOption(this.option);
+        }
+      })
+    },
     getTableData() {
       this.tableLoading = true;
       commonQuery({ printUnitId: this.$store.getters.unitId }).then((res) => {
@@ -138,6 +145,7 @@ export default {
                 (element.end.dayOfMonth+1);
             }
           }
+          this.getLineChart()
           this.tableLoading = false;
         }
       });

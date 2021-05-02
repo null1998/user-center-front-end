@@ -78,13 +78,15 @@ export default {
       invoicePieData: [],
       invoicePiePriceData: [],
       option: {
-        
+        title:{
+          text:'票据比例',
+          left: 'center'
+        },
         tooltip: {
           trigger: "item",
         },
         legend: {
-          top: "5%",
-          left: "center",
+          show:false,
         },
         series: [
           {
@@ -118,13 +120,15 @@ export default {
       myChart: {},
       priceChart:{},
       priceOption: {
-        
+        title:{
+          text:'金额比例',
+          left: 'center'
+        },
         tooltip: {
           trigger: "item",
         },
         legend: {
-          top: "5%",
-          left: "center",
+          show:false,
         },
         series: [
           {
@@ -247,7 +251,10 @@ export default {
           this.success();
           this.getTableData();
         }
-      });
+      }).catch(err=>{
+        this.error()
+        this.getTableData()
+      })
     },
     handleDelete(index, row) {
       if (row && row.id) {

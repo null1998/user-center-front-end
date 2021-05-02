@@ -6,6 +6,7 @@
       :before-close="close"
     >
     <hyd-table
+      :height="580"
       :tableKey="tableKey"
       :tableData="tableData"
       :tableColumns="tableColumons"
@@ -41,11 +42,13 @@ export default {
         },
         {
           prop:'type',
-          label:'角色类型'
+          label:'角色类型',
+          width:'150'
         },
         {
           prop:'remark',
-          label:'备注'
+          label:'备注',
+          width:'300'
         }
       ],
       tableLoading:false
@@ -54,14 +57,17 @@ export default {
   methods:{
     getRoleList(userRoleList){
       return new Promise(async(resolve,reject)=>{
+        let tmp = []
         for (let i = 0; i < userRoleList.length; i++) {
           const element = userRoleList[i];
           await getById(element.roleId).then(res=>{
             if (res&&res.body&&res.body.data) {
-              this.tableData = this.tableData.concat(res.body.data)
+              tmp = tmp.concat(res.body.data)
+              //this.tableData = this.tableData.concat(res.body.data)
             }
           })
         }
+        this.tableData = tmp
       })
     }
   }

@@ -45,3 +45,9 @@ export function autoStore(dto) {
     data: dto
   })
 }
+export function analysisOrderNumber(printUnitId) {
+  return request({
+    url: '/nontax/financial/printing/order/analysis/'+printUnitId,
+    method: 'get',
+  })
+}

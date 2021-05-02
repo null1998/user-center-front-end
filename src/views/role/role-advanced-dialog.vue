@@ -6,6 +6,7 @@
       :before-close="close"
     >
     <hyd-table
+      :height="580"
       :tableKey="tableKey"
       :tableData="tableData"
       :tableColumns="tableColumons"
@@ -55,14 +56,17 @@ export default {
   methods:{
     getRoleList(roleRelateList){
       return new Promise(async(resolve,reject)=>{
+        let tmp = []
         for (let i = 0; i < roleRelateList.length; i++) {
           const element = roleRelateList[i];
           await getById(element.childRoleId).then(res=>{
             if (res&&res.body&&res.body.data) {
-              this.tableData = this.tableData.concat(res.body.data)
+              tmp = tmp.concat(res.body.data)
+              //this.tableData = this.tableData.concat(res.body.data)
             }
           })
         }
+        this.tableData = tmp
       })
     }
   }
