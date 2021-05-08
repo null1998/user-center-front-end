@@ -9,14 +9,14 @@
       <div slot="title" class="header-title">
         <strong>{{ title }}</strong>
         <div style="float: right">
-          <el-tooltip content="保存提交" placement="bottom" effect="light">
+          <!-- <el-tooltip content="保存提交" placement="bottom" effect="light">
             <el-button
               type="success"
               icon="el-icon-document"
               size="mini"
               @click="handleSaveDialog"
             ></el-button>
-          </el-tooltip>
+          </el-tooltip> -->
           <el-tooltip content="返回主页" placement="bottom" effect="light">
             <el-button
               type="danger"
@@ -29,7 +29,8 @@
       </div>
       <el-form ref="data" v-model="data" :rules="rules" inline>
         <el-form-item label="来源单号" prop="sourceOrderNumber">
-          <el-select
+          <!-- <el-select
+            disabled
             v-model="data.sourceOrderNumber"
             placeholder="来源单号"
             filterable
@@ -43,7 +44,8 @@
               :value="option.orderNumber"
               :key="option.orderNumber"
             ></el-option>
-          </el-select>
+          </el-select> -->
+          <strong><u>{{data.sourceOrderNumber}}</u></strong>
         </el-form-item>
         <el-form-item label="来源单位" prop="sourceUnitId">
           <strong><u>{{data.sourceUnitName}}</u></strong>
@@ -52,13 +54,12 @@
           <strong><u>{{data.storeType}}</u></strong>
         </el-form-item>
       </el-form>
-      <hyd-editable-table
+      <hyd-table
+        :height="350"
         :tableKey="tableKey"
         :tableData="tableData"
         :tableColumns="tableColumons"
         :loading="tableLoading"
-        @handleSave="handleSave"
-        @handleDelete="handleDelete"
       />
     </el-dialog>
   </div>
@@ -104,13 +105,13 @@ export default {
           prop: "startNumber",
           label: "起始号",
           type:"input",
-          width:"100"
+          
         },
         {
           prop: "endNumber",
           label: "终止号",
           type:"input",
-          width:"100"
+          
         },
       ],
       tableLoading: false,

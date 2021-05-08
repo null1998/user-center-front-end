@@ -35,7 +35,7 @@
         fixed="right"
         :width="operateColWidth"
         
-        v-if="edit || del || submit || check || pay"
+        v-if="edit || del || submit || check || pay || view"
       >
         <template slot-scope="scope">
           <el-button

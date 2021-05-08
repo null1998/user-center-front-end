@@ -18,9 +18,8 @@
               :tableData="tableData"
               :tableColumns="tableColumons"
               :loading="tableLoading"
-              @handleEdit="handleEdit"
-              @handleDelete="handleDelete"
-              @handleCreate="handleCreate"
+              @handleView="handleView"
+              
             />
           </el-row>
           </search-page>
@@ -171,7 +170,7 @@ export default {
       this.getLineChart()
       this.tableLoading = false;
     },
-    handleEdit(index, row) {
+    handleView(index, row) {
       if (row && row.id) {
         commonQuery({ id: row.id }).then((res) => {
           if (res && res.body && res.body.data) {

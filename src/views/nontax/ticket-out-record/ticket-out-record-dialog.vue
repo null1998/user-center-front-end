@@ -53,6 +53,7 @@
         </el-form-item>
       </el-form>
       <hyd-editable-table
+        :height="350"
         :tableKey="tableKey"
         :tableData="tableData"
         :tableColumns="tableColumons"

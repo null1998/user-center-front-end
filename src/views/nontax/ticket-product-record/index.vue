@@ -6,6 +6,7 @@
         <el-card class="box-card" style="width: 980px; height: 680px">
           <el-row>
             <el-button
+              v-if="false"
               type="danger"
               size="mini"
               @click="deleteAll()"

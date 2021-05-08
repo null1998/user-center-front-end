@@ -122,7 +122,8 @@ export default {
       }
       for (let index = 0; index < this.array.length; index++) {
         const row = { ...this.array[index] };
-        let dto = {
+        if (!row.startNumber&&!row.endNumber) {
+          let dto = {
           printUnitId: this.$store.getters.unitId,
           ticketId: row.ticketId,
           number: row.number,
@@ -130,6 +131,7 @@ export default {
           createdDate: new Date(),
         };
         await this.helper(dto, row);
+        }
       }
 
       //this.success()
@@ -164,6 +166,13 @@ export default {
       });
     },
     handleSaveDialog() {
+      for (let index = 0; index < this.tableData.length; index++) {
+        const row = this.tableData[index];
+        if (!row.startNumber || !row.endNumber) {
+          this.$message.info("存在待分配票号的票据，无法进行完工登记")
+          return
+        }
+      }
       this.data.status = 2;
       this.data.end = new Date();
       this.data.start = undefined

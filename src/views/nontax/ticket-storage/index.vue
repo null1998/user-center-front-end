@@ -4,12 +4,12 @@
     <el-row>
       <el-col :span="18">
         <el-card class="box-card" style="width: 980px; height: 680px">
-          <el-button
+          <!-- <el-button
             type="danger"
             size="mini"
             @click="handleDeleteAll()"
             icon="el-icon-delete"
-          />
+          /> -->
           <el-row>
             <hyd-table
               :height="580"
@@ -17,7 +17,7 @@
               :tableData="tableData"
               :tableColumns="tableColumons"
               :loading="tableLoading"
-              @handleSelectionChange="handleSelect"
+              
             />
           </el-row>
         </el-card>
@@ -92,7 +92,7 @@ export default {
         },
         series: [
           {
-            name: "票据种类",
+            name: "票据数目",
             type: "pie",
             radius: "50%",
             data: [],
