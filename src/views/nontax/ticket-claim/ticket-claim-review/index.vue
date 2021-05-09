@@ -8,12 +8,12 @@
             @showSearchData="showSearchData"
           >
     <hyd-table
-      :height="540"
+      :height="600"
       :tableKey="tableKey"
       :tableData="tableData"
       :tableColumns="tableColumons"
       :loading="tableLoading"
-      @handleEdit="handleEdit"
+      @handleView="handleView"
     />
     </search-page>
     <ticket-claim-review-dialog
@@ -83,7 +83,7 @@ export default {
         const element = data[i];
         element.status = this.statusMap[element.status]
         if (element.claimDate) {
-          element.claimDateShow = element.claimDate.year + '-' + element.claimDate.monthValue + '-' + (element.claimDate.dayOfMonth+1)
+          element.claimDateShow = element.claimDate.year + '-' + element.claimDate.monthValue + '-' + (element.claimDate.dayOfMonth)
         }
       }
       this.tableData = data;
@@ -96,7 +96,7 @@ export default {
       this.$refs['searchPage'].searchBtnClick()
       this.tableLoading = false;
     },
-    handleEdit(index, row) {
+    handleView(index, row) {
       if (row && row.id) {
         getById(row.id).then((res) => {
           if (res && res.body && res.body.data) {

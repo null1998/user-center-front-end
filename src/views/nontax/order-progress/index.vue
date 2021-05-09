@@ -134,7 +134,7 @@ export default {
                 "-" +
                 element.start.monthValue +
                 "-" +
-                (element.start.dayOfMonth+1);
+                (element.start.dayOfMonth);
             }
             if (element.end) {
               element.endShow =
@@ -142,7 +142,7 @@ export default {
                 "-" +
                 element.end.monthValue +
                 "-" +
-                (element.end.dayOfMonth+1);
+                (element.end.dayOfMonth);
             }
           }
           this.getLineChart()

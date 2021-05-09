@@ -46,6 +46,7 @@
       <el-tabs v-model="activeName" type="border-card">
         <el-tab-pane label="库存票据参考" name="storageTicket">
           <hyd-table
+            :height="200"
             :tableKey="storageTableKey"
             :tableData="storageTableData"
             :tableColumns="storageTableColumons"

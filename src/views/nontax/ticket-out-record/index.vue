@@ -18,9 +18,7 @@
               :tableData="tableData"
               :tableColumns="tableColumons"
               :loading="tableLoading"
-              @handleEdit="handleEdit"
-              @handleDelete="handleDelete"
-              @handleCreate="handleCreate"
+              @handleView="handleView"
             />
           </el-row>
           </search-page>
@@ -143,7 +141,7 @@ export default {
       for (let index = 0; index < data.length; index++) {
         const element = data[index];
         if (element.outDate) {
-          element.outDateShow = element.outDate.year + '-' + element.outDate.monthValue + '-' + (element.outDate.dayOfMonth+1)
+          element.outDateShow = element.outDate.year + '-' + element.outDate.monthValue + '-' + (element.outDate.dayOfMonth)
         }
       }
       this.tableData = data;
@@ -166,7 +164,7 @@ export default {
       this.getLineChart()
       this.tableLoading = false;
     },
-    handleEdit(index, row) {
+    handleView(index, row) {
       if (row && row.id) {
         getById(row.id).then((res) => {
           if (res && res.body && res.body.data) {

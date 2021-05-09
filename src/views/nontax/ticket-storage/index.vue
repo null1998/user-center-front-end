@@ -171,7 +171,7 @@ export default {
                 "-" +
                 element.operateDate.monthValue +
                 "-" +
-                (element.operateDate.dayOfMonth+1);
+                (element.operateDate.dayOfMonth);
             }
           }
           this.getSum()

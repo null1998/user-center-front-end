@@ -290,10 +290,21 @@ export default {
       }
     },
     dataValid(row) {
-      if (row && row.ticketId && row.number) {
-        let s = /^[1-9]?[0-9]{0,9}$/;
-        return s.test(row.number);
+      if (!row.ticketId) {
+        this.$message.info("请选择票据")
+        return false
       }
+      if (!row.number) {
+        this.$message.info("请输入数量")
+        return false
+      }
+      if (row && row.ticketId && row.number) {
+        if (/^[1-9]+\d*$/.test(row.number)) {
+          return true;
+        } else {
+          this.$message.info("数量格式不正确，请输入正整数")
+        }
+      } 
       return false;
     },
     success() {

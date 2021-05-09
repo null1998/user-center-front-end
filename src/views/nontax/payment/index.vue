@@ -86,12 +86,12 @@ export default {
             const element = this.tableData[index];
             element['status'] = this.statusMap[element['status']]
             if (element.orderDate) {
-            element.orderDateShow = element.orderDate.year + '-' + element.orderDate.monthValue + '-' + (element.orderDate.dayOfMonth+1)
+            element.orderDateShow = element.orderDate.year + '-' + element.orderDate.monthValue + '-' + (element.orderDate.dayOfMonth)
 
             }
             if (element.payDate) {
             element.payDateShow = element.payDate.year + '-' + element.payDate.monthValue + '-' + (element.payDate.dayOfMonth
-            +1)
+            )
             }
           }
           this.tableLoading=false

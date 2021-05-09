@@ -100,14 +100,14 @@ export default {
               "年" +
               element.startDate.monthValue +
               "月" +
-              (element.startDate.dayOfMonth+1) +
+              (element.startDate.dayOfMonth) +
               "日";
             this.tableData[i].endDate =
               element.endDate.year +
               "年" +
               element.endDate.monthValue +
               "月" +
-              (element.endDate.dayOfMonth+1) +
+              (element.endDate.dayOfMonth) +
               "日";
           }
         }

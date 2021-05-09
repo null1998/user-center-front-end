@@ -206,7 +206,7 @@ export default {
                 "-" +
                 element.invoiceDate.monthValue +
                 "-" +
-                (element.invoiceDate.dayOfMonth + 1);
+                (element.invoiceDate.dayOfMonth);
             }
           }
           this.tableLoading = false;

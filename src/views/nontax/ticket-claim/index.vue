@@ -193,7 +193,7 @@ export default {
         element.status = this.statusMap[element.status];
         element.payStatus = this.payStatusMap[element.payStatus];
         if (element.claimDate) {
-          element.claimDateShow = element.claimDate.year + '-' + element.claimDate.monthValue + '-' + (element.claimDate.dayOfMonth+1)
+          element.claimDateShow = element.claimDate.year + '-' + element.claimDate.monthValue + '-' + (element.claimDate.dayOfMonth)
         }
       }
       this.tableData = data;
