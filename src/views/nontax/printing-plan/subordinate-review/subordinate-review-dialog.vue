@@ -7,23 +7,35 @@
       :before-close="close"
     >
       <div slot="title" class="header-title">
-        <i class="el-icon-s-data">{{ title }}</i>
-        <i class="el-icon-circle-close" style="float: right" @click="close"
-          >退出</i
-        >
-        <i
-          class="el-icon-s-release"
-          style="float: right"
-          @click="handleCheck(false)"
-          >审核退回</i
-        >
-           
-        <i
-          class="el-icon-s-check"
-          style="float: right"
-          @click="handleCheck(true)"
-          >审核通过</i
-        >
+        <strong>{{ title }}</strong>
+        <div style="float: right">
+          <el-tooltip content="审核通过" placement="bottom" effect="light">
+            <el-button
+              type="success"
+              icon="el-icon-s-check"
+              size="mini"
+              @click="handleCheck(true)"
+            ></el-button>
+          </el-tooltip>
+          <el-tooltip content="审核退回" placement="bottom" effect="light">
+            <el-button
+              type="warning"
+              icon="el-icon-s-release"
+              size="mini"
+              @click="handleCheck(false)"
+            ></el-button>
+          </el-tooltip>
+          <el-tooltip content="返回主页" placement="bottom" effect="light">
+            <el-button
+              type="danger"
+              icon="el-icon-right"
+              size="mini"
+              @click="close"
+            ></el-button>
+          </el-tooltip>
+        </div>
+       
+        
          
       </div>
       <hyd-table
@@ -54,6 +66,7 @@ export default {
         {
           prop: "ticketName",
           label: "财政票据名称",
+          width:"240"
         },
         {
           prop: "theFirstSeason",

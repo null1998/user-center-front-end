@@ -5,21 +5,29 @@
       :visible.sync="visible"
       :show-close="false"
       :before-close="close"
+      width="68%"
     >
       <div slot="title" class="header-title">
-        <i class="el-icon-s-data" style="font-family: 'PingFang SC'">{{
-          title
-        }}</i>
-        <i class="el-icon-circle-close" style="float: right" @click="close"
-          >退出</i
-        >
-        <i
-          v-if="data.status == 0 || data.status == 3"
-          class="el-icon-circle-check"
-          style="float: right"
-          @click="handleSaveDialog"
-          >保存</i
-        >
+        <strong>{{ title }}</strong>
+        <div style="float: right">
+        <!-- <el-tooltip content="计划上报" placement="bottom" effect="light">
+            <el-button
+              :disabled="this.data.status != 0 && data.status != 3"
+              type="info"
+              icon="el-icon-document"
+              size="mini"
+              @click="handleSaveDialog"
+            ></el-button>
+          </el-tooltip> -->
+          <el-tooltip content="返回主页" placement="bottom" effect="light">
+            <el-button
+              type="danger"
+              icon="el-icon-right"
+              size="mini"
+              @click="close"
+            ></el-button>
+          </el-tooltip>
+        </div>
       </div>
       <hyd-editable-table
         :tableKey="tableKey"
@@ -31,16 +39,16 @@
         @handleDelete="handleDelete"
       />
       <el-tabs v-model="activeName" type="border-card">
-        <el-tab-pane label="上年用票数" name="lastYear">
+        <!-- <el-tab-pane label="上年用票数" name="lastYear">
           <hyd-table
             :tableKey="lastYearTableKey"
             :tableData="lastYearTableData"
             :tableColumns="tableColumons"
             :loading="lastYearTableLoading"
           />
-        </el-tab-pane>
+        </el-tab-pane> -->
         <el-tab-pane label="下级上报汇总参考" name="subordinate">
-          <el-button type="primary" size="mini" v-if="data.status == 0 || data.status == 3" @click="importData()">一键导入</el-button>
+          <el-button type="primary" size="mini" v-if="data.status == 0 || data.status == 3" @click="importData()">选择导入</el-button>
           <hyd-table
             :tableKey="subordinateTableKey"
             :tableData="subordinateTableData"
@@ -89,6 +97,7 @@ export default {
           optionLabel: "name",
           optionValue: "id",
           placeholder: "请选择票据",
+          width:"240"
         },
         {
           prop: "theFirstSeason",
@@ -112,7 +121,7 @@ export default {
         },
       ],
       tableLoading: false,
-      activeName: "lastYear",
+      activeName: "subordinate",
       lastYearTableKey: 0,
       lastYearTableData: [],
       lastYearTableLoading: false,
@@ -121,6 +130,7 @@ export default {
         {
           prop: "ticketName",
           label: "财政票据名称",
+          width:"240"
         },
         {
           prop: "theFirstSeason",
@@ -181,7 +191,7 @@ export default {
     handleSave(index, row) {
       // 数据不合法，返回
       if (!this.dataValid(row)) {
-        this.error()
+        //this.error()
         this.getTableData()
         return;
       }
@@ -321,6 +331,7 @@ export default {
     dataValid(row) {
       
       if (!row || !row.ticketId) {
+        this.$message.info("请选择票据")
         return false;
       }
       if (!row.theFirstSeason||row.theFirstSeason==='') {
@@ -335,10 +346,26 @@ export default {
       if (!row.theFourthSeason||row.theFourthSeason==='') {
         row.theFourthSeason = 0
       }
-      var result1 = /^[0-9]+$/.test(row.theFirstSeason)
-      var result2 = /^[0-9]+$/.test(row.theSecondSeason)
-      var result3 = /^[0-9]+$/.test(row.theThirdSeason)
-      var result4 = /^[0-9]+$/.test(row.theFourthSeason)
+      var result1 = /^[1-9]+\d*$|^0$/.test(row.theFirstSeason)
+      var result2 = /^[1-9]+\d*$|^0$/.test(row.theSecondSeason)
+      var result3 = /^[1-9]+\d*$|^0$/.test(row.theThirdSeason)
+      var result4 = /^[1-9]+\d*$|^0$/.test(row.theFourthSeason)
+      if (!result1) {
+        this.$message.info("第一季度数据格式不正确")
+        return false
+      }
+      if (!result2) {
+        this.$message.info("第二季度数据格式不正确")
+        return false
+      }
+      if (!result3) {
+        this.$message.info("第三季度数据格式不正确")
+        return false
+      }
+      if (!result4) {
+        this.$message.info("第四季度数据格式不正确")
+        return false
+      }
       return result1&&result2&&result3&&result4
     }
   },
