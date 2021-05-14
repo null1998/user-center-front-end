@@ -144,7 +144,7 @@ export default {
       tableLoading: false,
       rule: {
         targetUnitId: [
-          { required: true, message: "请选择目标仓库", trigger: "change" },
+          { required: true, message: "请选择上级单位", trigger: "change" },
         ],
         warehouseId: [
           { required: true, message: "请选择收货仓库", trigger: "change" },
@@ -234,6 +234,10 @@ export default {
     handleSaveDialog() {
       this.$refs["data"].validate((valid) => {
         if (valid) {
+          if (!this.tableData || this.tableData.length == 0) {
+            this.$message.info("票据列表为空，请先选择票据")
+            return false
+          }
           this.data.claimDate = new Date();
           this.data.status = 1;
           this.data.payStatus = 1

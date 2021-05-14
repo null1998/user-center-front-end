@@ -23,10 +23,10 @@
     ></hyd-table>
     <!-- 对话框，用于新增，编辑角色 -->
     <el-dialog
-      :title="textMap[dialogStatus]"
       :visible.sync="dialogFormVisible"
       :before-close="handleClose"
     >
+    <div slot="title"><strong>{{textMap[dialogStatus]}}</strong></div>
       <!-- 角色表单 -->
       <el-form
         :disabled="roleCreated"
@@ -69,6 +69,7 @@
       <!-- 搜索栏-->
       <div class="filter-container" v-if="roleData.type == '基础角色'">
         <el-input
+          size="medium"
           v-model="permissionListQuery.name"
           placeholder="资源名"
           style="width: 200px"
@@ -76,6 +77,7 @@
           @keyup.enter.native="handlePermissionFilter"
         />
         <el-select
+          size="medium"
           v-model="permissionListQuery.action"
           placeholder="动作"
           clearable
@@ -90,6 +92,7 @@
           />
         </el-select>
         <el-button
+          size="medium"
           class="filter-item"
           type="primary"
           icon="el-icon-search"
@@ -100,8 +103,9 @@
         </el-button>
       </div>
       <!-- 创建基础角色 -->
+      
       <hyd-table
-      :height="400"
+        :height="400"
         :show="roleData.type == '基础角色'"
         :loading="permissionListLoading"
         :tableKey="permissionTableKey"
@@ -120,6 +124,7 @@
         @size-change="handlePageSizeChange"
         @current-change="handleCurrentPageChange"
       />
+      
       <!-- 选择基础角色，创建高级角色 -->
       <hyd-table
       :height="400"
@@ -216,6 +221,7 @@ export default {
         {
           prop: "remark",
           label: "备注",
+          width:"350"
         },
       ],
       roleTableColumons: [
@@ -232,6 +238,7 @@ export default {
         {
           prop: "remark",
           label: "备注",
+          width:"350"
         },
       ],
       tableKey: 0,

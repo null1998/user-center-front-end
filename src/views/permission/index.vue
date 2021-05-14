@@ -14,7 +14,7 @@
     </div>
     <!-- 主表单显示权限列表 -->
     <hyd-table
-    :height="490"
+    :height="520"
       :tableKey="tableKey"
       :tableData="permissionList"
       :tableColumns="permissionTableColumons"
@@ -33,7 +33,8 @@
       @size-change="handlePageSizeChange"
       @current-change="handleCurrentPageChange"
     />
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
+    <el-dialog :visible.sync="dialogFormVisible">
+      <div slot="title"><strong>{{textMap[dialogStatus]}}</strong></div>
       <el-form
         ref="dataForm"
         :rules="rules"

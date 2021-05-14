@@ -325,6 +325,10 @@ export default {
     handleSaveDialog() {
       this.$refs["data"].validate((valid) => {
         if (valid) {
+          if (!this.tableData || this.tableData.length == 0) {
+            this.$message.info("票据列表为空，请先选择票据")
+            return false
+          }
           this.data.start = new Date();
           this.data.status = 1;
           this.data.payStatus = 1;

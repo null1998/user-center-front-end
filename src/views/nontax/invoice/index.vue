@@ -235,6 +235,7 @@ export default {
     },
     handleSave(index, row) {
       if (row.id) {
+        this.$message.info("已开票据无法更改")
         return;
       }
       // 数据不合法，返回
@@ -284,10 +285,28 @@ export default {
       });
     },
     dataValid(row) {
-      if (row && row.ticketId && row.price && row.invoicePeople) {
-        return /(^[1-9]+\d*$)|(^0$)/.test(row.price);
+      if (row) {
+        
+        if (!row.ticketId) {
+          this.$message.info("请选择票据")
+          return false
+        }
+        if (!row.price && row.price != 0) {
+          this.$message.info("请输入金额")
+          return false
+        }
+        if (!row.invoicePeople) {
+          this.$message.info("请输入姓名")
+          return false
+        }
+        if (/(^[0-9]+([.]{1}[0-9]{1})?$)/.test(row.price)) {
+          return true;
+        }
+        this.$message.info("金额格式错误，请输入非负数，最多保留1位小数")
+
       }
-      return false;
+      return false
+      
     },
   },
 };

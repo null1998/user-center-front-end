@@ -227,6 +227,10 @@ export default {
     },
     handleDelete(index, row) {
       if (row && row.id) {
+        if (row.status != '待下单') {
+          this.$message.info("已下单，不可删除")
+          return false
+        }
         deleteById(row.id).then((res) => {
           if (res && res.body && res.body.data) {
             this.success();
